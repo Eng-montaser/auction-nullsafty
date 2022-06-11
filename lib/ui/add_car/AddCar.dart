@@ -4,6 +4,7 @@ import 'package:auction/ui/add_car/AddPreview.dart';
 import 'package:auction/ui/widgets/ColorPicker.dart';
 import 'package:auction/utils/FCIStyle.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -152,6 +153,57 @@ class _AddCar extends State<AddCar> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
+                    'Type',
+                    style: FCITextStyle.bold(16),
+                  ),
+                  // SizedBox(
+                  //   height: ScreenUtil().setHeight(5),
+                  // ),
+                  Container(
+                    width: double.infinity,
+                    height: ScreenUtil().setHeight(100),
+                    child: ListView.builder(
+                      itemBuilder: (context, index) => GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            type = 'Type ${index + 1}';
+                          });
+                        },
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: ScreenUtil().setWidth(10)),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                'assets/images/car_type_icon_${index + 1}.png',
+                                width: ScreenUtil().setWidth(65),
+                                // height: ScreenUtil().setHeight(65),
+                              ),
+                              Text('Type ${index + 1}')
+                            ],
+                          ),
+                        ),
+                      ),
+                      scrollDirection: Axis.horizontal,
+                      itemCount: 6,
+                      shrinkWrap: true,
+                      itemExtent: 100,
+                    ),
+                  )
+                ],
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(
+                vertical: ScreenUtil().setHeight(5),
+                horizontal: ScreenUtil().setHeight(30),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
                     'Color',
                     style: FCITextStyle.bold(16),
                   ),
@@ -207,6 +259,7 @@ class _AddCar extends State<AddCar> {
                           mileago = val;
                         });
                       },
+                      keyboardType: TextInputType.number,
                       decoration: InputDecoration(
                           hintText: '0',
                           border: InputBorder.none,
@@ -225,6 +278,7 @@ class _AddCar extends State<AddCar> {
                     year.isNotEmpty &&
                     trim.isNotEmpty &&
                     mileago.isNotEmpty &&
+                    type.isNotEmpty &&
                     _color.toString().isNotEmpty &&
                     image != null)
                   Get.to(() => AddPreview(

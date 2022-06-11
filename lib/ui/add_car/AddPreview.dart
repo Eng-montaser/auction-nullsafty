@@ -67,14 +67,14 @@ class _AddCar extends State<AddPreview> {
             SizedBox(
               height: ScreenUtil().setWidth(30),
             ),
-            getRow('Ref ID', '021'),
-            getRow('Make', '${widget.make}'),
-            getRow('Model', '${widget.model}'),
-            getRow('Year', '${widget.year}'),
-            getRow('Mileago', '${widget.mileago}'),
-            getRow('Trim', '${widget.trim}'),
-            getRow('Color', '${widget.color}'),
-            getRow('Type', '${widget.type}'),
+            getRow('Ref ID', '021', 'icon_6'),
+            getRow('Make', '${widget.make}', 'icon_5'),
+            getRow('Model', '${widget.model}', 'icon_1'),
+            getRow('Year', '${widget.year}', 'icon_2'),
+            getRow('Mileago', '${widget.mileago}', 'icon_3'),
+            getRow('Trim', '${widget.trim}', 'icon_4'),
+            getRow('Color', '${widget.color}', ''),
+            getRow('Type', '${widget.type}', 'car_type_icon_5'),
             GestureDetector(
               onTap: () {},
               child: Container(
@@ -106,7 +106,7 @@ class _AddCar extends State<AddPreview> {
     );
   }
 
-  Widget getRow(String label, String? detail) {
+  Widget getRow(String label, String? detail, String iconname) {
     return Container(
       decoration: BoxDecoration(
         border: Border(
@@ -125,23 +125,29 @@ class _AddCar extends State<AddPreview> {
           Container(
             width: ScreenUtil().setWidth(150),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                    width: ScreenUtil().setWidth(50),
-                    child: label == "Color"
-                        ? Container(
-                            width: ScreenUtil().setWidth(25),
-                            height: ScreenUtil().setWidth(25),
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                    width: 1, color: Colors.grey.shade300),
-                                color: Color(int.parse(widget.color))),
-                          )
-                        : Icon(Icons.info)),
+                  width: ScreenUtil().setWidth(70),
+                  child: label == "Color"
+                      ? Container(
+                          width: ScreenUtil().setWidth(25),
+                          height: ScreenUtil().setWidth(25),
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                  width: 1, color: Colors.grey.shade300),
+                              color: Color(int.parse(widget.color))),
+                        )
+                      : Image.asset(
+                          'assets/images/$iconname.png',
+                          width: ScreenUtil().setWidth(25),
+                          height: ScreenUtil().setWidth(25),
+                        ),
+                ),
                 Container(
+                  // alignment: Alignment.bottomCenter,
                   width: ScreenUtil().setWidth(70),
                   child: Text(
                     '$label',
