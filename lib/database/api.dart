@@ -32,7 +32,9 @@ class Api {
   getHeaders() {
     AuthenticationController authenticationController =
         Get.put(AuthenticationController());
-    String token = authenticationController.userData?.token ?? "";
+    authenticationController.getUserData();
+    String token =authenticationController.userData?.token??'';
+    print("/*/*/*/*/* ${token}");
     Map<String, String> headers = {
       'Authorization': 'Bearer $token',
       'Accept': 'application/json',
@@ -68,13 +70,19 @@ class Api {
       String endPath, Map<String, String> body,
       {File? file}) async {
     Uri uri = Uri.https(baseUrl, '$path/$endPath');
-    var length = await file!.length();
+    var length = await file?.length();
+
+
+    print('BBBBBBBBBBEEEEEEEGINNNNNNNNNNNNNNNNNNNN');
+    print(file.toString());
+    print(file?.path.toString());
+    print('EEEEEEEEEEEEEEEEEEENNNNNNNNNNNNDDDDDDDD');
     http.MultipartRequest request = new http.MultipartRequest('POST', uri)
       ..headers.addAll(getHeaders())
       ..fields.addAll(body)
       ..files.add(
         ///set name parametter of file in api
-        http.MultipartFile('file', file.openRead(), length,
+        http.MultipartFile('image', file!.openRead(), length??0,
             filename: basename(file.path)),
       );
     return await http.Response.fromStream(await request.send())

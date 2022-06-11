@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auction/database/models/car_model.dart';
 import 'package:auction/utils/FCIStyle.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -16,19 +18,15 @@ class CarController extends GetxController{
     switch(carStatus){
       case CarStatus.all:
         return _allCars;
-        break;
       case CarStatus.upComing:
         return _upComingCars;
-        break;
       case CarStatus.live:
         return _runningCars;
-        break;
     }
   }
-  Future<List<CarModel>> loadAllCars() async {
- _allCars = [];
+  Future<List<CarModel>> loadAllCars(bool loading) async {
+ if(loading)
  allCarsLoading=true;
- update();
  update();
     try {
       await FCIGetDataXApi().getAllCars().then((value) {
@@ -49,32 +47,9 @@ class CarController extends GetxController{
     }
   }
 
-  Future<List<CarModel>> loadRunningCars() async {
-    _runningCars = [];
-    runningLoading=true;
-    update();
-    try {
-      await FCIGetDataXApi().getRunning().then((value) {
-        // print('cval $value');
-        if (value != null) {
-          // print('cval ${value.length}');
-          _runningCars = value;
-          update();
-        }
-      });
-      runningLoading=false;
-      update();
-      return _runningCars;
-    } catch (e) {
-      runningLoading=false;
-      update();
-      return <CarModel>[];
-    }
-  }
+  Future<List<CarModel>> loadUpComingCars(bool loading) async {
 
-  Future<List<CarModel>> loadUpComingCars() async {
-
-    _upComingCars= [];
+    if(loading)
     upComingLoading=true;
     update();
     try {
@@ -96,11 +71,41 @@ class CarController extends GetxController{
       return <CarModel>[];
     }
   }
+
+  Future<List<CarModel>> loadRunningCars(bool loading) async {
+    if(loading)
+    runningLoading=true;
+    update();
+    try {
+      await FCIGetDataXApi().getRunning().then((value) {
+        // print('cval $value');
+        if (value != null) {
+          // print('cval ${value.length}');
+          _runningCars = value;
+          update();
+        }
+      });
+      runningLoading=false;
+      update();
+      return _runningCars;
+    } catch (e) {
+      runningLoading=false;
+      update();
+      return <CarModel>[];
+    }
+  }
+
+
   @override
   void onInit() {
-    loadAllCars();
-    loadUpComingCars();
-    loadRunningCars();
+    loadAllCars(true);
+    loadUpComingCars(true);
+    loadRunningCars(true);
+    // Timer.periodic(Duration(seconds: 15), (timer) {
+    //   loadAllCars(false);
+    //   loadUpComingCars(false);
+    //   loadRunningCars(false);
+    // });
     super.onInit();
   }
   @override

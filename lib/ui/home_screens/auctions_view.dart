@@ -94,7 +94,10 @@ class _AuctionsViewState extends State<AuctionsView> {
                   Tab(
                     child: Container(
                       alignment: Alignment.center,
+                      width: double.infinity,
+                      height: double.infinity,
                       child: Text('All Cars'),
+
                     ),
                   ),
                   Tab(
@@ -131,7 +134,7 @@ class _AuctionsViewState extends State<AuctionsView> {
                     margin: EdgeInsets.all(20),
                     child:  GetBuilder<CarController>(
                           init: CarController(),
-                          initState: (_) => CarController().loadAllCars(),
+                          // initState: (_) => CarController().loadAllCars(),
                           builder: (CarController carController){
                             if (carController.allCarsLoading)
                               return Center(
@@ -158,7 +161,7 @@ class _AuctionsViewState extends State<AuctionsView> {
                   margin: EdgeInsets.all(20),
                   child:  GetBuilder<CarController>(
                       init: CarController(),
-                      initState: (_) => CarController().loadUpComingCars(),
+                      // initState: (_) => CarController().loadUpComingCars(),
                       builder: (CarController carController){
                         if (carController.upComingLoading) {
                           return Center(
@@ -183,7 +186,7 @@ class _AuctionsViewState extends State<AuctionsView> {
                   margin: EdgeInsets.all(20),
                   child:  GetBuilder<CarController>(
                       init: CarController(),
-                      initState: (_) => CarController().loadRunningCars(),
+                      // initState: (_) => CarController().loadRunningCars(),
                       builder: (CarController carController){
                         if (carController.runningLoading)
                           return Center(

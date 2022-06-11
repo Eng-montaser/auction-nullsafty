@@ -17,6 +17,8 @@ class ProfileTextField extends StatelessWidget {
   final FormFieldValidator<String>? validate;
   final TextInputType inputType;
   final double width;
+  final Function onTap;
+  final Function onEditingComplete;
     ProfileTextField(
       {Key? key,
         this.hintText='',
@@ -32,13 +34,16 @@ class ProfileTextField extends StatelessWidget {
         this.controller,
         this.minLines = 1,
         this.maxLines = 1,
-        this.width=0
+        this.width=0,
+        required this.onTap,
+        required this.onEditingComplete
       })
       : super(key: key);
   @override
   Widget build(BuildContext context) {
     return   Container(
       width:width==0? FCISize.width(context):width,
+      height: ScreenUtil().setHeight(45),
       padding: EdgeInsets.symmetric(
           horizontal:FCIPadding.textFieldPaddingHorizontal,
           // vertical:FCIPadding.textFieldPaddingVertical
@@ -53,6 +58,12 @@ class ProfileTextField extends StatelessWidget {
           )
       ),
       child:TextFormField(
+        onTap: (){
+          onTap();
+        },
+        onEditingComplete: (){
+          onEditingComplete();
+        },
         enabled: enabled,
         enableInteractiveSelection: true,
         controller: controller,

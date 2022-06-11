@@ -23,12 +23,23 @@ class User{
   String? firstname;
   String? lastname;
   String? email;
+  String? phone;
   String? image;
+  String? address;
+  String? state;
+  String? zip;
+  String? city;
   User({required this.id ,
     this.email,
+    this.phone,
     this.firstname,
     this.lastname,
-    this.image
+    this.image,
+    this.address,
+    this.city,
+    this.state,
+    this.zip,
+
   });
   factory User.toObject(Map<String, dynamic> json) =>
       User(
@@ -36,13 +47,19 @@ class User{
           firstname: json['firstname'],
           lastname: json['lastname'],
           email: json['email'],
+          phone: json['phone'],
           image: json['image'],
+        address: json['country'],
+        city: json['city'] ,
+        state:  json['state'],
+          zip: json['zip']
       );
   Map<String, dynamic> toJson() => {
     "id" : id,
     "firstname" : firstname,
     "lastname" : lastname,
     "email" : email,
+    "phone" : phone,
     "image" : image,
   };
 }

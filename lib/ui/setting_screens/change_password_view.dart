@@ -1,3 +1,4 @@
+import 'package:auction/logic/controllers/change_password_controller.dart';
 import 'package:auction/ui/widgets/custom_background.dart';
 import 'package:auction/ui/widgets/custom_button.dart';
 import 'package:auction/ui/widgets/profile_textfield.dart';
@@ -58,53 +59,85 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
       backgroundColor: FCIColors.accentColor(),
       body: Background(
         child: Container(
-
           margin: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(15),
               vertical:ScreenUtil().setHeight(20) ),
           width: FCISize.width(context),
           child: SingleChildScrollView(
             child: Column(
               children: [
-                Card(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(10),
-                        vertical:ScreenUtil().setHeight(10) ),
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(20),
-                              vertical:ScreenUtil().setHeight(20) ),
-                          child: Center(
-                            child: Image.asset(
-                              'assets/images/changepassword_hader.png',
-                              height: FCISize.width(context) * 0.50,
-                              width: FCISize.width(context) * 0.75,
-                              fit: BoxFit.fill,
+            GetBuilder<ChangePasswordController>(
+            init: ChangePasswordController(),
+              builder: (controller)   {
+                    return Card(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(10),
+                            vertical:ScreenUtil().setHeight(10) ),
+                        child: Column(
+                          children: [
+                            Center(
+                              child: Image.asset(
+                                'assets/images/changepassword_hader.png',
+                                height: FCISize.width(context) * 0.50,
+                                width: FCISize.width(context) * 0.75,
+                                fit: BoxFit.fill,
+                              ),
                             ),
-                          ),
+                            ProfileTextField(
+                              hintText: "Current Password",
+                              obsecure: true,
+                              controller: controller.currentPasswordController,
+                              focusNode: controller.focusNodeCurrentPassword,
+                              onTap: () {
+                                controller.setFocus(ChangePasswordFocusNode.currentPassword, context);
+                                print(controller.changePasswordFocusNode);
+                              },
+                              onEditingComplete: () {
+                                controller.setNextFocus(ChangePasswordFocusNode.currentPassword, context);
+                                print(controller.changePasswordFocusNode);
+                              },
+                            ),
+                            ProfileTextField(
+                              hintText: "New Password",
+                              obsecure: true,
+                              controller: controller.passwordController,
+                              focusNode: controller.focusNodePassword,
+                              onTap: () {
+                                controller.setFocus(ChangePasswordFocusNode.password, context);
+                              },
+                              onEditingComplete: () {
+                                controller.setNextFocus(ChangePasswordFocusNode.password, context);
+                              },
+                            ),
+                            ProfileTextField(
+                              hintText: "Confirm New Password",
+                              obsecure: true,
+                              controller: controller.passwordConfirmationController,
+                              focusNode: controller.focusNodePasswordConfirmation,
+                              onTap: () {
+                                controller.setFocus(ChangePasswordFocusNode.passwordConfirmation, context);
+                              },
+                              onEditingComplete: () {
+                                controller.setNextFocus(ChangePasswordFocusNode.passwordConfirmation, context);
+                              },
+                            ),
+                            GreenButton(
+                              title: "Save",
+                              loading: controller.isLoading.value,
+                              onTap: (){
+                                controller.changePassword(context);
+                              },
+                            )
+                          ],
                         ),
-                        ProfileTextField(
-                          hintText: "Current Password",
-                        ),
-                        ProfileTextField(
-                          hintText: "New Password",
-                        ),
-                        ProfileTextField(
-                          hintText: "Confirm New Password",
-                        ),
-                        GreenButton(
-                          title: "Save",
-                          onTap: (){},
-                        )
-                      ],
-                    ),
-                  ),
+                      ),
+                    );
+                  }
                 ),
                 Center(
                   child: Image.asset(
                     'assets/images/auction_logo.png',
-                    height: FCISize.height(context) * 0.25,
-                    width: FCISize.height(context) * 0.25,
+                    height: FCISize.height(context) * 0.15,
+                    width: FCISize.height(context) * 0.15,
                   ),
                 ),
               ],

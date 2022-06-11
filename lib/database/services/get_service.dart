@@ -26,7 +26,9 @@ class GetService extends BaseApi {
   Future<http.Response> getMyBids() async {
     return await api.httpGet('bids');
   }
-
+  Future<http.Response> getProfileDetails() async {
+    return await api.httpGet('user/details');
+  }
 // Future<http.Response> getNotifications() async {
 //   return await api.httpGetByToken('notifications');
 // }

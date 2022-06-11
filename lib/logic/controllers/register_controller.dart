@@ -6,6 +6,8 @@ import 'package:auction/ui/main_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
+import '../../ui/widgets/get_message.dart';
+
 class RegisterController extends GetxController {
   var isLoading = false.obs;
   TextEditingController nameController = new TextEditingController();
@@ -117,35 +119,35 @@ class RegisterController extends GetxController {
     /// name empty validate
     if (nameController.text.isEmpty) {
       setFocus(RegisterFocusNode.name, context);
-      Get.snackbar('Registration Error', "Please insert username.");
+      GetMessage('Registration Error', "Please insert username.");
       return false;
     }
 
     /// email empty validate
     else if (emailController.text.isEmpty) {
       setFocus(RegisterFocusNode.email, context);
-      Get.snackbar('Registration Error', "Please insert Email.");
+      GetMessage('Registration Error', "Please insert Email.");
       return false;
     }
 
     /// name Valid validate
     else if (!emailIsValid(emailController.text)) {
       setFocus(RegisterFocusNode.email, context);
-      Get.snackbar('Registration Error', "Please insert a Valid Email.");
+      GetMessage('Registration Error', "Please insert a Valid Email.");
       return false;
     }
 
     /// password empty validate
     else if (passwordController.text.isEmpty) {
       setFocus(RegisterFocusNode.password, context);
-      Get.snackbar('Registration Error', "Please insert Password.");
+      GetMessage('Registration Error', "Please insert Password.");
       return false;
     }
 
     /// password [6 characters] validate
     else if (passwordController.text.length < 6) {
       setFocus(RegisterFocusNode.password, context);
-      Get.snackbar(
+      GetMessage(
           'Registration Error', "The Password must be at least 6 characters.");
       return false;
     }
@@ -153,7 +155,7 @@ class RegisterController extends GetxController {
     /// Confirm Password  validate
     else if (conPasswordController.text != passwordController.text) {
       setFocus(RegisterFocusNode.cPassword, context);
-      Get.snackbar(
+      GetMessage(
           'Registration Error', "The Password Confirmation does not match.");
       return false;
     } else {
@@ -161,22 +163,26 @@ class RegisterController extends GetxController {
       PostService _postService = new PostService();
       //  print(getSignUpBody());
       try {
-        await _postService.register(getSignUpBody()).then((value) async {
-          // print(value.body.toString());
-          isLoading.value = false;
-          AuthenticationController _authController =
-              Get.put(AuthenticationController());
-          var data = jsonDecode(value.body);
-
-          await _authController.saveUserData(data);
-          Get.to(() => MainScreen(), arguments: {'title': 'Home Screen'});
-          isLoading.value = false;
-          update();
+        await _postService.register(getSignUpBody()).then((response) async {
+          var data = jsonDecode(response.body);
+          if (response.statusCode == 200){
+            AuthenticationController _authController =
+            Get.put(AuthenticationController());
+            await _authController.saveUserData(data);
+            Get.offAll(() => MainScreen(), arguments: {'title': 'Home Screen'});
+            isLoading.value = false;
+            update();
+          } else {
+            print(response.statusCode);
+            isLoading.value = false;
+            update();
+            GetMessage('Registration Error', "email and password invalid");
+          }
         });
       } catch (e) {
         isLoading.value = false;
         update();
-        Get.snackbar('Registration Error', "error");
+        GetMessage('Registration Error', "Connection Error");
       }
       update();
     }

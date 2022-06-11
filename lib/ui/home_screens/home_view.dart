@@ -38,10 +38,15 @@ class _HomeViewState extends State<HomeView> {
                       height: double.infinity,
                       decoration: BoxDecoration(
                           border: Border(
-                            right: BorderSide(
+                            left: Get.locale==Locale('en', 'US')?BorderSide.none
+                            :BorderSide(
                                 width: 2,
                                 color: FCIColors.primaryColor()
-                                    .withOpacity(.5))
+                                    .withOpacity(.5)),
+                            right:Get.locale==Locale('en', 'US')? BorderSide(
+                                width: 2,
+                                color: FCIColors.primaryColor()
+                                    .withOpacity(.5)):BorderSide.none
                           )),
                       child: Text('Won Auctions'),
                     ),

@@ -85,9 +85,13 @@ class _ChangePhoneViewState extends State<ChangePhoneView> {
                         ),
                         ProfileTextField(
                           hintText: "Enter Your Phone",
+                          onTap: (){
+
+                          }, onEditingComplete: (){
+                        },
                         ),
                         GreenButton(
-                          title: "Next",
+                          title: "Next",loading: false,
                           onTap: (){},
                         )
                       ],

@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
       designSize: Size(480, 800),
       builder: (context, child) => GetMaterialApp(
         debugShowCheckedModeBanner: false,
-        locale: Get.deviceLocale,
+        locale: const Locale('en', 'US'), //Get.deviceLocale,
         translations: Languages(),
         fallbackLocale: const Locale('en', 'US'),
         title: 'auction',

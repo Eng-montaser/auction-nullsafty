@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 
 import '../../database/services/post_service.dart';
 import '../../ui/main_view.dart';
+import '../../ui/widgets/get_message.dart';
 import 'auth_controller.dart';
 
 class LoginController extends GetxController {
@@ -91,7 +92,7 @@ class LoginController extends GetxController {
   login(context) async {
     /// email empty validate
     if (emailController.text.isEmpty) {
-      Get.snackbar('Login Error', "Please insert Email.");
+      GetMessage('Login Error', "Please insert Email.");
       setFocus(LoginFocusNode.email, context);
       return false;
     }
@@ -99,21 +100,21 @@ class LoginController extends GetxController {
     /// name Valid validate
     else if (!emailIsValid(emailController.text)) {
       setFocus(LoginFocusNode.email, context);
-      Get.snackbar('Login Error', "Please insert a Valid Email.");
+      GetMessage('Login Error', "Please insert a Valid Email.");
       return false;
     }
 
     /// password empty validate
     else if (passwordController.text.isEmpty) {
       setFocus(LoginFocusNode.password, context);
-      Get.snackbar('Login Error', "Please insert Password.");
+      GetMessage('Login Error', "Please insert Password.");
       return false;
     }
 
     /// password [6 characters] validate
     else if (passwordController.text.length < 6) {
       setFocus(LoginFocusNode.password, context);
-      Get.snackbar(
+      GetMessage(
           'Login Error', "The Password must be at least 6 characters.");
       return false;
     } else {
@@ -125,29 +126,30 @@ class LoginController extends GetxController {
       try {
         await _postService.login(getSignInBody()).then((response) async {
           var data = jsonDecode(response.body);
-          if (response.statusCode == 200) {
+          if (response.statusCode == 200){
             AuthenticationController _authController =
                 Get.put(AuthenticationController());
             await _authController.saveUserData(data);
-            Get.to(() => MainScreen(), arguments: {'title': 'Home Screen'});
+            Get.offAll(() => MainScreen(), arguments: {'title': 'Home Screen'});
             isLoading.value = false;
             update();
           } else {
             print(response.statusCode);
             isLoading.value = false;
             update();
-            Get.snackbar('Login Error', "error");
+            GetMessage('Login Error', "email and password invalid");
           }
         });
       } catch (e) {
         isLoading.value = false;
         update();
-        Get.snackbar('Login Error', "error");
+        GetMessage('Login Error', "Connection Error");
       }
       update();
       // print('${fciAuthUserModel.user.email}');
     }
   }
+
 }
 
 enum LoginFocusNode {

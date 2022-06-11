@@ -1,4 +1,5 @@
 import 'package:auction/utils/FCIStyle.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
@@ -13,7 +14,8 @@ class MainController extends GetxController{
       yOffset = 0;
       isDrawerOpen = false;
     }else{
-        xOffset = FCISize.width(context) - ScreenUtil().setWidth(120);
+        xOffset = Get.locale==Locale('en', 'US')?(FCISize.width(context) - ScreenUtil().setWidth(120))
+            :(-FCISize.width(context) + ScreenUtil().setWidth(240));
         yOffset = ScreenUtil().setHeight(100);
         isDrawerOpen = true;
       }

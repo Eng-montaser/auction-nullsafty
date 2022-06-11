@@ -20,16 +20,21 @@ class AuthenticationController extends GetxController {
   saveUserData(json) async {
     _userData = FCIAuthUserModel.fromLoginJson(json);
     SharedPreferences shared_User = await SharedPreferences.getInstance();
-    String user = jsonEncode(FCIAuthUserModel.fromLoginJson(json));
+    String user = jsonEncode(json['user']);
     shared_User.setString('user', user);
+    String token = jsonEncode(json['token']);
+    shared_User.setString('token', token);
   }
 
   getUserData() async {
     SharedPreferences shared_User = await SharedPreferences.getInstance();
-    var data = shared_User.getString('user');
-    //print('get $data');
-    if (data != null) {
-      Map userMap = jsonDecode(data);
+    var userData = shared_User.getString('user');
+    var tokenData = shared_User.getString('token');
+    if (tokenData !=null && userData != null) {
+      Map userMap = {
+        'token':jsonDecode(tokenData),
+        'user':jsonDecode(userData)
+      };
       if (userMap.isNotEmpty)
         _userData = FCIAuthUserModel.fromLoginJson(userMap);
     }
@@ -42,7 +47,13 @@ class AuthenticationController extends GetxController {
       if (response.statusCode == 200) {
         SharedPreferences shared_User = await SharedPreferences.getInstance();
         shared_User.remove('user');
-        Get.to(() => AuthenticationView());
+        shared_User.remove('token');
+        Get.offAll(() => AuthenticationView());
+      }else{
+        SharedPreferences shared_User = await SharedPreferences.getInstance();
+        shared_User.remove('user');
+        shared_User.remove('token');
+        Get.offAll(() => AuthenticationView());
       }
     });
   }

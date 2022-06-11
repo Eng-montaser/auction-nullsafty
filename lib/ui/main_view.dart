@@ -1,5 +1,6 @@
 import 'package:auction/logic/controllers/MainController.dart';
 import 'package:auction/route/route.dart';
+import 'package:auction/ui/add_car/AddCar.dart';
 import 'package:auction/ui/home_screens/auctions_view.dart';
 import 'package:auction/ui/home_screens/help_view.dart';
 import 'package:auction/ui/home_screens/home_view.dart';
@@ -257,10 +258,10 @@ class _MainScreenState extends State<MainScreen> {
                     ),
                     SideBarItem(
                       onTap: () {
-                        Get.toNamed(AppRoutes.live_action);
+                        Get.to(() => AddCar());
                         controller.changeSideBar(context);
                       },
-                      text: "Live Auction",
+                      text: "Add Car",
                       icon: Icons.supervised_user_circle,
                     ),
                     GetBuilder<AuthenticationController>(

@@ -118,7 +118,7 @@ class _NotificationsSettingsViewState extends State<NotificationsSettingsView> {
                           },
                         ),
                         GreenButton(
-                          title: "Save",
+                          title: "Save",loading: false,
                           onTap: (){},
                         )
                       ],

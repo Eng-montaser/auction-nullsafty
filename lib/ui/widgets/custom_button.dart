@@ -13,7 +13,7 @@ class SettingButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return  GestureDetector(
       onTap:(){
-        onTap;
+        onTap();
       },
       child: Container(
           width: FCISize.width(context),
@@ -102,18 +102,20 @@ class NotificationButton extends StatelessWidget {
 }
 class GreenButton extends StatelessWidget {
   final String title;
+  final bool loading;
   final Function onTap;
-  const GreenButton({Key? key,required this.onTap,required this.title}) : super(key: key);
+  const GreenButton({Key? key,required this.onTap,required this.title,required this.loading}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return  GestureDetector(
       onTap:(){
-        onTap;
+        onTap();
       },
       child: Container(
         alignment: Alignment.center,
-          width: ScreenUtil().setWidth(200),
+          width:loading?  ScreenUtil().setWidth(40):ScreenUtil().setWidth(200),
+        height: ScreenUtil().setHeight(40),
           padding: EdgeInsets.symmetric(
             horizontal:FCIPadding.textFieldPaddingHorizontal,
             vertical:FCIPadding.textFieldPaddingVertical
@@ -122,12 +124,23 @@ class GreenButton extends StatelessWidget {
               vertical:FCIPadding.textFieldPaddingVertical ),
           decoration: BoxDecoration(
               color: FCIColors.buttonGreen(),
-              borderRadius: BorderRadius.circular(5),
+              borderRadius: BorderRadius.circular(loading? 100:5),
               // border: Border.all(
               //     color: FCIColors.buttonGreen()
               // )
           ),
-          child:   Text(title,style: FCITextStyle.normal(20,color: Colors.white),),
+          child:  loading?Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width:ScreenUtil().setWidth(30),
+                // height: ScreenUtil().setHeight(40),
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ): Text(title,style: FCITextStyle.normal(20,color: Colors.white),),
       ),
     );
   }

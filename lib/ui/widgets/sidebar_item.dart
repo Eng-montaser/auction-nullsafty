@@ -16,17 +16,21 @@ class SideBarItem extends StatelessWidget {
         onTap();
       },
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: ScreenUtil().setHeight(20)),
-        child: Row(
-          children: [
-            Icon(
-              icon,
-              size: ScreenUtil().setSp(25),
-              color: FCIColors.primaryColor(),
-            ),
-            SizedBox(width: ScreenUtil().setWidth(20),),
-            Text(text,style: FCITextStyle.bold(20,color: Colors.white),)
-          ],
+        padding: EdgeInsets.symmetric(vertical: ScreenUtil().setHeight(5)),
+        child: Container(
+          color: Colors.transparent,
+          height: ScreenUtil().setHeight(50),
+          child: Row(
+            children: [
+              Icon(
+                icon,
+                size: ScreenUtil().setSp(25),
+                color: FCIColors.primaryColor(),
+              ),
+              SizedBox(width: ScreenUtil().setWidth(20),),
+              Text(text,style: FCITextStyle.bold(20,color: Colors.white),)
+            ],
+          ),
         ),
       )
     );

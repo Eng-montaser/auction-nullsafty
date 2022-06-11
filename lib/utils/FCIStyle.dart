@@ -50,8 +50,8 @@ class FCISize {
 class FCIPadding {
   static double cardMarginHorizontal = ScreenUtil().setWidth(20);
   static double cardMarginVertical = ScreenUtil().setHeight(20);
-  static double textFieldPaddingHorizontal = ScreenUtil().setWidth(10);
-  static double textFieldPaddingVertical = ScreenUtil().setHeight(10);
+  static double textFieldPaddingHorizontal = ScreenUtil().setWidth(5);
+  static double textFieldPaddingVertical = ScreenUtil().setHeight(5);
   static double cardPadding = 20;
 }
 

@@ -91,6 +91,7 @@ class _SettingsViewState extends State<SettingsView> {
                     SettingButton(
                       text: "User Profile",
                       onTap: (){
+                        print("User Profile");
                         Get.toNamed(AppRoutes.profile);
                       },
                     ),
