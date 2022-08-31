@@ -36,7 +36,7 @@ dependencies:
   awesome_dialog: ^2.2.1
   cached_network_image: ^3.2.1
   timeago: ^3.2.2
-  #provider: 6.0.1
+  #cool_stepper: ^1.2.1
   cupertino_icons: ^1.0.4
   #=============================================
   get: ^4.6.3
@@ -44,7 +44,11 @@ dependencies:
   carousel_slider: ^4.1.1
   photo_view: ^0.14.0
   image_picker: ^0.8.5+3
-  #flutter_colorpicker: ^1.0.3
+  #notifications plugins
+  firebase_messaging: ^13.0.0
+  firebase_core: ^1.21.1
+  overlay_support: ^2.0.1
+  badges: ^2.0.3
 dev_dependencies:
   flutter_test:
     sdk: flutter

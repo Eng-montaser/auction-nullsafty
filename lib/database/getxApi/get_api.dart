@@ -85,4 +85,46 @@ class FCIGetDataXApi {
     });
     return carDetails;
   }
+
+  //////////////////////////
+  Future<List<dynamic>> getMake() async {
+    List<dynamic> makeList = [];
+    await GetService().getMake().then((response) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        //(response.body);
+
+        final Map<String, dynamic> data = jsonDecode(response.body)['data'];
+        makeList = data.values.toList();
+      }
+    });
+    return makeList;
+  }
+
+  Future<List<dynamic>> getModel(String make) async {
+    List<dynamic> makeList = [];
+    await GetService().getModel(make).then((response) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        // print('sss ${response.body}');
+        //(response.body);
+
+        final Map<String, dynamic> data = jsonDecode(response.body)['data'];
+        makeList = data.values.toList();
+      }
+    });
+    return makeList;
+  }
+
+  Future<List<dynamic>> getYear(String make, String model) async {
+    List<dynamic> makeList = [];
+    await GetService().getYear(make, model).then((response) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        // print('sss ${response.body}');
+        //(response.body);
+
+        final Map<String, dynamic> data = jsonDecode(response.body)['data'];
+        makeList = data.values.toList();
+      }
+    });
+    return makeList;
+  }
 }

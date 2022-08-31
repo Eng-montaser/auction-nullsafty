@@ -1,6 +1,7 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
 class Utils {
   static Widget loading() {
@@ -77,7 +78,9 @@ class Utils {
         desc: desc,
         btnOkText: "ok",
         btnOkColor: success ? Color(0xff00d164) : Colors.red,
-        btnOkOnPress: () {},
+        btnOkOnPress: () {
+          Get.back();
+        },
         onDissmissCallback: (type) {})
       ..show();
   }

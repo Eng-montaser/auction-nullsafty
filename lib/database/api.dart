@@ -33,8 +33,7 @@ class Api {
     AuthenticationController authenticationController =
         Get.put(AuthenticationController());
     authenticationController.getUserData();
-    String token =authenticationController.userData?.token??'';
-    print("/*/*/*/*/* ${token}");
+    String token = authenticationController.userData?.token ?? '';
     Map<String, String> headers = {
       'Authorization': 'Bearer $token',
       'Accept': 'application/json',
@@ -59,7 +58,6 @@ class Api {
   ///*****************************************************
   Future<http.Response> httpPost(String endPath, Object body) async {
     Uri uri = Uri.https(baseUrl, '$path/$endPath');
-    print('uri ${body.toString()}');
     return http.post(uri, body: body, headers: getHeaders());
   }
 
@@ -72,7 +70,6 @@ class Api {
     Uri uri = Uri.https(baseUrl, '$path/$endPath');
     var length = await file?.length();
 
-
     print('BBBBBBBBBBEEEEEEEGINNNNNNNNNNNNNNNNNNNN');
     print(file.toString());
     print(file?.path.toString());
@@ -82,7 +79,7 @@ class Api {
       ..fields.addAll(body)
       ..files.add(
         ///set name parametter of file in api
-        http.MultipartFile('image', file!.openRead(), length??0,
+        http.MultipartFile('image', file!.openRead(), length ?? 0,
             filename: basename(file.path)),
       );
     return await http.Response.fromStream(await request.send())
@@ -98,12 +95,11 @@ class Api {
     List<http.MultipartFile> multipartFilesList = [];
     Uri uri = Uri.https(baseUrl, '$path/$endPath');
     for (var file in filesList!) {
-      print(file.path);
       var length = await file.length();
       multipartFilesList.add(http.MultipartFile(
 
           ///set name parametter of file in api
-          'trade_licence[]',
+          'images[]',
           file.openRead(),
           length,
           filename: basename(file.path)));

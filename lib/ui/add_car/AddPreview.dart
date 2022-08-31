@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:auction/logic/controllers/addCar_controller.dart';
 import 'package:auction/utils/FCIStyle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -30,6 +31,7 @@ class AddPreview extends StatefulWidget {
 }
 
 class _AddCar extends State<AddPreview> {
+  AddCarController addCarController = Get.find();
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -67,16 +69,28 @@ class _AddCar extends State<AddPreview> {
             SizedBox(
               height: ScreenUtil().setWidth(30),
             ),
-            getRow('Ref ID', '021', 'icon_6'),
+            getRow('Ref ID', '#', 'icon_6'),
             getRow('Make', '${widget.make}', 'icon_5'),
             getRow('Model', '${widget.model}', 'icon_1'),
             getRow('Year', '${widget.year}', 'icon_2'),
-            getRow('Mileago', '${widget.mileago}', 'icon_3'),
+            getRow('Mileage', '${widget.mileago}', 'icon_3'),
             getRow('Trim', '${widget.trim}', 'icon_4'),
             getRow('Color', '${widget.color}', ''),
-            getRow('Type', '${widget.type}', 'car_type_icon_5'),
+            getRow(
+                'Type', 'Type ${widget.type}', 'car_type_icon_${widget.type}'),
             GestureDetector(
-              onTap: () {},
+              onTap: () {
+                var data = {
+                  'name': '${widget.make} ${widget.model} ${widget.year}',
+                  'make': '${widget.make}',
+                  'model': '${widget.model}',
+                  'year': '${widget.year}',
+                  'mileage': '${widget.mileago}',
+                  //'trim': '${widget.trim}',
+                  //'type': '${widget.type}',
+                };
+                addCarController.addCar(context, data);
+              },
               child: Container(
                 //  width: size.width / 2 - ScreenUtil().setWidth(30),
                 decoration: BoxDecoration(
@@ -91,9 +105,15 @@ class _AddCar extends State<AddPreview> {
                   horizontal: ScreenUtil().setHeight(30),
                 ),
                 alignment: Alignment.center,
-                child: Text(
-                  "Submit for Auction",
-                  style: FCITextStyle.normal(18, color: Colors.white),
+                child: Obx(
+                  () => addCarController.isLoading.value
+                      ? CircularProgressIndicator(
+                          color: Colors.white,
+                        )
+                      : Text(
+                          "Submit for Auction",
+                          style: FCITextStyle.normal(18, color: Colors.white),
+                        ),
                 ),
               ),
             ),

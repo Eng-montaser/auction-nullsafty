@@ -31,11 +31,8 @@ class _SplashScreenState extends State<SplashScreen> {
       await authenticationController.getUserData();
 
       if (authenticationController.userData?.token != null) {
-        print("tokeeeeeeeeeeeeeen");
-        print(authenticationController.userData?.token);
         Get.to(() => MainScreen(), arguments: {'title': 'Home Screen'});
       } else {
-        print('nullllllllll');
         setState(() {
           splashLoading = false;
         });

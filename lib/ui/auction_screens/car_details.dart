@@ -223,12 +223,12 @@ class _AuctionsViewState extends State<CarDetailsView>
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      '${widget.carData.title ?? ''}',
+                                      '${widget.carData.title}',
                                       style: FCITextStyle.normal(16),
                                     ),
                                     // Text(carController.liveDuration??'',style: FCITextStyle.normal(16),),
                                     Text(
-                                      '${carController.liveDuration.value ?? ''}',
+                                      '${carController.liveDuration.value}',
                                       style: FCITextStyle.normal(16),
                                     ),
                                   ],

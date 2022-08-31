@@ -1,3 +1,4 @@
+import 'package:auction/database/getxApi/post_api.dart';
 import 'package:auction/logic/controllers/MainController.dart';
 import 'package:auction/route/route.dart';
 import 'package:auction/ui/add_car/AddCar.dart';
@@ -8,12 +9,15 @@ import 'package:auction/ui/home_screens/notifications_view.dart';
 import 'package:auction/ui/widgets/custom_background.dart';
 import 'package:auction/ui/widgets/sidebar_item.dart';
 import 'package:auction/utils/FCIStyle.dart';
+import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../logic/controllers/auth_controller.dart';
+import 'widgets/notificationBadge.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -24,6 +28,72 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   List<String> menuItems = ["Home", "Auctions", "Notifications", "Help"];
+  late int _totalNotifications;
+  PushNotification? _notificationInfo;
+  final FirebaseMessaging _messaging = FirebaseMessaging.instance;
+  @override
+  void initState() {
+    _totalNotifications = 0;
+    checkForInitialMessage();
+    registerNotification();
+    super.initState();
+    _messaging.getToken().then((token) {
+      // _firebaseMessaging.subscribeToTopic('group1');
+      // print(token);
+      if (token != null) FCIPostDataXApi().setFCMToken(token);
+    });
+  }
+
+  checkForInitialMessage() async {
+    RemoteMessage? initialMessage =
+        await FirebaseMessaging.instance.getInitialMessage();
+
+    if (initialMessage != null) {
+      print('init ${initialMessage.data}');
+      PushNotification notification = PushNotification(
+        title: initialMessage.notification?.title,
+        body: initialMessage.notification?.body,
+      );
+      setState(() {
+        _notificationInfo = notification;
+        _totalNotifications++;
+      });
+    }
+  }
+
+  void registerNotification() async {
+    // 1. Initialize the Firebase app
+
+    // 2. Instantiate Firebase Messaging
+
+    // 3. On iOS, this helps to take the user permissions
+    NotificationSettings settings = await _messaging.requestPermission(
+      alert: true,
+      badge: true,
+      provisional: false,
+      sound: true,
+    );
+
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      print('User granted permission');
+      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+        print('notif2 ${message.notification?.body}');
+        // Parse the message received
+        PushNotification notification = PushNotification(
+          title: message.notification?.title,
+          body: message.notification?.body,
+        );
+
+        setState(() {
+          _notificationInfo = notification;
+          _totalNotifications++;
+        });
+      });
+    } else {
+      print('User declined or has not accepted permission');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -127,21 +197,35 @@ class _MainScreenState extends State<MainScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    InkWell(
-                                      onTap: () {
-                                        controller.changeMenuItem(index);
-                                      },
-                                      child: Container(
-                                        alignment: Alignment.center,
-                                        width: FCISize.width(context) * 0.22,
-                                        child: Text(
-                                          menuItems[index],
-                                          style: FCITextStyle.normal(16,
-                                              color:
-                                                  controller.selectedMenuItem ==
-                                                          index
-                                                      ? FCIColors.primaryColor()
-                                                      : Colors.black),
+                                    Badge(
+                                      showBadge:
+                                          index == 1 && _totalNotifications > 0,
+                                      elevation: 5,
+                                      position: BadgePosition.topEnd(
+                                          top: 12, end: 10),
+                                      badgeContent: Text(
+                                        '$_totalNotifications',
+                                        style: FCITextStyle.normal(15,
+                                            color: Colors.white),
+                                      ),
+                                      child: InkWell(
+                                        onTap: () {
+                                          controller.changeMenuItem(index);
+                                          if (index == 1)
+                                            _totalNotifications = 0;
+                                        },
+                                        child: Container(
+                                          alignment: Alignment.center,
+                                          width: FCISize.width(context) * 0.22,
+                                          child: Text(
+                                            menuItems[index],
+                                            style: FCITextStyle.normal(16,
+                                                color: controller
+                                                            .selectedMenuItem ==
+                                                        index
+                                                    ? FCIColors.primaryColor()
+                                                    : Colors.black),
+                                          ),
                                         ),
                                       ),
                                     ),

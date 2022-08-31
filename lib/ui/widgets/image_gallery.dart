@@ -65,7 +65,7 @@ class _ImagesGalleryState extends State<ImagesGallery> {
                       .map((item) => Container(
                             child: Center(
                                 child: PhotoView(
-                              imageProvider: NetworkImage(item ?? '/'),
+                              imageProvider: NetworkImage(item),
                             )
                                 // CachedNetworkImage(
                                 //   imageUrl: item ?? '/',
@@ -112,7 +112,7 @@ class _ImagesGalleryState extends State<ImagesGallery> {
                             child: ClipRRect(
                                 borderRadius: BorderRadius.circular(5),
                                 child: CachedNetworkImage(
-                                  imageUrl: entry.value ?? '/',
+                                  imageUrl: entry.value,
                                   fit: BoxFit.contain,
                                   height: height,
                                   placeholder: (context, url) => Image.asset(

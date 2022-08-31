@@ -31,7 +31,7 @@ class _MediterranesnDietViewState extends State<MediterranesnDietView> {
           opacity: widget.animation,
           child: new Transform(
             transform: new Matrix4.translationValues(
-                0.0, 30 * (1.0 - widget.animation!.value), 0.0),
+                0.0, 30 * (1.0 - widget.animation.value), 0.0),
             child: Container(
               padding: EdgeInsets.symmetric(
                   horizontal: ScreenUtil().setWidth(20),
