@@ -6,18 +6,20 @@ import 'package:auction/database/services/get_service.dart';
 class FCIGetDataXApi {
   Future<List<CarModel>?> getAllCars() async {
     List<CarModel>? carmodels;
-    await GetService().getAllCars().then((response) {
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        // print('sss ${response.body}');
-        //(response.body);
-        carmodels = [];
-        var data = jsonDecode(response.body);
-        if (data['success'])
-          for (var car in data['data']) {
-            carmodels?.add(CarModel.fromJosn(car));
-          }
-      }
-    });
+    try {
+      await GetService().getAllCars().then((response) {
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          carmodels = [];
+          var data = jsonDecode(response.body);
+          if (data['success'])
+            for (var car in data['data']) {
+              carmodels?.add(CarModel.fromJosn(car));
+            }
+        }
+      });
+    } catch (e) {
+      print('rrer $e');
+    }
     return carmodels;
   }
 

@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:auction/database/getxApi/post_api.dart';
 import 'package:auction/logic/controllers/MainController.dart';
+import 'package:auction/logic/controllers/car_controller.dart';
 import 'package:auction/route/route.dart';
 import 'package:auction/ui/add_car/AddCar.dart';
 import 'package:auction/ui/home_screens/auctions_view.dart';
@@ -9,6 +12,7 @@ import 'package:auction/ui/home_screens/notifications_view.dart';
 import 'package:auction/ui/widgets/custom_background.dart';
 import 'package:auction/ui/widgets/sidebar_item.dart';
 import 'package:auction/utils/FCIStyle.dart';
+import 'package:auction/utils/utils.dart';
 import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -77,20 +81,42 @@ class _MainScreenState extends State<MainScreen> {
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
       print('User granted permission');
       FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-        print('notif2 ${message.notification?.body}');
+        print('notif2 ${message.data}');
         // Parse the message received
-        PushNotification notification = PushNotification(
-          title: message.notification?.title,
-          body: message.notification?.body,
-        );
-
-        setState(() {
-          _notificationInfo = notification;
-          _totalNotifications++;
-        });
+        // PushNotification notification = PushNotification(
+        //   title: message.notification?.title,
+        //   body: message.notification?.body,
+        // );
+        handleNotification(message.data, message);
       });
     } else {
       print('User declined or has not accepted permission');
+    }
+  }
+
+  handleNotification(data, RemoteMessage message) async {
+    if (data['type'] == 'product') {
+      /*var messageJson = json.decode(data['message']);
+      var message = CarModel.fromJosn(messageJson);*/
+      setState(() {
+        //  _notificationInfo = notification;
+        _totalNotifications++;
+      });
+    } else if (data['type'] != 'bid closed') {
+      // var messageJson = json.decode(data['message']);
+      // var message = Bid.fromJosn(messageJson);
+      //Get.put(LiveController()).getCarDetails(_id)
+      Utils().showMessageInfo(context, '${message.notification?.title}',
+          '${message.notification?.body}');
+    } else if (data['type'] != 'add bid') {
+      // var messageJson = json.decode(data['message']);
+      // var message = Bid.fromJosn(messageJson);
+      // Get.put(CarDetailsController(carData: carData)).
+
+    } else if (data['type'] != 'winner') {
+      var messageJson = json.decode(data['message']);
+      Utils().showMessage(
+          context, 'Winner', 'Congratulations!\n You are the winner', true);
     }
   }
 
@@ -211,8 +237,11 @@ class _MainScreenState extends State<MainScreen> {
                                       child: InkWell(
                                         onTap: () {
                                           controller.changeMenuItem(index);
-                                          if (index == 1)
+                                          if (index == 1 &&
+                                              _totalNotifications > 0) {
                                             _totalNotifications = 0;
+                                            Get.put(CarController()).onInit();
+                                          }
                                         },
                                         child: Container(
                                           alignment: Alignment.center,

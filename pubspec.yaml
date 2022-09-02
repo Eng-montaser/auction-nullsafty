@@ -36,7 +36,8 @@ dependencies:
   awesome_dialog: ^2.2.1
   cached_network_image: ^3.2.1
   timeago: ^3.2.2
-  #cool_stepper: ^1.2.1
+  cool_stepper: ^1.2.1
+  auto_size_text:
   cupertino_icons: ^1.0.4
   #=============================================
   get: ^4.6.3

@@ -54,18 +54,20 @@ class CarDetailsController extends GetxController
   }
 
   getTimeOfAuction() {
-    if (DateTime.now().isBefore(DateTime.parse(carData.start_date))) {
-      carStatus = CarStatus.upComing;
-      liveDuration.value =
-          "start after  ${DateTime.parse(carData.start_date).difference(DateTime.now()).inDays}";
-    } else if (DateTime.now().isBefore(DateTime.parse(carData.end_date))) {
-      carStatus = CarStatus.live;
-      Duration runningDuration =
-          DateTime.parse(carData.end_date).difference(DateTime.now());
-      liveDuration.value = "end after  ${_printDuration(runningDuration)} ";
-    } else {
-      carStatus = CarStatus.expired;
-      liveDuration.value = "Expired";
+    if (carData.start_date.isNotEmpty && carData.end_date.isNotEmpty) {
+      if (DateTime.now().isBefore(DateTime.parse(carData.start_date))) {
+        carStatus = CarStatus.upComing;
+        liveDuration.value =
+            "start after  ${DateTime.parse(carData.start_date).difference(DateTime.now()).inDays}";
+      } else if (DateTime.now().isBefore(DateTime.parse(carData.end_date))) {
+        carStatus = CarStatus.live;
+        Duration runningDuration =
+            DateTime.parse(carData.end_date).difference(DateTime.now());
+        liveDuration.value = "end after  ${_printDuration(runningDuration)} ";
+      } else {
+        carStatus = CarStatus.expired;
+        liveDuration.value = "Expired";
+      }
     }
     update();
   }

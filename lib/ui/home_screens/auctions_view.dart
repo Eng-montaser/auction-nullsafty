@@ -1,5 +1,3 @@
-import 'package:auction/database/getxApi/get_api.dart';
-import 'package:auction/database/models/car_model.dart';
 import 'package:auction/logic/controllers/car_controller.dart';
 import 'package:auction/ui/widgets/BuyCard.dart';
 import 'package:auction/ui/widgets/CarCard.dart';
@@ -19,7 +17,7 @@ class AuctionsView extends StatefulWidget {
 
 class _AuctionsViewState extends State<AuctionsView> {
   final loginFormKey = GlobalKey<FormState>();
-  CarController _controller=Get.put(CarController());
+  //CarController _controller = Get.put(CarController());
   @override
   void initState() {
     super.initState();
@@ -97,7 +95,6 @@ class _AuctionsViewState extends State<AuctionsView> {
                       width: double.infinity,
                       height: double.infinity,
                       child: Text('All Cars'),
-
                     ),
                   ),
                   Tab(
@@ -131,90 +128,99 @@ class _AuctionsViewState extends State<AuctionsView> {
             Expanded(
               child: TabBarView(children: [
                 Container(
-                    margin: EdgeInsets.all(20),
-                    child:  GetBuilder<CarController>(
-                          init: CarController(),
-                          // initState: (_) => CarController().loadAllCars(),
-                          builder: (CarController carController){
-                            if (carController.allCarsLoading)
-                              return Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            else if (carController.getData(CarStatus.all).length!=0) {
-                              return carController.getData(CarStatus.all).length > 0
-                                  ? ListView.builder(
-                                  itemCount: carController.getData(CarStatus.all).length,
+                  margin: EdgeInsets.all(20),
+                  child: GetBuilder<CarController>(
+                      init: CarController(),
+                      //initState: (_) => CarController().loadAllCars(true),
+                      builder: (CarController carController) {
+                        if (carController.allCarsLoading)
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        else if (carController.getData(CarStatus.all).length !=
+                            0) {
+                          return carController.getData(CarStatus.all).length > 0
+                              ? ListView.builder(
+                                  itemCount: carController
+                                      .getData(CarStatus.all)
+                                      .length,
                                   itemBuilder: (context, index) => CarCard(
-                                    carData: carController.getData(CarStatus.all)[index],
-                                  ))
-                                  : Center(child: Text('nodata'.tr));
-                            }
-                            else
-                              return  EmptyCarsData(
-                                message: "there is no Cars yet",
-                                reloadData: carController.loadAllCars,
-                              );
-                          }
-                    ),
+                                        carData: carController
+                                            .getData(CarStatus.all)[index],
+                                      ))
+                              : Center(child: Text('nodata'.tr));
+                        } else
+                          return EmptyCarsData(
+                            message: "there is no Cars yet",
+                            reloadData: carController.loadAllCars,
+                          );
+                      }),
                 ),
                 Container(
                   margin: EdgeInsets.all(20),
-                  child:  GetBuilder<CarController>(
+                  child: GetBuilder<CarController>(
                       init: CarController(),
                       // initState: (_) => CarController().loadUpComingCars(),
-                      builder: (CarController carController){
+                      builder: (CarController carController) {
                         if (carController.upComingLoading) {
                           return Center(
                             child: CircularProgressIndicator(),
                           );
-                        } else if (carController.getData(CarStatus.upComing).length!=0){
-                          return  ListView.builder(
-                              itemCount: carController.getData(CarStatus.upComing).length ,
+                        } else if (carController
+                                .getData(CarStatus.upComing)
+                                .length !=
+                            0) {
+                          return ListView.builder(
+                              itemCount: carController
+                                  .getData(CarStatus.upComing)
+                                  .length,
                               itemBuilder: (context, index) => CarCard(
-                                carData: carController.getData(CarStatus.upComing)[index],
-                              ));
-                        }
-                        else
-                          return  EmptyCarsData(
+                                    carData: carController
+                                        .getData(CarStatus.upComing)[index],
+                                  ));
+                        } else
+                          return EmptyCarsData(
                             message: "there is no UpComing Cars yet",
                             reloadData: carController.loadUpComingCars,
                           );
-                      }
-                  ),
+                      }),
                 ),
                 Container(
                   margin: EdgeInsets.all(20),
-                  child:  GetBuilder<CarController>(
+                  child: GetBuilder<CarController>(
                       init: CarController(),
                       // initState: (_) => CarController().loadRunningCars(),
-                      builder: (CarController carController){
+                      builder: (CarController carController) {
                         if (carController.runningLoading)
                           return Center(
                             child: CircularProgressIndicator(),
                           );
-                        else if (carController.getData(CarStatus.live).length!=0) {
-                          return carController.getData(CarStatus.live).length > 0
+                        else if (carController.getData(CarStatus.live).length !=
+                            0) {
+                          return carController.getData(CarStatus.live).length >
+                                  0
                               ? ListView.builder(
-                              itemCount: carController.getData(CarStatus.live).length,
-                              itemBuilder: (context, index) => BuyCard(
-                                carData: carController.getData(CarStatus.live)[index],
-                              ))
+                                  itemCount: carController
+                                      .getData(CarStatus.live)
+                                      .length,
+                                  itemBuilder: (context, index) => BuyCard(
+                                        carData: carController
+                                            .getData(CarStatus.live)[index],
+                                      ))
                               : Center(child: Text('nodata'.tr));
-                        }
-                        else
-                         return EmptyCarsData(
+                        } else
+                          return EmptyCarsData(
                             message: "there is no Running Cars yet",
                             reloadData: carController.loadRunningCars,
                           );
-                      }
-                  ),
+                      }),
                 ),
-                    // FutureBuilder<List<CarModel>>(
-                    //     future: loadAllCars(),
-                    //     builder: (BuildContext ctx,
-                    //         AsyncSnapshot<List<CarModel>> snapshot) {
-                    //
-                    //     })),
+                // FutureBuilder<List<CarModel>>(
+                //     future: loadAllCars(),
+                //     builder: (BuildContext ctx,
+                //         AsyncSnapshot<List<CarModel>> snapshot) {
+                //
+                //     })),
                 //
                 // Container(
                 //     margin: EdgeInsets.all(20),

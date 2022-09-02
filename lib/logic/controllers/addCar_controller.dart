@@ -26,25 +26,31 @@ class AddCarController extends GetxController {
   String make = '',
       model = '',
       year = '',
-      mileago = '',
+      mileago = '0',
       trim = '',
       color = '',
-      type = '';
-  Color _color = Colors.blue;
+      type = '1';
+  Color colorValue = Colors.grey;
   List<File> images = [];
   var isLoading = false.obs;
   getMakes() async {
     isLoading.value = true;
+
     update();
     try {
       FCIGetDataXApi().getMake().then((value) {
         // print('cval $value');
 
-        value.forEach((element) {
-          makesItems.value.add(
-              DropdownMenuItem(child: Text("$element"), value: "$element"));
-        });
-        update();
+        if (value.length > 0) {
+          makesItems.value.clear();
+          value.forEach((element) {
+            makesItems.value.add(
+                DropdownMenuItem(child: Text("$element"), value: "$element"));
+          });
+          make = value[0].toString();
+          getModels(value[0].toString());
+          update();
+        }
       });
       isLoading.value = false;
       update();
@@ -61,11 +67,16 @@ class AddCarController extends GetxController {
       FCIGetDataXApi().getModel(make).then((value) {
         // print('cval $value');
 
-        value.forEach((element) {
-          modelsItems.value.add(
-              DropdownMenuItem(child: Text("$element"), value: "$element"));
-        });
-        update();
+        if (value.length > 0) {
+          modelsItems.value.clear();
+          value.forEach((element) {
+            modelsItems.value.add(
+                DropdownMenuItem(child: Text("$element"), value: "$element"));
+          });
+          model = value[0].toString();
+          getYears(make, value[0].toString());
+          update();
+        }
       });
       isLoading.value = false;
       update();
@@ -82,11 +93,15 @@ class AddCarController extends GetxController {
       FCIGetDataXApi().getYear(make, model).then((value) {
         // print('cval $value');
 
-        value.forEach((element) {
-          yearsItems.value.add(
-              DropdownMenuItem(child: Text("$element"), value: "$element"));
-        });
-        update();
+        if (value.length > 0) {
+          yearsItems.value.clear();
+          value.forEach((element) {
+            yearsItems.value.add(
+                DropdownMenuItem(child: Text("$element"), value: "$element"));
+          });
+          year = value[0].toString();
+          update();
+        }
       });
       isLoading.value = false;
       update();
@@ -98,6 +113,7 @@ class AddCarController extends GetxController {
 
   @override
   void onInit() {
+    trim = trimList[0].value.toString();
     getMakes();
 
     super.onInit();
@@ -118,7 +134,7 @@ class AddCarController extends GetxController {
           year: year,
           mileago: mileago,
           trim: trim,
-          color: '${_color.value}',
+          color: '${colorValue.value}',
           type: type,
           image: File(images[0].path)));
     else
@@ -137,7 +153,7 @@ class AddCarController extends GetxController {
       if (value != null) {
         var res = jsonDecode(value.body);
         if (res['success']) {
-          reset();
+          // reset();
 
           Utils().showMessage(context, 'success', res['message'], true);
         }

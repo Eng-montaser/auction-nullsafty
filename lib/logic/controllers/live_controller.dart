@@ -165,6 +165,7 @@ class LiveController extends GetxController {
           PostService _postService = new PostService();
           try {
             await _postService.addBid(id, '$bid').then((response) async {
+              print('bid : ${response.statusCode}: ${response.body}');
               if (response.statusCode == 200) {
                 var data = jsonDecode(response.body);
 
@@ -207,6 +208,7 @@ class LiveController extends GetxController {
           } catch (e) {
             isLoading.value = false;
             update();
+            print('bid error: $e');
             Get.snackbar('', "",
                 snackPosition: SnackPosition.BOTTOM,
                 backgroundColor: Colors.white,

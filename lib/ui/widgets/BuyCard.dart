@@ -49,7 +49,9 @@ class _BuyCardState extends State<BuyCard> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(10),
                       child: CachedNetworkImage(
-                        imageUrl: "${widget.carData.images[0]}",
+                        imageUrl: widget.carData.images.length > 0
+                            ? "${widget.carData.images[0]}"
+                            : "/",
                         placeholder: (context, url) =>
                             CircularProgressIndicator(),
                         errorWidget: (context, url, error) => Icon(Icons.error),

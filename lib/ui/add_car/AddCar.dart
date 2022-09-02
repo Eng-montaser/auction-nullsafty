@@ -243,7 +243,7 @@ class _AddCar extends State<AddCar> {
                         MyColorPicker(
                             onSelectColor: (value) {
                               setState(() {
-                                addCarController.color = value.toString();
+                                addCarController.colorValue = value;
                               });
                             },
                             availableColors: const [
@@ -259,7 +259,7 @@ class _AddCar extends State<AddCar> {
                               //  Colors.deepOrange,
                               Colors.teal,
                             ],
-                            initialColor: Colors.black),
+                            initialColor: Colors.grey),
                       ],
                     ),
                   ),
@@ -359,8 +359,12 @@ class _AddCar extends State<AddCar> {
             elevation: 5,
             child: DropdownButtonFormField<String>(
               hint: Text('Select $label'),
+              //iconEnabledColor: Colors.red,
+              icon: items.length > 0
+                  ? Icon(Icons.arrow_drop_down_outlined)
+                  : Text('Loading...'),
               // borderRadius: BorderRadius.circular(15),
-
+              value: items.length > 0 ? items[0].value : null,
               // style: TextStyle(),
               decoration: InputDecoration(
                 border: OutlineInputBorder(

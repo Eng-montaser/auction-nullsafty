@@ -84,4 +84,27 @@ class Utils {
         onDissmissCallback: (type) {})
       ..show();
   }
+
+  showMessageInfo(
+    context,
+    String title,
+    String desc,
+  ) {
+    AwesomeDialog(
+        context: context,
+        animType: AnimType.LEFTSLIDE,
+        headerAnimationLoop: false,
+        dialogType: DialogType.INFO,
+        dismissOnBackKeyPress: false,
+        dismissOnTouchOutside: false,
+        title: title,
+        desc: desc,
+        btnOkText: "ok",
+        //  btnOkColor: success ? Color(0xff00d164) : Colors.red,
+        btnOkOnPress: () {
+          Get.back();
+        },
+        onDissmissCallback: (type) {})
+      ..show();
+  }
 }
