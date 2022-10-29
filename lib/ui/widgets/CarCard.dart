@@ -41,18 +41,7 @@ class _CarCardState extends State<CarCard> with TickerProviderStateMixin {
 
     }
   }
-  LinearGradient gradient = LinearGradient(
-      colors: <Color> [
 
-        Colors.yellow,
-        Colors.yellow,
-        Colors.green,
-        Colors.green,
-
-        Colors.purple,
-        Colors.red,
-      ]
-  );
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -145,7 +134,7 @@ class _CarCardState extends State<CarCard> with TickerProviderStateMixin {
                       )
                     ],
                   ),
-                  if (actual != null)
+                  if (actual != null && actual.inSeconds>0 )
                     Positioned(
                       bottom: 0,
                       right: 0,
@@ -164,40 +153,19 @@ class _CarCardState extends State<CarCard> with TickerProviderStateMixin {
                             animationController,
                             auction_time: actual,
                           ),
-                          SliderTheme(
-                          data: SliderThemeData(
-                            trackHeight: 10,
-
-                          trackShape: GradientRectSliderTrackShape(gradient: gradient, darkenInactive: false,),
-
-                              //activeTrackColor: Colors.purple.shade800,
-                              inactiveTrackColor: Colors.purple.shade100,
-    disabledInactiveTrackColor:Colors.purple.shade100,
-                              /*thumbShape: RoundSliderThumbShape(
-                                enabledThumbRadius: 14.0,
-                                pressedElevation: 8.0,
-                              ),
-                              thumbColor: Colors.pinkAccent,*/
-                              overlayColor: Colors.pink.withOpacity(0.2),
-                              overlayShape: RoundSliderOverlayShape(overlayRadius: 32.0),
-                              tickMarkShape: RoundSliderTickMarkShape(tickMarkRadius: 30),
-                              activeTickMarkColor: Colors.pinkAccent,
-                              inactiveTickMarkColor: Colors.white,
-                              showValueIndicator: ShowValueIndicator.always,
-
-                              valueIndicatorShape: PaddleSliderValueIndicatorShape(),
-                              valueIndicatorColor: Colors.black,
-                              valueIndicatorTextStyle: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20.0,
+                          Theme(
+                            data: Theme.of(context).copyWith(
+                              sliderTheme: SliderThemeData(
+                                thumbShape: SquareSliderComponentShape(),
+                                trackShape: MyRoundedRectSliderTrackShape(),
                               ),
                             ),
                             child: Slider(
                               min: 0.0,
                               max: 100.0,
-                              value: widget.carData.members!.toDouble()+50,
+                              value: widget.carData.members!>=100.0?100.0:widget.carData.members!.toDouble()+10.0,
                               divisions: 10,
-
+                               activeColor: Color.lerp(Color(0xffff0000), Color(0xff00ff00),  widget.carData.members!>=100?1.0:(widget.carData.members!.toDouble()+10.0)/100),
                               label: '${'${widget.carData.members??'0.0'}'}',
                               onChanged: (value) {
 
@@ -231,26 +199,52 @@ class _CarCardState extends State<CarCard> with TickerProviderStateMixin {
     );
   }
 }
-class GradientRectSliderTrackShape extends SliderTrackShape
-    with BaseSliderTrackShape {
-  const GradientRectSliderTrackShape({
-    this.gradient = const LinearGradient(
-      colors: [
-        Colors.red,
-        Colors.yellow,
-      ],
-    ),
-    this.darkenInactive = true,
-  });
+class SquareSliderComponentShape extends SliderComponentShape {
+  @override
+  Size getPreferredSize(bool isEnabled, bool isDiscrete) {
+    return const Size(20, 30);
+  }
 
-  final LinearGradient gradient;
-  final bool darkenInactive;
+  @override
+  void paint(PaintingContext context, Offset center,
+      {required Animation<double> activationAnimation,
+        required Animation<double> enableAnimation,
+        required bool isDiscrete,
+        required TextPainter labelPainter,
+        required RenderBox parentBox,
+        required SliderThemeData sliderTheme,
+        required TextDirection textDirection,
+        required double value,
+        required double textScaleFactor,
+        required Size sizeWithOverflow}) {
+    final Canvas canvas = context.canvas;
+    canvas.drawShadow(
+        Path()
+          ..addRRect(RRect.fromRectAndRadius(
+            Rect.fromCenter(center: center, width: 19, height: 20),
+            const Radius.circular(4),
+          )),
+        Colors.black,
+        5,
+        false);
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromCenter(center: center, width: 15, height: 25),
+        const Radius.circular(10),
+      ),
+      Paint()..color = FCIColors.primaryColor(),
+    );
+  }
+}
+
+class MyRoundedRectSliderTrackShape extends SliderTrackShape
+    with BaseSliderTrackShape {
+  const MyRoundedRectSliderTrackShape();
 
   @override
   void paint(
       PaintingContext context,
-      Offset offset,
-      {
+      Offset offset, {
         required RenderBox parentBox,
         required SliderThemeData sliderTheme,
         required Animation<double> enableAnimation,
@@ -258,61 +252,21 @@ class GradientRectSliderTrackShape extends SliderTrackShape
         required Offset thumbCenter,
         bool isDiscrete = false,
         bool isEnabled = false,
-        double additionalActiveTrackHeight = 6,
-      }
-      ) {
-    assert(sliderTheme.disabledActiveTrackColor != null);
-    assert(sliderTheme.disabledInactiveTrackColor != null);
-    assert(sliderTheme.activeTrackColor != null);
-    assert(sliderTheme.inactiveTrackColor != null);
-    assert(sliderTheme.thumbShape != null);
-    assert(sliderTheme.trackHeight != null && sliderTheme.trackHeight! > 0);
+        double additionalTrackHeight = 8,
+      }) {
+    if (sliderTheme.trackHeight == null || sliderTheme.trackHeight! <= 0) {
+      return;
+    }
 
-    final Rect trackRect = getPreferredRect(
-      parentBox: parentBox,
-      offset: offset,
-      sliderTheme: sliderTheme,
-      isEnabled: isEnabled,
-      isDiscrete: isDiscrete,
-    );
-
-    final activeGradientRect = Rect.fromLTRB(
-      trackRect.left,
-      (textDirection == TextDirection.ltr)
-          ? trackRect.top - (additionalActiveTrackHeight / 2)
-          : trackRect.top,
-      thumbCenter.dx,
-      (textDirection == TextDirection.ltr)
-          ? trackRect.bottom + (additionalActiveTrackHeight / 2)
-          : trackRect.bottom,
-    );
-    final inactiveGradientRect = Rect.fromLTRB(
-      trackRect.left,
-      (textDirection == TextDirection.ltr)
-          ? trackRect.top - (additionalActiveTrackHeight / 2)
-          : trackRect.top,
-      thumbCenter.dx,
-      (textDirection == TextDirection.ltr)
-          ? trackRect.bottom + (additionalActiveTrackHeight / 2)
-          : trackRect.bottom,
-    );
-
-    // Assign the track segment paints, which are leading: active and
-    // trailing: inactive.
     final ColorTween activeTrackColorTween = ColorTween(
         begin: sliderTheme.disabledActiveTrackColor,
         end: sliderTheme.activeTrackColor);
-    final ColorTween inactiveTrackColorTween = darkenInactive
-        ? ColorTween(
+    final ColorTween inactiveTrackColorTween = ColorTween(
         begin: sliderTheme.disabledInactiveTrackColor,
-        end: sliderTheme.inactiveTrackColor
-    )
-        : activeTrackColorTween;
+        end: sliderTheme.inactiveTrackColor);
     final Paint activePaint = Paint()
-      ..shader = gradient.createShader(activeGradientRect)
       ..color = activeTrackColorTween.evaluate(enableAnimation)!;
     final Paint inactivePaint = Paint()
-      ..shader = gradient.createShader(inactiveGradientRect)
       ..color = inactiveTrackColorTween.evaluate(enableAnimation)!;
     final Paint leftTrackPaint;
     final Paint rightTrackPaint;
@@ -327,44 +281,35 @@ class GradientRectSliderTrackShape extends SliderTrackShape
         break;
     }
 
-    final Radius trackRadius = Radius.circular(trackRect.height / 2);
-    final Radius activeTrackRadius = Radius.circular(trackRect.height / 2 + 1);
+    final Rect trackRect = getPreferredRect(
+      parentBox: parentBox,
+      offset: offset,
+      sliderTheme: sliderTheme,
+      isEnabled: isEnabled,
+      isDiscrete: isDiscrete,
+    );
+    final Radius activeTrackRadius =
+    Radius.circular((trackRect.height + additionalTrackHeight) / 2);
 
     context.canvas.drawRRect(
       RRect.fromLTRBAndCorners(
         trackRect.left,
-        (textDirection == TextDirection.ltr)
-            ? trackRect.top - (additionalActiveTrackHeight / 2)
-            : trackRect.top,
+        trackRect.top - (additionalTrackHeight / 2),
         thumbCenter.dx,
-        (textDirection == TextDirection.ltr)
-            ? trackRect.bottom + (additionalActiveTrackHeight / 2)
-            : trackRect.bottom,
-        topLeft: (textDirection == TextDirection.ltr)
-            ? activeTrackRadius
-            : trackRadius,
-        bottomLeft: (textDirection == TextDirection.ltr)
-            ? activeTrackRadius
-            : trackRadius,
+        trackRect.bottom + (additionalTrackHeight / 2),
+        topLeft: activeTrackRadius,
+        bottomLeft: activeTrackRadius,
       ),
       leftTrackPaint,
     );
     context.canvas.drawRRect(
       RRect.fromLTRBAndCorners(
         thumbCenter.dx,
-        (textDirection == TextDirection.rtl)
-            ? trackRect.top - (additionalActiveTrackHeight / 2)
-            : trackRect.top,
+        trackRect.top - (additionalTrackHeight / 2),
         trackRect.right,
-        (textDirection == TextDirection.rtl)
-            ? trackRect.bottom + (additionalActiveTrackHeight / 2)
-            : trackRect.bottom,
-        topRight: (textDirection == TextDirection.rtl)
-            ? activeTrackRadius
-            : trackRadius,
-        bottomRight: (textDirection == TextDirection.rtl)
-            ? activeTrackRadius
-            : trackRadius,
+        trackRect.bottom + (additionalTrackHeight / 2),
+        topRight: activeTrackRadius,
+        bottomRight: activeTrackRadius,
       ),
       rightTrackPaint,
     );

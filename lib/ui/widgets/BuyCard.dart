@@ -1,4 +1,8 @@
+import 'dart:async';
+
 import 'package:auction/database/models/car_model.dart';
+import 'package:auction/ui/widgets/CarCard.dart';
+import 'package:auction/ui/widgets/mediterranesn_view.dart';
 import 'package:auction/utils/FCIStyle.dart';
 import 'package:auction/utils/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -20,7 +24,27 @@ class BuyCard extends StatefulWidget {
   _BuyCardState createState() => _BuyCardState();
 }
 
-class _BuyCardState extends State<BuyCard> {
+class _BuyCardState extends State<BuyCard> with TickerProviderStateMixin {
+late AnimationController animationController;
+late Timer timer;
+Duration actual = new Duration();
+int count = 9;
+@override
+void initState() {
+  animationController = AnimationController(
+      duration: const Duration(milliseconds: 3000), vsync: this);
+  super.initState();
+
+  calculateDur();
+  timer = Timer.periodic(
+      Duration(seconds: 1), (timer) => calculateDur());
+}
+void calculateDur() {
+  if (widget.carData.end_date != null) {
+    actual = DateTime.parse(widget.carData.end_date).difference(DateTime.now());
+
+  }
+}
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -40,7 +64,7 @@ class _BuyCardState extends State<BuyCard> {
               Row(
                 children: [
                   Container(
-                    width: ScreenUtil().setWidth(150),
+                    width: ScreenUtil().setWidth(140),
                     height: ScreenUtil().setHeight(160),
                     padding: EdgeInsets.symmetric(
                         horizontal: ScreenUtil().setWidth(5)),
@@ -55,101 +79,134 @@ class _BuyCardState extends State<BuyCard> {
                         placeholder: (context, url) =>
                             CircularProgressIndicator(),
                         errorWidget: (context, url, error) => Icon(Icons.error),
-                        fit: BoxFit.cover,
+                        fit: BoxFit.fill,
                         //width: ScreenUtil().setWidth(150),
                         //  height: ScreenUtil().setHeight(180),
                       ),
                     ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        width: ScreenUtil().setWidth(180),
-                        padding:
-                            EdgeInsets.only(top: ScreenUtil().setHeight(10)),
-                        child: Column(
-                          // mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('${widget.carData.title}'),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  right: ScreenUtil().setWidth(5),
-                                  top: ScreenUtil().setHeight(10)),
-                              child: Text(
-                                '${widget.carData.desc}',
-                                style: FCITextStyle.normal(11),
-                                maxLines: 4,
-                                overflow: TextOverflow.ellipsis,
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: ScreenUtil().setWidth(180),
+                          padding:
+                              EdgeInsets.only(top: ScreenUtil().setHeight(10)),
+                          child: Column(
+                            // mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('${widget.carData.title}'),
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    right: ScreenUtil().setWidth(5),
+                                    top: ScreenUtil().setHeight(10)),
+                                child: Text(
+                                  '${widget.carData.desc}',
+                                  style: FCITextStyle.normal(11),
+                                  maxLines: 4,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  top: ScreenUtil().setHeight(10)),
-                              child: Text(
-                                '${widget.carData.start_date}',
-                                style: FCITextStyle.normal(12),
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    top: ScreenUtil().setHeight(10)),
+                                child: Text(
+                                  '${widget.carData.start_date}',
+                                  style: FCITextStyle.normal(12),
+                                ),
                               ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  top: ScreenUtil().setHeight(5)),
-                              child: Text(
-                                '* * * * *',
-                                style: FCITextStyle.normal(35,
-                                    color: FCIColors.yellowRate()),
-                              ),
-                            )
-                          ],
+                              if (actual != null && actual.inSeconds>0 )
+                                Column(
+                                  children: [
+                                    CardMediterranesnDiet(
+                                      animation: Tween<double>(
+                                          begin: 1.0, end: 0.0)
+                                          .animate(CurvedAnimation(
+                                          parent: animationController,
+                                          curve: Interval(
+                                              (1 / count) * 3, 1.0,
+                                              curve: Curves
+                                                  .fastOutSlowIn))),
+                                      animationController:
+                                      animationController,
+                                      auction_time: actual,
+                                      strokeWidth:1.5 ,
+                                      qapdivider:2.0 ,
+                                      width:35 ,
+                                    ),
+                                    Theme(
+                                      data: Theme.of(context).copyWith(
+                                        sliderTheme: SliderThemeData(
+                                          thumbShape: SquareSliderComponentShape(),
+                                          trackShape: MyRoundedRectSliderTrackShape(),
+                                        ),
+                                      ),
+                                      child: Slider(
+                                        min: 0.0,
+                                        max: 100.0,
+                                        value: widget.carData.members!>=100.0?100.0:widget.carData.members!.toDouble()+10.0,
+                                        divisions: 10,
+                                        activeColor: Color.lerp(Color(0xffff0000), Color(0xff00ff00),  widget.carData.members!>=100?1.0:(widget.carData.members!.toDouble()+10.0)/100),
+                                        label: '${'${widget.carData.members??'0.0'}'}',
+                                        onChanged: (value) {
+
+                                        },
+                                      ),
+                                    )
+                                  ],
+                                ),
+                            ],
+                          ),
                         ),
-                      ),
-                      Container(
-                        width: ScreenUtil().setWidth(75),
-                        padding: EdgeInsets.symmetric(
-                            vertical: ScreenUtil().setHeight(30)),
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                                color: FCIColors.borderOrange(), width: 3),
-                            borderRadius: BorderRadius.circular(30)),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              child: Text(
-                                '${convertFromStringToRange('${widget.carData.bid_price}')}\n AED',
-                                style: FCITextStyle.bold(13,
-                                    color: FCIColors.primaryColor()),
+                        Container(
+                          width: ScreenUtil().setWidth(75),
+                          padding: EdgeInsets.symmetric(
+                              vertical: ScreenUtil().setHeight(30)),
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: FCIColors.borderOrange(), width: 3),
+                              borderRadius: BorderRadius.circular(30)),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                child: Text(
+                                  '${convertFromStringToRange('${widget.carData.bid_price}')}\n AED',
+                                  style: FCITextStyle.bold(13,
+                                      color: FCIColors.primaryColor()),
+                                ),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: ScreenUtil().setWidth(0),
+                                    vertical: ScreenUtil().setHeight(8)),
                               ),
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: ScreenUtil().setWidth(0),
-                                  vertical: ScreenUtil().setHeight(8)),
-                            ),
-                            Divider(
-                              height: 15,
-                              thickness: 1,
-                              indent: 3,
-                              endIndent: 3,
-                              color: Colors.black45,
-                            ),
-                            Container(
-                              // alignment: Alignment.center,
-                              child: Text(
-                                '  ${widget.carData.members}\n Members',
-                                style: FCITextStyle.bold(13,
-                                    color: Colors.black54),
+                              Divider(
+                                height: 15,
+                                thickness: 1,
+                                indent: 3,
+                                endIndent: 3,
+                                color: Colors.black45,
                               ),
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: ScreenUtil().setWidth(0),
-                                  vertical: ScreenUtil().setHeight(8)),
-                            )
-                          ],
-                        ),
-                      )
-                    ],
+                              Container(
+                                // alignment: Alignment.center,
+                                child: Text(
+                                  '  ${widget.carData.members}\n Members',
+                                  style: FCITextStyle.bold(13,
+                                      color: Colors.black54),
+                                ),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: ScreenUtil().setWidth(0),
+                                    vertical: ScreenUtil().setHeight(8)),
+                              )
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
                   )
                 ],
               ),

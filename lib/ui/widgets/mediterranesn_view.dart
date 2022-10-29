@@ -288,11 +288,17 @@ class CurvePainter extends CustomPainter {
 class CardMediterranesnDiet extends StatefulWidget {
   AnimationController? animationController;
   late final Animation<double> animation;
+  double? strokeWidth;
+  double? qapdivider;
+  double? width;
   Duration? auction_time;
   CardMediterranesnDiet(
       {Key? key,
         this.animationController,
         required this.animation,
+        this.strokeWidth=3.0,
+        this.qapdivider=4.0,
+        this.width=60.0,
         required this.auction_time})
       : super(key: key);
 
@@ -301,8 +307,7 @@ class CardMediterranesnDiet extends StatefulWidget {
 }
 
 class _CardMediterranesnDietState extends State<CardMediterranesnDiet> {
-  double strokeWidth=3;
-  double qapdivider=4;
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -336,10 +341,10 @@ class _CardMediterranesnDietState extends State<CardMediterranesnDiet> {
                      // width: size.width * .15,
                       child: myTimer(
                           widget.auction_time!.inHours, 60,
-                      height: 60,
-                      strokeWidth: strokeWidth,
-                          qapdivider: qapdivider,
-                      width: 60)),
+                      height: widget.width!,
+                      strokeWidth: widget.strokeWidth!,
+                          qapdivider: widget.qapdivider!,
+                      width: widget.width!)),
                   Container(
                       //width: size.width * .15,
                       child: myTimer(
@@ -347,10 +352,10 @@ class _CardMediterranesnDietState extends State<CardMediterranesnDiet> {
                               .remainder(60)
                               .toInt(),
                           60,
-                          height: 60,
-                          strokeWidth: strokeWidth,
-                          qapdivider:qapdivider,
-                          width: 60)),
+                          height: widget.width!,
+                          strokeWidth: widget.strokeWidth!,
+                          qapdivider:widget.qapdivider!,
+                          width: widget.width!)),
                   Container(
                     //  width: size.width * .15,
                       child: myTimer(
@@ -358,11 +363,11 @@ class _CardMediterranesnDietState extends State<CardMediterranesnDiet> {
                               .remainder(60)
                               .toInt(),
                           60,
-                          height: 60,
-                          strokeWidth: strokeWidth,
-                          qapdivider: qapdivider,
-                          width: 60)),
-                  RotatedBox(quarterTurns: 1, child: Text("Time Left",style: FCITextStyle.normal(14,),))
+                          height: widget.width!,
+                          strokeWidth: widget.strokeWidth!,
+                          qapdivider: widget.qapdivider!,
+                          width: widget.width!)),
+                  RotatedBox(quarterTurns: 1, child: Text("Time Left",style: FCITextStyle.normal(12,),))
                 ],
               ),
             ),
@@ -397,7 +402,7 @@ class _CardMediterranesnDietState extends State<CardMediterranesnDiet> {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontWeight: FontWeight.normal,
-                      fontSize: 18,
+                      fontSize: 14,
                       letterSpacing: 0.0,
                       color: Colors.red,
                     ),

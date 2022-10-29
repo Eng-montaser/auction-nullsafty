@@ -6,6 +6,7 @@ import 'package:auction/logic/controllers/car_controller.dart';
 import 'package:auction/route/route.dart';
 import 'package:auction/ui/add_car/AddCar.dart';
 import 'package:auction/ui/home_screens/auctions_view.dart';
+import 'package:auction/ui/home_screens/congrats.dart';
 import 'package:auction/ui/home_screens/help_view.dart';
 import 'package:auction/ui/home_screens/home_view.dart';
 import 'package:auction/ui/home_screens/notifications_view.dart';
@@ -35,6 +36,7 @@ class _MainScreenState extends State<MainScreen> {
   late int _totalNotifications;
   PushNotification? _notificationInfo;
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
+  bool showData=false;
   @override
   void initState() {
     _totalNotifications = 0;
@@ -50,7 +52,7 @@ class _MainScreenState extends State<MainScreen> {
 
   checkForInitialMessage() async {
     RemoteMessage? initialMessage =
-        await FirebaseMessaging.instance.getInitialMessage();
+    await FirebaseMessaging.instance.getInitialMessage();
 
     if (initialMessage != null) {
       print('init ${initialMessage.data}');
@@ -74,16 +76,16 @@ class _MainScreenState extends State<MainScreen> {
 
 
     //if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      print('User granted permission');
-      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-        print('notif2 ${message.data}');
-        // Parse the message received
-        // PushNotification notification = PushNotification(
-        //   title: message.notification?.title,
-        //   body: message.notification?.body,
-        // );
-        handleNotification(message.data, message);
-      });
+    print('User granted permission');
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('notif2 ${message.data}');
+      // Parse the message received
+      // PushNotification notification = PushNotification(
+      //   title: message.notification?.title,
+      //   body: message.notification?.body,
+      // );
+      handleNotification(message.data, message);
+    });
     // } else {
     //   print('User declined or has not accepted permission');
     // }
@@ -143,8 +145,12 @@ class _MainScreenState extends State<MainScreen> {
                   child: GestureDetector(
                     behavior: HitTestBehavior.opaque,
                     onTap: () {
-                      if (controller.isDrawerOpen)
+                      if (controller.isDrawerOpen) {
                         controller.changeSideBar(context);
+                        setState(() {
+                          showData=false;
+                        });
+                      }
                     },
                     child: IgnorePointer(
                       ignoring: controller.isDrawerOpen,
@@ -158,12 +164,12 @@ class _MainScreenState extends State<MainScreen> {
                             leading: Container(),
                             bottom: PreferredSize(
                               preferredSize:
-                                  Size.fromHeight(ScreenUtil().setHeight(40)),
+                              Size.fromHeight(ScreenUtil().setHeight(40)),
                               child: Builder(builder: (context) {
                                 return Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                  MainAxisAlignment.spaceBetween,
                                   children: [
                                     IconButton(
                                       icon: Icon(
@@ -173,6 +179,9 @@ class _MainScreenState extends State<MainScreen> {
                                       ),
                                       onPressed: () {
                                         controller.changeSideBar(context);
+                                        setState(() {
+                                          showData=false;
+                                        });
                                       },
                                     ),
                                     Text(
@@ -201,76 +210,265 @@ class _MainScreenState extends State<MainScreen> {
                                 HomeView(),
                                 AuctionsView(),
                                 NotificationsView(),
-                                HelpView()
+                                CongratulationView()
                               ],
                             ),
                           ),
                           bottomNavigationBar: BottomAppBar(
+                            elevation: 6,
                               child: Container(
-                            height: ScreenUtil().setHeight(80),
-                            child: ListView.builder(
-                              physics: NeverScrollableScrollPhysics(),
-                              itemCount: menuItems.length,
-                              scrollDirection: Axis.horizontal,
-                              shrinkWrap: false,
-                              itemBuilder: (BuildContext context, int index) {
-                                return Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Badge(
-                                      showBadge:
+                                height: ScreenUtil().setHeight(80),
+                                child: ListView.builder(
+                                  physics: NeverScrollableScrollPhysics(),
+                                  itemCount: menuItems.length,
+                                  scrollDirection: Axis.horizontal,
+                                  shrinkWrap: false,
+                                  itemBuilder: (BuildContext context, int index) {
+                                    return Row(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Badge(
+                                          showBadge:
                                           index == 1 && _totalNotifications > 0,
-                                      elevation: 5,
-                                      position: BadgePosition.topEnd(
-                                          top: 12, end: 10),
-                                      badgeContent: Text(
-                                        '$_totalNotifications',
-                                        style: FCITextStyle.normal(15,
-                                            color: Colors.white),
-                                      ),
-                                      child: InkWell(
-                                        onTap: () {
-                                          controller.changeMenuItem(index);
-                                          if (index == 1 &&
-                                              _totalNotifications > 0) {
-                                            _totalNotifications = 0;
-                                            Get.put(CarController()).onInit();
-                                          }
-                                        },
-                                        child: Container(
-                                          alignment: Alignment.center,
-                                          width: FCISize.width(context) * 0.22,
-                                          child: Text(
-                                            menuItems[index],
-                                            style: FCITextStyle.normal(16,
-                                                color: controller
-                                                            .selectedMenuItem ==
+                                          elevation: 5,
+                                          position: BadgePosition.topEnd(
+                                              top: 12, end: 10),
+                                          badgeContent: Text(
+                                            '$_totalNotifications',
+                                            style: FCITextStyle.normal(15,
+                                                color: Colors.white),
+                                          ),
+                                          child: InkWell(
+                                            onTap: () {
+                                              controller.changeMenuItem(index);
+                                              if (index == 1 &&
+                                                  _totalNotifications > 0) {
+                                                _totalNotifications = 0;
+                                                Get.put(CarController()).onInit();
+                                              }
+                                            },
+                                            child: Container(
+                                              alignment: Alignment.center,
+                                              width: FCISize.width(context) * 0.22,
+                                              child: Text(
+                                                menuItems[index],
+                                                style: FCITextStyle.normal(16,
+                                                    color: controller
+                                                        .selectedMenuItem ==
                                                         index
-                                                    ? FCIColors.primaryColor()
-                                                    : Colors.black),
+                                                        ? FCIColors.primaryColor()
+                                                        : Colors.black),
+                                              ),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ),
-                                    if (index != 3)
-                                      Container(
-                                        height: ScreenUtil().setHeight(20),
-                                        child: VerticalDivider(
-                                          color: FCIColors.textFieldHintGrey(),
-                                        ),
-                                      ),
-                                  ],
-                                );
-                              },
-                            ),
-                          )),
+                                        if (index != 3)
+                                          Container(
+                                            height: ScreenUtil().setHeight(20),
+                                            child: VerticalDivider(
+                                              color: FCIColors.textFieldHintGrey(),
+                                            ),
+                                          ),
+                                      ],
+                                    );
+                                  },
+                                ),
+                              )),
                         ),
                       ),
                     ),
                   ),
                 );
-              })
+              }),
+          if(showData)  GestureDetector(
+            onTap: (){
+              setState(() {
+                showData=!showData;
+              });
+            },
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Container(
+                  width: FCISize.width(context) * 0.3,
+                  padding: EdgeInsets.symmetric(
+                      vertical: ScreenUtil().setHeight(15),
+                      horizontal: ScreenUtil().setWidth(15)),
+                  margin:  EdgeInsets.symmetric(
+                      horizontal: ScreenUtil().setWidth(15)),
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(35),
+                      border: Border.all(color: Colors.black,width: 0.5)
+                  ),
+                  child: Column(
+                    children: [
+                      GetBuilder<AuthenticationController>(
+                        init: AuthenticationController(),
+                        builder: (authController) => Column(
+                          children: [
+                            ClipRRect(
+                              child: CircleAvatar(
+                                child: CachedNetworkImage(
+                                  imageUrl:
+                                  authController.userData!.user.image ?? '',
+                                  errorWidget: (ctx, url, error) => Image.asset(
+                                      'assets/images/defult_profile.png'),
+                                  width: ScreenUtil().setWidth(150),
+                                  height: ScreenUtil().setWidth(150),
+                                  fit: BoxFit.cover,
+                                ),
+                                radius: ScreenUtil().setSp(20),
+                              ),
+                              borderRadius: BorderRadius.circular(100),
+                            ),
+                            SizedBox(
+                              width: ScreenUtil().setWidth(20),
+                            ),
+                            Text(
+                              "${authController.userData?.user.firstname ?? "UserName"} ${authController.userData!.user.lastname ?? ""}",
+                              style:
+                              FCITextStyle.bold(12, color: Colors.black),
+                            ),
+                            SizedBox(
+                              height: ScreenUtil().setHeight(5),
+                            ),
+                            Text(
+                                authController.userData?.user.email ??
+                                    "emailemail@email.com",
+                                style: FCITextStyle.normal(8,
+                                    color: FCIColors.textFieldHintGrey())),
+                          ],
+                        ),
+                      ),
+
+                      SizedBox(
+                        height: ScreenUtil().setHeight(5),
+                      ),
+                      Container(
+                        alignment: Alignment.center,
+                        width: ScreenUtil().setWidth(80),
+                        padding: EdgeInsets.symmetric(
+                            vertical: ScreenUtil().setHeight(5),
+                            horizontal: ScreenUtil().setWidth(5)),
+                        margin: EdgeInsets.symmetric(
+                            vertical: ScreenUtil().setHeight(5),
+                            horizontal: ScreenUtil().setWidth(5)),
+                        child: Text(
+                          "Verified",
+                          style: FCITextStyle.bold(18,
+                              color: Colors.white),
+                        ),
+                        color: FCIColors.buttonGreen(),
+                      ),
+                      Container(
+                        alignment: Alignment.center,
+                        width: ScreenUtil().setWidth(80),
+                        padding: EdgeInsets.symmetric(
+                            vertical: ScreenUtil().setHeight(5),
+                            horizontal: ScreenUtil().setWidth(5)),
+                        margin: EdgeInsets.symmetric(
+                            vertical: ScreenUtil().setHeight(5),
+                            horizontal: ScreenUtil().setWidth(5)),
+                        child: Text(
+                          "Dealer",
+                          style: FCITextStyle.bold(18,
+                              color: Colors.white),
+                        ),
+                        color: Colors.orangeAccent,
+                      ),
+                      Container(
+                        alignment: Alignment.center,
+                        width: ScreenUtil().setWidth(120),
+                        padding: EdgeInsets.symmetric(
+                            vertical: ScreenUtil().setHeight(8),
+                            horizontal: ScreenUtil().setWidth(8)),
+                        margin: EdgeInsets.symmetric(
+                            vertical: ScreenUtil().setHeight(5),
+                            horizontal: ScreenUtil().setWidth(5)),
+                        decoration: BoxDecoration(
+                            color: FCIColors.accentColor(),
+                            borderRadius: BorderRadius.circular(15),
+                            border: Border.all(color: Colors.grey)),
+                        child: Column(
+                          children: [
+                            Text(
+                              "00",
+                              style: FCITextStyle.bold(25,
+                                  color: Colors.black),
+                            ),
+                            Text(
+                              "Total vehicles",
+                              style: FCITextStyle.bold(10,
+                                  color: Colors.grey),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        alignment: Alignment.center,
+                        width: ScreenUtil().setWidth(120),
+                        padding: EdgeInsets.symmetric(
+                            vertical: ScreenUtil().setHeight(8),
+                            horizontal: ScreenUtil().setWidth(8)),
+                        margin: EdgeInsets.symmetric(
+                            vertical: ScreenUtil().setHeight(5),
+                            horizontal: ScreenUtil().setWidth(5)),
+                        decoration: BoxDecoration(
+                            color: FCIColors.accentColor(),
+                            borderRadius: BorderRadius.circular(15),
+                            border: Border.all(color: Colors.grey)),
+                        child: Column(
+                          children: [
+                            Text(
+                              "00",
+                              style: FCITextStyle.bold(25,
+                                  color: Colors.black),
+                            ),
+                            Text(
+                              "Hosted Auction",
+                              style: FCITextStyle.bold(10,
+                                  color: Colors.grey),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        alignment: Alignment.center,
+                        width: ScreenUtil().setWidth(120),
+                        padding: EdgeInsets.symmetric(
+                            vertical: ScreenUtil().setHeight(8),
+                            horizontal: ScreenUtil().setWidth(8)),
+                        margin: EdgeInsets.symmetric(
+                            vertical: ScreenUtil().setHeight(5),
+                            horizontal: ScreenUtil().setWidth(5)),
+                        decoration: BoxDecoration(
+                            color: FCIColors.accentColor(),
+                            borderRadius: BorderRadius.circular(15),
+                            border: Border.all(color: Colors.grey)),
+                        child: Column(
+                          children: [
+                            Text(
+                              "00",
+                              style: FCITextStyle.bold(25,
+                                  color: Colors.black),
+                            ),
+                            Text(
+                              "Participated",
+                              style: FCITextStyle.bold(10,
+                                  color: Colors.grey),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: ScreenUtil().setHeight(25),)
+              ],
+            ),
+          )
         ],
       ),
     );
@@ -286,7 +484,7 @@ class _MainScreenState extends State<MainScreen> {
             child: Padding(
               padding: EdgeInsets.only(
                 top: ScreenUtil().setHeight(50),
-                left: ScreenUtil().setWidth(40),
+                left: ScreenUtil().setWidth(10),
               ),
               child: SingleChildScrollView(
                 child: Column(
@@ -300,13 +498,16 @@ class _MainScreenState extends State<MainScreen> {
                             child: CircleAvatar(
                               child: CachedNetworkImage(
                                 imageUrl:
-                                    authController.userData!.user.image ?? '',
+                                authController.userData!.user.image ?? '',
                                 errorWidget: (ctx, url, error) => Image.asset(
                                     'assets/images/defult_profile.png'),
-                                width: ScreenUtil().setWidth(60),
+                                width: ScreenUtil().setWidth(150),
+                                height: ScreenUtil().setWidth(150),
+                                fit: BoxFit.cover,
                               ),
+                              radius: ScreenUtil().setSp(20),
                             ),
-                            borderRadius: BorderRadius.circular(30),
+                            borderRadius: BorderRadius.circular(100),
                           ),
                           SizedBox(
                             width: ScreenUtil().setWidth(20),
@@ -317,7 +518,7 @@ class _MainScreenState extends State<MainScreen> {
                               Text(
                                 "${authController.userData?.user.firstname ?? "UserName"} ${authController.userData!.user.lastname ?? ""}",
                                 style:
-                                    FCITextStyle.bold(18, color: Colors.white),
+                                FCITextStyle.bold(18, color: Colors.white),
                               ),
                               SizedBox(
                                 height: ScreenUtil().setHeight(5),
@@ -339,6 +540,9 @@ class _MainScreenState extends State<MainScreen> {
                       onTap: () {
                         Get.toNamed(AppRoutes.termsConditions);
                         controller.changeSideBar(context);
+                        setState(() {
+                          showData=false;
+                        });
                       },
                       text: "Terms & Conditions",
                       icon: Icons.storage,
@@ -347,6 +551,9 @@ class _MainScreenState extends State<MainScreen> {
                       onTap: () {
                         Get.toNamed(AppRoutes.aboutUs);
                         controller.changeSideBar(context);
+                        setState(() {
+                          showData=false;
+                        });
                       },
                       text: "About Us",
                       icon: Icons.home_outlined,
@@ -355,6 +562,9 @@ class _MainScreenState extends State<MainScreen> {
                       onTap: () {
                         Get.toNamed(AppRoutes.settings);
                         controller.changeSideBar(context);
+                        setState(() {
+                          showData=false;
+                        });
                       },
                       text: "Settings",
                       icon: Icons.settings,
@@ -368,6 +578,9 @@ class _MainScreenState extends State<MainScreen> {
                       onTap: () {
                         Get.to(() => AddCar());
                         controller.changeSideBar(context);
+                        setState(() {
+                          showData=false;
+                        });
                       },
                       text: "Add Car",
                       icon: Icons.supervised_user_circle,
@@ -379,6 +592,9 @@ class _MainScreenState extends State<MainScreen> {
                           print("login");
                           authController.logOut();
                           controller.changeSideBar(context);
+                          setState(() {
+                            showData=false;
+                          });
                         },
                         text: "Logout",
                         icon: Icons.logout,
@@ -387,181 +603,31 @@ class _MainScreenState extends State<MainScreen> {
                     SizedBox(
                       height: ScreenUtil().setHeight(15),
                     ),
-                    Container(
-                      width: FCISize.width(context) * 0.55,
-                      padding: EdgeInsets.symmetric(
-                          vertical: ScreenUtil().setHeight(15),
-                          horizontal: ScreenUtil().setWidth(15)),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              CircleAvatar(
-                                backgroundImage: AssetImage(
-                                    "assets/images/auction_logo.png"),
-                                radius: 20,
-                              ),
-                              SizedBox(
-                                width: ScreenUtil().setWidth(20),
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Name Name",
-                                    style: FCITextStyle.bold(18,
-                                        color: Colors.black),
-                                  ),
-                                  SizedBox(
-                                    height: ScreenUtil().setHeight(5),
-                                  ),
-                                  Text("emailemail@email.com",
-                                      style: FCITextStyle.normal(14,
-                                          color:
-                                              FCIColors.textFieldHintGrey())),
-                                ],
-                              )
-                            ],
+                    if(!showData)  GestureDetector(
+                      onTap: (){
+                        setState(() {
+                          showData=!showData;
+                        });
+                      },
+                      child: GetBuilder<AuthenticationController>(
+                        init: AuthenticationController(),
+                        builder: (authController) => ClipRRect(
+                          child: CircleAvatar(
+                            child: CachedNetworkImage(
+                              imageUrl:
+                              authController.userData!.user.image ?? '',
+                              errorWidget: (ctx, url, error) => Image.asset(
+                                  'assets/images/defult_profile.png'),
+                              width: ScreenUtil().setWidth(150),
+                              height: ScreenUtil().setWidth(150),
+                              fit: BoxFit.cover,
+                            ),
+                            radius: ScreenUtil().setSp(40),
                           ),
-                          SizedBox(
-                            height: ScreenUtil().setHeight(5),
-                          ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Column(
-                                children: [
-                                  Container(
-                                    alignment: Alignment.center,
-                                    width: ScreenUtil().setWidth(80),
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: ScreenUtil().setHeight(5),
-                                        horizontal: ScreenUtil().setWidth(5)),
-                                    margin: EdgeInsets.symmetric(
-                                        vertical: ScreenUtil().setHeight(5),
-                                        horizontal: ScreenUtil().setWidth(5)),
-                                    child: Text(
-                                      "Verified",
-                                      style: FCITextStyle.bold(18,
-                                          color: Colors.white),
-                                    ),
-                                    color: FCIColors.buttonGreen(),
-                                  ),
-                                  Container(
-                                    alignment: Alignment.center,
-                                    width: ScreenUtil().setWidth(80),
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: ScreenUtil().setHeight(5),
-                                        horizontal: ScreenUtil().setWidth(5)),
-                                    margin: EdgeInsets.symmetric(
-                                        vertical: ScreenUtil().setHeight(5),
-                                        horizontal: ScreenUtil().setWidth(5)),
-                                    child: Text(
-                                      "Dealer",
-                                      style: FCITextStyle.bold(18,
-                                          color: Colors.white),
-                                    ),
-                                    color: Colors.orangeAccent,
-                                  )
-                                ],
-                              ),
-                              Column(
-                                children: [
-                                  Container(
-                                    alignment: Alignment.center,
-                                    width: ScreenUtil().setWidth(120),
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: ScreenUtil().setHeight(8),
-                                        horizontal: ScreenUtil().setWidth(8)),
-                                    margin: EdgeInsets.symmetric(
-                                        vertical: ScreenUtil().setHeight(5),
-                                        horizontal: ScreenUtil().setWidth(5)),
-                                    decoration: BoxDecoration(
-                                        color: FCIColors.accentColor(),
-                                        borderRadius: BorderRadius.circular(15),
-                                        border: Border.all(color: Colors.grey)),
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          "00",
-                                          style: FCITextStyle.bold(18,
-                                              color: Colors.black),
-                                        ),
-                                        Text(
-                                          "Total vehicles",
-                                          style: FCITextStyle.bold(14,
-                                              color: Colors.grey),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Container(
-                                    alignment: Alignment.center,
-                                    width: ScreenUtil().setWidth(120),
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: ScreenUtil().setHeight(8),
-                                        horizontal: ScreenUtil().setWidth(8)),
-                                    margin: EdgeInsets.symmetric(
-                                        vertical: ScreenUtil().setHeight(5),
-                                        horizontal: ScreenUtil().setWidth(5)),
-                                    decoration: BoxDecoration(
-                                        color: FCIColors.accentColor(),
-                                        borderRadius: BorderRadius.circular(15),
-                                        border: Border.all(color: Colors.grey)),
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          "00",
-                                          style: FCITextStyle.bold(18,
-                                              color: Colors.black),
-                                        ),
-                                        Text(
-                                          "Total vehicles",
-                                          style: FCITextStyle.bold(14,
-                                              color: Colors.grey),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Container(
-                                    alignment: Alignment.center,
-                                    width: ScreenUtil().setWidth(120),
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: ScreenUtil().setHeight(8),
-                                        horizontal: ScreenUtil().setWidth(8)),
-                                    margin: EdgeInsets.symmetric(
-                                        vertical: ScreenUtil().setHeight(5),
-                                        horizontal: ScreenUtil().setWidth(5)),
-                                    decoration: BoxDecoration(
-                                        color: FCIColors.accentColor(),
-                                        borderRadius: BorderRadius.circular(15),
-                                        border: Border.all(color: Colors.grey)),
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          "00",
-                                          style: FCITextStyle.bold(18,
-                                              color: Colors.black),
-                                        ),
-                                        Text(
-                                          "Total vehicles",
-                                          style: FCITextStyle.bold(14,
-                                              color: Colors.grey),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          )
-                        ],
+                          borderRadius: BorderRadius.circular(150),
+                        ),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),

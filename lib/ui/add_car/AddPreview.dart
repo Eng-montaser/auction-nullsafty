@@ -4,6 +4,7 @@ import 'package:auction/logic/controllers/addCar_controller.dart';
 import 'package:auction/utils/FCIStyle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 class AddPreview extends StatefulWidget {
@@ -14,6 +15,7 @@ class AddPreview extends StatefulWidget {
   final String trim;
   final String color;
   final String type;
+  final String typeImage;
   final File image;
 
   const AddPreview(
@@ -23,6 +25,7 @@ class AddPreview extends StatefulWidget {
       required this.year,
       required this.mileago,
       required this.trim,
+      required this.typeImage,
       required this.color,
       required this.type,
       required this.image});
@@ -77,7 +80,7 @@ class _AddCar extends State<AddPreview> {
             getRow('Trim', '${widget.trim}', 'icon_4'),
             getRow('Color', '${widget.color}', ''),
             getRow(
-                'Type', 'Type ${widget.type}', 'car_type_icon_${widget.type}'),
+                'Type', '${widget.type}', '${widget.typeImage}'),
             GestureDetector(
               onTap: () {
                 var data = {
@@ -152,15 +155,15 @@ class _AddCar extends State<AddPreview> {
                   width: ScreenUtil().setWidth(70),
                   child: label == "Color"
                       ? Container(
-                          width: ScreenUtil().setWidth(25),
-                          height: ScreenUtil().setWidth(25),
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                  width: 1, color: Colors.grey.shade300),
-                              color: Color(int.parse(widget.color))),
-                        )
-                      : Image.asset(
+                          // width: ScreenUtil().setWidth(25),
+                          // height: ScreenUtil().setWidth(25),
+                           child: Text(label,style: FCITextStyle.bold(16),),
+                             )
+                      : label=='Type'?SvgPicture.asset(
+                    '$iconname',
+                    width: ScreenUtil().setWidth(25),
+                    height: ScreenUtil().setWidth(25),
+                  ):Image.asset(
                           'assets/images/$iconname.png',
                           width: ScreenUtil().setWidth(25),
                           height: ScreenUtil().setWidth(25),

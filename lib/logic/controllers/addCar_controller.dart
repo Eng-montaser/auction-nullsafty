@@ -29,9 +29,34 @@ class AddCarController extends GetxController {
       mileago = '0',
       trim = '',
       color = '',
+      typeimage = '',
       type = '1';
-  Color colorValue = Colors.grey;
+  String colorValue = '';
   List<File> images = [];
+  List<CarTypeModel> carTypesList=[CarTypeModel(
+    name: 'Cariolet/Coube',
+    image: 'assets/images/Coube.svg'
+  ),
+    CarTypeModel(
+        name: 'SUV',
+        image: 'assets/images/Suv.svg'
+    ),
+    CarTypeModel(
+        name: 'Sport/Supercar',
+        image: 'assets/images/Sport.svg'
+    ),
+    CarTypeModel(
+        name: 'Wagon/Minivan/VPN',
+        image: 'assets/images/MPV.svg'
+    ),
+    CarTypeModel(
+        name: 'Hatchback',
+        image: 'assets/images/Hatchback.svg'
+    ),
+    CarTypeModel(
+        name: 'Sedan',
+        image: 'assets/images/Sedan.svg'
+    )];
   var isLoading = false.obs;
   getMakes() async {
     isLoading.value = true;
@@ -133,8 +158,9 @@ class AddCarController extends GetxController {
           model: model,
           year: year,
           mileago: mileago,
+          typeImage:  typeimage,
           trim: trim,
-          color: '${colorValue.value}',
+          color: '${colorValue}',
           type: type,
           image: File(images[0].path)));
     else
@@ -172,4 +198,10 @@ class AddCarController extends GetxController {
     images.clear();
     update();
   }
+}
+class CarTypeModel{
+  String? name;
+  String? image;
+  CarTypeModel({this.name,this.image
+  });
 }
