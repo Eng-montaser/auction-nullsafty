@@ -75,7 +75,7 @@ class _AuctionsViewState extends State<AuctionsView> {
   Widget build(BuildContext context) {
     return DefaultTabController(
         length: 3,
-        initialIndex: 0,
+        initialIndex: 2,
         child: Column(
           children: [
             Container(

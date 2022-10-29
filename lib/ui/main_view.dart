@@ -71,14 +71,9 @@ class _MainScreenState extends State<MainScreen> {
     // 2. Instantiate Firebase Messaging
 
     // 3. On iOS, this helps to take the user permissions
-    NotificationSettings settings = await _messaging.requestPermission(
-      alert: true,
-      badge: true,
-      provisional: false,
-      sound: true,
-    );
 
-    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+
+    //if (settings.authorizationStatus == AuthorizationStatus.authorized) {
       print('User granted permission');
       FirebaseMessaging.onMessage.listen((RemoteMessage message) {
         print('notif2 ${message.data}');
@@ -89,9 +84,9 @@ class _MainScreenState extends State<MainScreen> {
         // );
         handleNotification(message.data, message);
       });
-    } else {
-      print('User declined or has not accepted permission');
-    }
+    // } else {
+    //   print('User declined or has not accepted permission');
+    // }
   }
 
   handleNotification(data, RemoteMessage message) async {
@@ -155,7 +150,7 @@ class _MainScreenState extends State<MainScreen> {
                       ignoring: controller.isDrawerOpen,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(
-                            controller.isDrawerOpen ? 50 : 0),
+                            controller.isDrawerOpen ? 20 : 0),
                         child: Scaffold(
                           appBar: AppBar(
                             backgroundColor: FCIColors.primaryColor(),

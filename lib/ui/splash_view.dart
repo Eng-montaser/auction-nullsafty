@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:auction/database/models/boardModel.dart';
 import 'package:auction/logic/controllers/auth_controller.dart';
 import 'package:auction/route/route.dart';
 import 'package:auction/ui/widgets/clippath.dart';
+import 'package:auction/ui/widgets/images_onboard.dart';
 import 'package:auction/utils/FCIStyle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_onboard/flutter_onboard.dart';
@@ -98,68 +100,70 @@ class _SplashScreenState extends State<SplashScreen> {
                 //   ),
                 // )
               ],
-            )
-          : OnBoard(
-              pageController: _pageController,
-              // Either Provide onSkip Callback or skipButton Widget to handle skip state
-              onSkip: () {
-                Get.toNamed(AppRoutes.auth);
-              },
-              // Either Provide onDone Callback or nextButton Widget to handle done state
-              onDone: () {
-                Get.toNamed(AppRoutes.auth);
-              },
-              onBoardData: onBoardData,
-              titleStyles: const TextStyle(
-                color: Colors.deepOrange,
-                fontSize: 18,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 0.15,
-              ),
-              descriptionStyles: TextStyle(
-                fontSize: 16,
-                color: Colors.brown.shade300,
-              ),
-              pageIndicatorStyle: const PageIndicatorStyle(
-                width: 100,
-                inactiveColor: Colors.deepOrangeAccent,
-                activeColor: Colors.deepOrange,
-                inactiveSize: Size(8, 8),
-                activeSize: Size(12, 12),
-              ),
-              // Either Provide onSkip Callback or skipButton Widget to handle skip state
-              skipButton: TextButton(
-                onPressed: () {
-                  Get.toNamed(AppRoutes.auth);
-                },
-                child: const Text(
-                  "Skip",
-                  style: TextStyle(color: Colors.deepOrangeAccent),
-                ),
-              ),
-              // Either Provide onDone Callback or nextButton Widget to handle done state
-              // nextButton: InkWell(
-              //   onTap: () {},
-              //   child: Container(
-              //     width: 230,
-              //     height: 50,
-              //     alignment: Alignment.center,
-              //     decoration: BoxDecoration(
-              //       borderRadius: BorderRadius.circular(30),
-              //       gradient: const LinearGradient(
-              //         colors: [Colors.redAccent, Colors.deepOrangeAccent],
-              //       ),
-              //     ),
-              //     child: Text(
-              //      true? "Done" : "Next",
-              //       style: const TextStyle(
-              //         color: Colors.white,
-              //         fontWeight: FontWeight.bold,
-              //       ),
-              //     ),
-              //   ),
-              // )
-            ),
+            ):MyCustomOnboard(boardModelList: onBoardData)
+        //   : OnBoard(
+        //       pageController: _pageController,
+        //       // Either Provide onSkip Callback or skipButton Widget to handle skip state
+        //       onSkip: () {
+        //         Get.toNamed(AppRoutes.auth);
+        //       },
+        //       // Either Provide onDone Callback or nextButton Widget to handle done state
+        //       onDone: () {
+        //         Get.toNamed(AppRoutes.auth);
+        //       },
+        // //curve: Curves.bounceIn,
+        //       onBoardData: onBoardData,
+        //       titleStyles: const TextStyle(
+        //         color: Colors.deepOrange,
+        //         fontSize: 18,
+        //         fontWeight: FontWeight.w900,
+        //         letterSpacing: 0.15,
+        //       ),
+        //       descriptionStyles: TextStyle(
+        //         fontSize: 16,
+        //         color: Colors.brown.shade300,
+        //       ),
+        //       pageIndicatorStyle: const PageIndicatorStyle(
+        //         width: 100,
+        //         inactiveColor: Colors.deepOrangeAccent,
+        //         activeColor: Colors.deepOrange,
+        //         inactiveSize: Size(8, 8),
+        //         activeSize: Size(12, 12),
+        //       ),
+        //       // Either Provide onSkip Callback or skipButton Widget to handle skip state
+        //       skipButton: TextButton(
+        //         onPressed: () {
+        //           Get.toNamed(AppRoutes.auth);
+        //         },
+        //         child: const Text(
+        //           "Skip",
+        //           style: TextStyle(color: Colors.deepOrangeAccent),
+        //         ),
+        //
+        //       ),
+        //       // Either Provide onDone Callback or nextButton Widget to handle done state
+        //       // nextButton: InkWell(
+        //       //   onTap: () {},
+        //       //   child: Container(
+        //       //     width: 230,
+        //       //     height: 50,
+        //       //     alignment: Alignment.center,
+        //       //     decoration: BoxDecoration(
+        //       //       borderRadius: BorderRadius.circular(30),
+        //       //       gradient: const LinearGradient(
+        //       //         colors: [Colors.redAccent, Colors.deepOrangeAccent],
+        //       //       ),
+        //       //     ),
+        //       //     child: Text(
+        //       //      true? "Done" : "Next",
+        //       //       style: const TextStyle(
+        //       //         color: Colors.white,
+        //       //         fontWeight: FontWeight.bold,
+        //       //       ),
+        //       //     ),
+        //       //   ),
+        //       // )
+        //     ),
     );
   }
 
@@ -175,24 +179,52 @@ class _SplashScreenState extends State<SplashScreen> {
     }
   }
 
-  final List<OnBoardModel> onBoardData = [
-    const OnBoardModel(
-      title: "Set your own goals and get better",
+  final List<BoardModel> onBoardData = [
+    const BoardModel(
+      id:1,
+      title: "SELL YOUR \n CAR",
       description:
-          "Goal support your motivation and inspire you to work harder",
-      imgUrl: "assets/images/cars1.png",
+      "Take before and after photos to visualize progress and get the shape that you dream about"
+          "Take before and after photos to visualize progress and get the shape that you dream about"
+          "Take before and after photos to visualize progress and get the shape that you dream about"
+      ,      imgUrl: "assets/images/qr.svg",
     ),
-    const OnBoardModel(
-      title: "Track your progress with statistics",
+    const BoardModel(
+      id:2,
+      title: "100 % \n FREE",
       description:
-          "Analyse personal result with detailed chart and numerical values",
-      imgUrl: 'assets/images/cars2.png',
+      "Take before and after photos to visualize progress and get the shape that you dream about"
+          "Take before and after photos to visualize progress and get the shape that you dream about"
+          "Take before and after photos to visualize progress and get the shape that you dream about"
+      ,      imgUrl: "assets/images/ha.svg",
     ),
-    const OnBoardModel(
-      title: "Create photo comparissions and share your results",
+    const BoardModel(
+      id:3,
+      title: "INSTANT \nPAYMENT",
       description:
-          "Take before and after photos to visualize progress and get the shape that you dream about",
-      imgUrl: 'assets/images/car4.png',
+      "Take before and after photos to visualize progress and get the shape that you dream about"
+          "Take before and after photos to visualize progress and get the shape that you dream about"
+          "Take before and after photos to visualize progress and get the shape that you dream about"
+      ,      imgUrl: 'assets/images/re.svg',
+    ),
+    const BoardModel(
+      id:4,
+      title: "ALLOW \nLOCATION \nSERVICES",
+      description:
+          "Take before and after photos to visualize progress and get the shape that you dream about"
+          "Take before and after photos to visualize progress and get the shape that you dream about"
+          "Take before and after photos to visualize progress and get the shape that you dream about"
+      ,
+      imgUrl: 'assets/images/ch.svg',
+    ),
+    const BoardModel(
+      id:5,
+      title: "ALLOW \n PUSH",
+      description:
+      "Take before and after photos to visualize progress and get the shape that you dream about"
+          "Take before and after photos to visualize progress and get the shape that you dream about"
+          "Take before and after photos to visualize progress and get the shape that you dream about"
+      ,      imgUrl: 'assets/images/fa.svg',
     ),
   ];
 }

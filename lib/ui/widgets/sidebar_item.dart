@@ -24,10 +24,10 @@ class SideBarItem extends StatelessWidget {
             children: [
               Icon(
                 icon,
-                size: ScreenUtil().setSp(25),
+                size: ScreenUtil().setSp(35),
                 color: FCIColors.primaryColor(),
               ),
-              SizedBox(width: ScreenUtil().setWidth(20),),
+              SizedBox(width: ScreenUtil().setWidth(25),),
               Text(text,style: FCITextStyle.bold(20,color: Colors.white),)
             ],
           ),

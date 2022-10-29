@@ -144,11 +144,15 @@ class CurvePainter extends CustomPainter {
   final double angle;
   final List<Color> colors;
   final int total;
+  final double strokeWidth;
+  final double qapdivider;
   final int real;
   CurvePainter(
       {required this.colors,
       this.angle = 140,
       required this.total,
+       this.strokeWidth=7,
+       this.qapdivider=2,
       required this.real});
 
   @override
@@ -202,25 +206,25 @@ class CurvePainter extends CustomPainter {
         false,
         shdowPaint);*/
 
-    final double gap = math.pi / 180 * 2;
-    final double singleAngle = (math.pi * 2) / total;
+    final double gap = math.pi / 180 * qapdivider;
+    final double singleAngle = (math.pi * qapdivider) / total;
 
     for (int i = 0; i < total; i++) {
       final Paint paint = Paint()
         ..color = FCIColors.accentColor()
-        ..strokeWidth = 7
+        ..strokeWidth = strokeWidth
         ..style = PaintingStyle.stroke;
 
       canvas.drawArc(Offset.zero & size, gap + singleAngle * i + 80,
           singleAngle - gap, false, paint);
     }
-    final double gap2 = math.pi / 180 * 2;
-    final double singleAngle2 = (math.pi * 2) / total;
+    final double gap2 = math.pi / 180 * qapdivider;
+    final double singleAngle2 = (math.pi * qapdivider) / total;
 
     for (int i = 0; i < real; i++) {
       final Paint paint = Paint()
         ..color = FCIColors.primaryColor()
-        ..strokeWidth = 7
+        ..strokeWidth = strokeWidth
         ..style = PaintingStyle.stroke;
 
       canvas.drawArc(Offset.zero & size, gap2 - singleAngle2 * i * -1 + 80,
@@ -279,5 +283,153 @@ class CurvePainter extends CustomPainter {
   double degreeToRadians(double degree) {
     var redian = (math.pi / 180) * degree;
     return redian;
+  }
+}
+class CardMediterranesnDiet extends StatefulWidget {
+  AnimationController? animationController;
+  late final Animation<double> animation;
+  Duration? auction_time;
+  CardMediterranesnDiet(
+      {Key? key,
+        this.animationController,
+        required this.animation,
+        required this.auction_time})
+      : super(key: key);
+
+  @override
+  _CardMediterranesnDietState createState() => _CardMediterranesnDietState();
+}
+
+class _CardMediterranesnDietState extends State<CardMediterranesnDiet> {
+  double strokeWidth=3;
+  double qapdivider=4;
+  @override
+  Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+
+    return AnimatedBuilder(
+      animation: widget.animationController!,
+      builder: (BuildContext context, Widget? child) {
+        return FadeTransition(
+          opacity: widget.animation,
+          child: new Transform(
+            transform: new Matrix4.translationValues(
+                0.0, 30 * (1.0 - widget.animation.value), 0.0),
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                  horizontal: ScreenUtil().setWidth(0),
+                  vertical: ScreenUtil().setHeight(15)),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                //borderRadius: BorderRadius.circular(10),
+                // boxShadow: <BoxShadow>[
+                //   BoxShadow(
+                //       color: Colors.grey.withOpacity(0.2),
+                //       offset: Offset(1.1, 1.1),
+                //       blurRadius: 10.0),
+                // ],
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Container(
+                     // width: size.width * .15,
+                      child: myTimer(
+                          widget.auction_time!.inHours, 60,
+                      height: 60,
+                      strokeWidth: strokeWidth,
+                          qapdivider: qapdivider,
+                      width: 60)),
+                  Container(
+                      //width: size.width * .15,
+                      child: myTimer(
+                          widget.auction_time!.inMinutes
+                              .remainder(60)
+                              .toInt(),
+                          60,
+                          height: 60,
+                          strokeWidth: strokeWidth,
+                          qapdivider:qapdivider,
+                          width: 60)),
+                  Container(
+                    //  width: size.width * .15,
+                      child: myTimer(
+                          widget.auction_time!.inSeconds
+                              .remainder(60)
+                              .toInt(),
+                          60,
+                          height: 60,
+                          strokeWidth: strokeWidth,
+                          qapdivider: qapdivider,
+                          width: 60)),
+                  RotatedBox(quarterTurns: 1, child: Text("Time Left",style: FCITextStyle.normal(14,),))
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget myTimer(int real, int total,{double width=80,double height=80,double strokeWidth=7,double qapdivider=2}) {
+    return Center(
+      child: Stack(
+        // overflow: Overflow.visible,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              width: ScreenUtil().setWidth(width),
+              height: ScreenUtil().setWidth(height),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(
+                  Radius.circular(100.0),
+                ),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    '${(real * widget.animation.value).toInt()}',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontWeight: FontWeight.normal,
+                      fontSize: 18,
+                      letterSpacing: 0.0,
+                      color: Colors.red,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: CustomPaint(
+              painter: CurvePainter(
+                  colors: [
+                    FCIColors.primaryColor(),
+                    FCIColors.primaryColor(),
+                    FCIColors.primaryColor(),
+                    /*HexColor("#8A98E8"),
+                                          HexColor("#8A98E8")*/
+                  ],
+                  angle: 140 + (360 - 140) * (1.0 + widget.animation.value),
+                  real: real,
+                  qapdivider: qapdivider,
+                  strokeWidth: strokeWidth,
+                  total: total),
+              child: SizedBox(
+                width: ScreenUtil().setWidth(width+8),
+                height: ScreenUtil().setWidth(height+8),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
   }
 }

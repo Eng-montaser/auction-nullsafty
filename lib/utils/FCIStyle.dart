@@ -26,9 +26,10 @@ class FCITextStyle {
 }
 
 class FCIColors {
-  static Color primaryColor() => Color(0xfff14e23);
+  static Color primaryColor() => Color(0xffF14E23);
   static Color accentColor() => Color(0xffe9ecf1);
   static Color iconGrey() => Color(0xff53618b);
+  static Color indicatorColor() => Color(0xff3c3575);
   static Color borderOrange() => Color(0xfff3ae61);
   static Color starGrey() => Color(0xffd5d5d5);
   static Color diverOrange() => Color(0xffcf7d60);

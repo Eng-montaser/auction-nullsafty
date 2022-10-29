@@ -9,7 +9,7 @@ class CarModel {
   String start_date;
   String end_date;
   bool isFinished;
-  String members;
+  int? members;
   String miles;
 
   CarModel(
@@ -18,7 +18,7 @@ class CarModel {
       required this.images,
       required this.title,
       required this.desc,
-      required this.members,
+       this.members,
       required this.bid_price,
       required this.start_date,
       required this.end_date,
@@ -29,7 +29,7 @@ class CarModel {
       for (var im in json['images']) imags.add(im);
     }
     String bidPrice = '';
-    String membersCount = 'no';
+    int membersCount = 0;
     if (json['bidding_history'] != null) if (json['bidding_history'].length >
         0) {
       List<int> memList = [json['bidding_history'][0]['user_id']];
@@ -45,7 +45,7 @@ class CarModel {
         }
       }
       bidPrice = price.round().toString();
-      membersCount = memList.length.toString();
+      membersCount = memList.length;
     } else
       bidPrice = '${json['min_bid_price']}';
 

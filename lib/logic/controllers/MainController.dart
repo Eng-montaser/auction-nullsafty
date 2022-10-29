@@ -7,7 +7,7 @@ class MainController extends GetxController {
   double xOffset = 0;
   double yOffset = 0;
   bool isDrawerOpen = false;
-  int selectedMenuItem = 0;
+  int selectedMenuItem = 1;
   changeSideBar(context) {
     if (isDrawerOpen) {
       xOffset = 0;
@@ -15,9 +15,9 @@ class MainController extends GetxController {
       isDrawerOpen = false;
     } else {
       xOffset = Get.locale == Locale('en', 'US')
-          ? (FCISize.width(context) - ScreenUtil().setWidth(120))
-          : (-FCISize.width(context) + ScreenUtil().setWidth(240));
-      yOffset = ScreenUtil().setHeight(100);
+          ?  ScreenUtil().setWidth(100)
+          : -ScreenUtil().setWidth(120);
+      yOffset = ScreenUtil().setHeight(110);
       isDrawerOpen = true;
     }
     update();

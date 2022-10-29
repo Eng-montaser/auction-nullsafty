@@ -12,7 +12,6 @@ class AuthenticationController extends GetxController {
   loginActiveChange(bool value) {
     loginActive = value;
     update();
-    print(loginActive);
   }
 
   FCIAuthUserModel? _userData;
@@ -26,6 +25,22 @@ class AuthenticationController extends GetxController {
     shared_User.setString('token', token);
   }
 
+  @override
+  void onInit() {
+super.onInit();
+setInit();
+  }
+setInit()async{
+  SharedPreferences shared_User = await SharedPreferences.getInstance();
+
+  bool? isfirst=await shared_User.getBool('isFirst');
+  if(isfirst == null){
+  loginActive=false;
+  shared_User.setBool('isFirst', true);
+  }else{
+    loginActive=false;
+  }
+}
   getUserData() async {
     SharedPreferences shared_User = await SharedPreferences.getInstance();
     var userData = shared_User.getString('user');
