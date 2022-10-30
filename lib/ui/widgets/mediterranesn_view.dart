@@ -292,13 +292,15 @@ class CardMediterranesnDiet extends StatefulWidget {
   double? qapdivider;
   double? width;
   Duration? auction_time;
-  CardMediterranesnDiet(
+  TextStyle timeLeftTextstyle;
+ CardMediterranesnDiet(
       {Key? key,
         this.animationController,
         required this.animation,
         this.strokeWidth=3.0,
         this.qapdivider=4.0,
         this.width=60.0,
+        required this.timeLeftTextstyle ,
         required this.auction_time})
       : super(key: key);
 
@@ -323,7 +325,7 @@ class _CardMediterranesnDietState extends State<CardMediterranesnDiet> {
             child: Container(
               padding: EdgeInsets.symmetric(
                   horizontal: ScreenUtil().setWidth(0),
-                  vertical: ScreenUtil().setHeight(15)),
+                  vertical: ScreenUtil().setHeight(10)),
               decoration: BoxDecoration(
                 color: Colors.white,
                 //borderRadius: BorderRadius.circular(10),
@@ -335,7 +337,7 @@ class _CardMediterranesnDietState extends State<CardMediterranesnDiet> {
                 // ],
               ),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   Container(
                      // width: size.width * .15,
@@ -367,7 +369,8 @@ class _CardMediterranesnDietState extends State<CardMediterranesnDiet> {
                           strokeWidth: widget.strokeWidth!,
                           qapdivider: widget.qapdivider!,
                           width: widget.width!)),
-                  RotatedBox(quarterTurns: 1, child: Text("Time Left",style: FCITextStyle.normal(12,),))
+                  RotatedBox(quarterTurns: 1, child: Text("Time Left",
+                    style: widget.timeLeftTextstyle,))
                 ],
               ),
             ),

@@ -72,12 +72,12 @@ class _AddCar extends State<AddPreview> {
             SizedBox(
               height: ScreenUtil().setWidth(30),
             ),
-            getRow('Ref ID', '#', 'icon_6'),
-            getRow('Make', '${widget.make}', 'icon_5'),
-            getRow('Model', '${widget.model}', 'icon_1'),
-            getRow('Year', '${widget.year}', 'icon_2'),
-            getRow('Mileage', '${widget.mileago}', 'icon_3'),
-            getRow('Trim', '${widget.trim}', 'icon_4'),
+            getRow('Ref ID', '#', 'assets/images/icon_6.png'),
+            getRow('Make', '${widget.make}', 'assets/images/icon_5.png'),
+            getRow('Model', '${widget.model}', 'assets/images/icon_1.png'),
+            getRow('Year', '${widget.year}', 'assets/images/icon_2.png'),
+            getRow('Mileage', '${widget.mileago}', 'assets/images/icon_3.png'),
+            getRow('Trim', '${widget.trim}', 'assets/images/icon_4.png'),
             getRow('Color', '${widget.color}', ''),
             getRow(
                 'Type', '${widget.type}', '${widget.typeImage}'),
@@ -159,14 +159,10 @@ class _AddCar extends State<AddPreview> {
                           // height: ScreenUtil().setWidth(25),
                            child: Text(label,style: FCITextStyle.bold(16),),
                              )
-                      : label=='Type'?SvgPicture.asset(
-                    '$iconname',
-                    width: ScreenUtil().setWidth(25),
-                    height: ScreenUtil().setWidth(25),
-                  ):Image.asset(
-                          'assets/images/$iconname.png',
-                          width: ScreenUtil().setWidth(25),
-                          height: ScreenUtil().setWidth(25),
+                      : Image.asset(
+                          '$iconname',
+                          width: ScreenUtil().setWidth(30),
+                          height: ScreenUtil().setWidth(30),
                         ),
                 ),
                 Container(

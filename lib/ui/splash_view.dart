@@ -12,6 +12,7 @@ import 'package:flutter_onboard/flutter_onboard.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 
 import 'main_view.dart';
 
@@ -28,10 +29,11 @@ class _SplashScreenState extends State<SplashScreen> {
   }
   int active = 0;
   bool splashLoading = true;
+  bool videoLoading=false;
   final PageController _pageController = PageController();
   final CarouselController _controller = CarouselController();
-  init() {
-    Timer(const Duration(seconds: 2), () async {
+  init() async{
+   await Timer(const Duration(seconds: 2), () async {
       AuthenticationController authenticationController =
       Get.put(AuthenticationController());
       await authenticationController.getUserData();
@@ -40,6 +42,7 @@ class _SplashScreenState extends State<SplashScreen> {
         Get.to(() => MainScreen(), arguments: {'title': 'Home Screen'});
       } else {
         setState(() {
+          videoLoading=true;
           splashLoading = false;
         });
       }
@@ -82,7 +85,30 @@ class _SplashScreenState extends State<SplashScreen> {
           ],
         )
     ):
-    Scaffold(
+        videoLoading?
+        Scaffold(
+            backgroundColor:Colors.black,
+            body: Container(
+              width: FCISize.width(context),
+              height: FCISize.height(context),
+              child: Lottie.asset(
+                'assets/jsonfiles/auction_video_splash.json',
+                width: FCISize.width(context),
+                height: FCISize.height(context),
+                fit: BoxFit.fill,
+                 // repeat: false,
+                onLoaded: (val){
+                    Timer(const Duration(seconds: 10), () async {
+                    setState(() {
+                      videoLoading=false;
+                    });
+                  });
+                },
+              ),
+            )
+      
+        )
+            :Scaffold(
         key: _scaffoldKey,
         backgroundColor: FCIColors.accentColor(),
         drawer: Drawer(

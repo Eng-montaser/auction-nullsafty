@@ -35,18 +35,24 @@ class _CarCardState extends State<CarCard> with TickerProviderStateMixin {
     timer = Timer.periodic(
         Duration(seconds: 1), (timer) => calculateDur());
   }
+  @override
+  void dispose() {
+    animationController.dispose();
+    timer.cancel();
+    super.dispose();
+  }
   void calculateDur() {
     if (widget.carData.end_date != null) {
-      actual = DateTime.parse(widget.carData.end_date).difference(DateTime.now());
-
+      setState(() {
+        actual = DateTime.parse(widget.carData.end_date).difference(DateTime.now());
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    calculateDur();
-    return GestureDetector(
+     return GestureDetector(
       onTap: () {
         Get.to(CarDetailsView(
           carData: widget.carData,
@@ -57,7 +63,7 @@ class _CarCardState extends State<CarCard> with TickerProviderStateMixin {
         child: Stack(
           children: [
             Padding(
-              padding: const EdgeInsets.all(15.0),
+              padding: FCIPadding.symmetric(width: 10,height: 10),
               child: Stack(
                 children: [
                   Column(
@@ -66,24 +72,19 @@ class _CarCardState extends State<CarCard> with TickerProviderStateMixin {
                         imageUrl: widget.carData.images.length > 0
                             ? "${widget.carData.images[0]}"
                             : "",
-                        placeholder: (context, url) => CircularProgressIndicator(),
+                        placeholder: (context, url) => Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CircularProgressIndicator(),
+                          ],
+                        ),
                         errorWidget: (context, url, error) => Icon(Icons.error),
+                        height: FCISize.height(context)*0.2,
+                        width: FCISize.width(context),
+                        fit: BoxFit.cover,
                       ),
                       SizedBox(height: ScreenUtil().setWidth(5)),
-                      /*  Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${widget.carData.start_date}',
-                            style: FCITextStyle.bold(14, color: Colors.black),
-                          ),
-                          Text(
-                            '${widget.carData.end_date}',
-                            style: FCITextStyle.bold(14, color: Colors.black),
-                          ),
-                        ],
-                      ),*/
+
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -129,70 +130,71 @@ class _CarCardState extends State<CarCard> with TickerProviderStateMixin {
                               ],
                             ),
                           ),
-
+                          if (actual != null && actual.inSeconds>0 )
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                CardMediterranesnDiet(
+                                    animation: Tween<double>(
+                                        begin: 1.0, end: 0.0)
+                                        .animate(CurvedAnimation(
+                                        parent: animationController,
+                                        curve: Interval(
+                                            (1 / count) * 3, 1.0,
+                                            curve: Curves
+                                                .fastOutSlowIn))),
+                                    animationController:
+                                    animationController,
+                                    auction_time: actual,
+                                    width: ScreenUtil().setWidth(30),
+                                    timeLeftTextstyle: FCITextStyle.normal(8)
+                                ),
+                                Container(
+                                  width: ScreenUtil().setWidth(170),
+                                  height: ScreenUtil().setHeight(10),
+                                  child: Theme(
+                                    data: Theme.of(context).copyWith(
+                                      sliderTheme: SliderThemeData(
+                                        thumbShape: SquareSliderComponentShape(),
+                                        trackShape: MyRoundedRectSliderTrackShape(),
+                                      ),
+                                    ),
+                                    child: Slider(
+                                      min: 0.0,
+                                      max: 100.0,
+                                      value: widget.carData.members!>=100.0?100.0:widget.carData.members!.toDouble()+10.0,
+                                      divisions: 10,
+                                      activeColor: Color.lerp(Color(0xffff0000), Color(0xff00ff00),  widget.carData.members!>=100?1.0:(widget.carData.members!.toDouble()+10.0)/100),
+                                      label: '${'${widget.carData.members??'0.0'}'}',
+                                      onChanged: (value) {
+                                      },
+                                    ),
+                                  ),
+                                )
+                              ],
+                            )
                         ],
                       )
                     ],
                   ),
-                  if (actual != null && actual.inSeconds>0 )
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: Column(
-                        children: [
-                          CardMediterranesnDiet(
-                            animation: Tween<double>(
-                                begin: 1.0, end: 0.0)
-                                .animate(CurvedAnimation(
-                                parent: animationController,
-                                curve: Interval(
-                                    (1 / count) * 3, 1.0,
-                                    curve: Curves
-                                        .fastOutSlowIn))),
-                            animationController:
-                            animationController,
-                            auction_time: actual,
-                          ),
-                          Theme(
-                            data: Theme.of(context).copyWith(
-                              sliderTheme: SliderThemeData(
-                                thumbShape: SquareSliderComponentShape(),
-                                trackShape: MyRoundedRectSliderTrackShape(),
-                              ),
-                            ),
-                            child: Slider(
-                              min: 0.0,
-                              max: 100.0,
-                              value: widget.carData.members!>=100.0?100.0:widget.carData.members!.toDouble()+10.0,
-                              divisions: 10,
-                               activeColor: Color.lerp(Color(0xffff0000), Color(0xff00ff00),  widget.carData.members!>=100?1.0:(widget.carData.members!.toDouble()+10.0)/100),
-                              label: '${'${widget.carData.members??'0.0'}'}',
-                              onChanged: (value) {
 
-                              },
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
                 ],
               ),
             ),
             if (widget.carData.isFinished)
               Positioned(
-                  top: ScreenUtil().setHeight(15),
-                  right: 0,
+                  top: ScreenUtil().setHeight(20),
+                  right: ScreenUtil().setWidth(10),
                   child: Container(
                     padding: EdgeInsets.symmetric(
                         horizontal: ScreenUtil().setWidth(20),
-                        vertical: ScreenUtil().setHeight(6)),
+                        vertical: ScreenUtil().setHeight(5)),
                     decoration: BoxDecoration(color: FCIColors.finishMark()),
                     child: Text(
                       'Finished',
-                      style: FCITextStyle.normal(15, color: Colors.white),
+                      style: FCITextStyle.normal(14, color: Colors.white),
                     ),
                   )),
-
           ],
         ),
       ),

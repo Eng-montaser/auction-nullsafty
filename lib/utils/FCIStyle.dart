@@ -54,6 +54,20 @@ class FCIPadding {
   static double textFieldPaddingHorizontal = ScreenUtil().setWidth(5);
   static double textFieldPaddingVertical = ScreenUtil().setHeight(5);
   static double cardPadding = 20;
+  static EdgeInsets symmetric({double? width, double? height}) {
+    return EdgeInsets.symmetric(
+        horizontal: ScreenUtil().setWidth(width ?? 0),
+        vertical: ScreenUtil().setHeight(height ?? 0));
+  }
+
+  static EdgeInsets only(
+      {double? top, double? bottom, double? left, double? right}) {
+    return EdgeInsets.only(
+        left: ScreenUtil().setWidth(left ?? 0),
+        right: ScreenUtil().setWidth(right ?? 0),
+        top: ScreenUtil().setHeight(top ?? 0),
+        bottom: ScreenUtil().setHeight(bottom ?? 0));
+  }
 }
 
 ThemeData appTheme() {

@@ -35,27 +35,27 @@ class AddCarController extends GetxController {
   List<File> images = [];
   List<CarTypeModel> carTypesList=[CarTypeModel(
     name: 'Cariolet/Coube',
-    image: 'assets/images/Coube.svg'
+    image: 'assets/images/Coube.png'
   ),
     CarTypeModel(
         name: 'SUV',
-        image: 'assets/images/Suv.svg'
+        image: 'assets/images/Suv.png'
     ),
     CarTypeModel(
         name: 'Sport/Supercar',
-        image: 'assets/images/Sport.svg'
+        image: 'assets/images/Sport.png'
     ),
     CarTypeModel(
         name: 'Wagon/Minivan/VPN',
-        image: 'assets/images/MPV.svg'
+        image: 'assets/images/MPV.png'
     ),
     CarTypeModel(
         name: 'Hatchback',
-        image: 'assets/images/Hatchback.svg'
+        image: 'assets/images/Hatchback.png'
     ),
     CarTypeModel(
         name: 'Sedan',
-        image: 'assets/images/Sedan.svg'
+        image: 'assets/images/Sedan.png'
     )];
   var isLoading = false.obs;
   getMakes() async {

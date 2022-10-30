@@ -97,16 +97,18 @@ class CarController extends GetxController {
   }
 
   @override
-  void onInit() {
-    loadAllCars(true);
-    loadUpComingCars(true);
-    loadRunningCars(true);
+  void onInit() async{
+
+
     // Timer.periodic(Duration(seconds: 15), (timer) {
     //   loadAllCars(false);
     //   loadUpComingCars(false);
     //   loadRunningCars(false);
     // });
     super.onInit();
+    await loadRunningCars(true);
+    loadAllCars(true);
+    loadUpComingCars(true);
   }
 
   @override

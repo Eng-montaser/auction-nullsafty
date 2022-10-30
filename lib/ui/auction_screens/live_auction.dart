@@ -75,7 +75,7 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
     CarDetailsController carController =
         Get.put(CarDetailsController(carData: widget.carModel));
     Size size = MediaQuery.of(context).size;
-    _controller.calculateDur();
+    // _controller.calculateDur();
     return GetBuilder<LiveController>(
         init: LiveController(),
         builder: (controller) => GestureDetector(

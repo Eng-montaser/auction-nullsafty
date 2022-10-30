@@ -16,6 +16,7 @@ import 'package:auction/utils/FCIStyle.dart';
 import 'package:auction/utils/utils.dart';
 import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -33,10 +34,11 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   List<String> menuItems = ["Home", "Auctions", "Notifications", "Help"];
-  late int _totalNotifications;
+   late int _totalNotifications;
   PushNotification? _notificationInfo;
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
   bool showData=false;
+  int selectedIndex=1;
   @override
   void initState() {
     _totalNotifications = 0;
@@ -210,71 +212,143 @@ class _MainScreenState extends State<MainScreen> {
                                 HomeView(),
                                 AuctionsView(),
                                 NotificationsView(),
-                                CongratulationView()
+                                HelpView()
                               ],
                             ),
                           ),
-                          bottomNavigationBar: BottomAppBar(
-                            elevation: 6,
-                              child: Container(
-                                height: ScreenUtil().setHeight(80),
-                                child: ListView.builder(
-                                  physics: NeverScrollableScrollPhysics(),
-                                  itemCount: menuItems.length,
-                                  scrollDirection: Axis.horizontal,
-                                  shrinkWrap: false,
-                                  itemBuilder: (BuildContext context, int index) {
-                                    return Row(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Badge(
-                                          showBadge:
-                                          index == 1 && _totalNotifications > 0,
-                                          elevation: 5,
-                                          position: BadgePosition.topEnd(
-                                              top: 12, end: 10),
-                                          badgeContent: Text(
-                                            '$_totalNotifications',
-                                            style: FCITextStyle.normal(15,
-                                                color: Colors.white),
-                                          ),
-                                          child: InkWell(
-                                            onTap: () {
-                                              controller.changeMenuItem(index);
-                                              if (index == 1 &&
-                                                  _totalNotifications > 0) {
-                                                _totalNotifications = 0;
-                                                Get.put(CarController()).onInit();
-                                              }
-                                            },
-                                            child: Container(
-                                              alignment: Alignment.center,
-                                              width: FCISize.width(context) * 0.22,
-                                              child: Text(
-                                                menuItems[index],
-                                                style: FCITextStyle.normal(16,
-                                                    color: controller
-                                                        .selectedMenuItem ==
-                                                        index
-                                                        ? FCIColors.primaryColor()
-                                                        : Colors.black),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        if (index != 3)
-                                          Container(
-                                            height: ScreenUtil().setHeight(20),
-                                            child: VerticalDivider(
-                                              color: FCIColors.textFieldHintGrey(),
-                                            ),
-                                          ),
-                                      ],
-                                    );
-                                  },
+                          bottomNavigationBar: CurvedNavigationBar(
+                            backgroundColor: FCIColors.accentColor(),
+                            index: selectedIndex,
+                            items: <Widget>[
+                              // ...List.generate( menuItems.length,
+                              //         (index) => Badge(
+                              //                           showBadge:
+                              //                           index == 1 && _totalNotifications > 0,
+                              //                           elevation: 5,
+                              //                           position: BadgePosition.topEnd(
+                              //                               top: 12, end: 10),
+                              //                           badgeContent: Text(
+                              //                             '$_totalNotifications',
+                              //                             style: FCITextStyle.normal(15,
+                              //                                 color: Colors.white),
+                              //                           ),
+                              //                           child: InkWell(
+                              //                             onTap: () {
+                              //                               controller.changeMenuItem(index);
+                              //                               if (index == 1 &&
+                              //                                   _totalNotifications > 0) {
+                              //                                 _totalNotifications = 0;
+                              //                                 Get.put(CarController()).onInit();
+                              //                               }
+                              //                             },
+                              //                             child: Container(
+                              //                               alignment: Alignment.center,
+                              //                               width: FCISize.width(context) * 0.22,
+                              //                               child: Text(
+                              //                                 menuItems[index],
+                              //                                 style: FCITextStyle.normal(16,
+                              //                                     color: controller
+                              //                                         .selectedMenuItem ==
+                              //                                         index
+                              //                                         ? FCIColors.primaryColor()
+                              //                                         : Colors.black),
+                              //                               ),
+                              //                             ),
+                              //                           ),
+                              //                         )),
+                              Icon(Icons.home, size: ScreenUtil().setSp(30),
+                              color: selectedIndex==0?FCIColors.primaryColor():FCIColors.iconGrey()),
+                              Badge(
+                                showBadge:
+                                _totalNotifications > 0,
+                                elevation: 5,
+                                position: BadgePosition.topEnd(
+                                    top: 0, end: 25),
+                                badgeContent: Text(
+                                  '$_totalNotifications',
+                                  style: FCITextStyle.normal(10,
+                                      color: Colors.white),
                                 ),
-                              )),
+                                child: Icon(Icons.directions_car,size: ScreenUtil().setSp(30), color: selectedIndex==1?FCIColors.primaryColor():FCIColors.iconGrey()),
+                              ),
+
+                              Icon(Icons.notifications_active, size: ScreenUtil().setSp(30), color: selectedIndex==2?FCIColors.primaryColor():FCIColors.iconGrey()),
+                              Icon(Icons.help,size: ScreenUtil().setSp(30), color: selectedIndex==3?FCIColors.primaryColor():FCIColors.iconGrey()),
+                            ],
+                            onTap: (index) {
+                              setState(() {
+                                selectedIndex=index;
+                              });
+                              controller.changeMenuItem(index);
+                                                  if (index == 1 &&
+                                                      _totalNotifications > 0) {
+                                                    _totalNotifications = 0;
+                                                    Get.put(CarController())
+                                                        .onInit();
+                                                  }
+                            },
+                          ),
+                          // BottomAppBar(
+                          //   elevation: 6,
+                          //     child: Container(
+                          //       height: ScreenUtil().setHeight(80),
+                          //       child: ListView.builder(
+                          //         physics: NeverScrollableScrollPhysics(),
+                          //         itemCount: menuItems.length,
+                          //         scrollDirection: Axis.horizontal,
+                          //         shrinkWrap: false,
+                          //         itemBuilder: (BuildContext context, int index) {
+                          //           return Row(
+                          //             crossAxisAlignment: CrossAxisAlignment.center,
+                          //             mainAxisAlignment: MainAxisAlignment.center,
+                          //             children: [
+                          //               Badge(
+                          //                 showBadge:
+                          //                 index == 1 && _totalNotifications > 0,
+                          //                 elevation: 5,
+                          //                 position: BadgePosition.topEnd(
+                          //                     top: 12, end: 10),
+                          //                 badgeContent: Text(
+                          //                   '$_totalNotifications',
+                          //                   style: FCITextStyle.normal(15,
+                          //                       color: Colors.white),
+                          //                 ),
+                          //                 child: InkWell(
+                          //                   onTap: () {
+                          //                     controller.changeMenuItem(index);
+                          //                     if (index == 1 &&
+                          //                         _totalNotifications > 0) {
+                          //                       _totalNotifications = 0;
+                          //                       Get.put(CarController()).onInit();
+                          //                     }
+                          //                   },
+                          //                   child: Container(
+                          //                     alignment: Alignment.center,
+                          //                     width: FCISize.width(context) * 0.22,
+                          //                     child: Text(
+                          //                       menuItems[index],
+                          //                       style: FCITextStyle.normal(16,
+                          //                           color: controller
+                          //                               .selectedMenuItem ==
+                          //                               index
+                          //                               ? FCIColors.primaryColor()
+                          //                               : Colors.black),
+                          //                     ),
+                          //                   ),
+                          //                 ),
+                          //               ),
+                          //               if (index != 3)
+                          //                 Container(
+                          //                   height: ScreenUtil().setHeight(20),
+                          //                   child: VerticalDivider(
+                          //                     color: FCIColors.textFieldHintGrey(),
+                          //                   ),
+                          //                 ),
+                          //             ],
+                          //           );
+                          //         },
+                          //       ),
+                          //     )),
                         ),
                       ),
                     ),

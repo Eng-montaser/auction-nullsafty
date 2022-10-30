@@ -186,7 +186,7 @@ class _AddCar extends State<AddCar> {
                             Container(
                               margin: EdgeInsets.symmetric(
                                 vertical: ScreenUtil().setHeight(5),
-                                horizontal: ScreenUtil().setHeight(30),
+                                horizontal: ScreenUtil().setHeight(10),
                               ),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -204,9 +204,9 @@ class _AddCar extends State<AddCar> {
                                     child:
                                     GridView.count(
                                         crossAxisCount: 3,
-                                        crossAxisSpacing: 4.0,
-                                        mainAxisSpacing: 2.0,
-                                        childAspectRatio: 1.5,
+                                        crossAxisSpacing: 8.0,
+                                        mainAxisSpacing: 8.0,
+                                        childAspectRatio: 1.8,
                                         children: List.generate(addCarController.carTypesList.length, (index) {
                                           return Center(
                                             child: GestureDetector(
@@ -218,20 +218,20 @@ class _AddCar extends State<AddCar> {
                                                   },
                                                   child: Container(
                                                     padding: EdgeInsets.symmetric(
-                                                        horizontal: ScreenUtil().setWidth(10)),
+                                                        horizontal: ScreenUtil().setWidth(0)),
                                                     child: Column(
                                                      // mainAxisSize: MainAxisSize.min,
                                                       mainAxisAlignment: MainAxisAlignment.center,
                                                       children: [
-                                                        SvgPicture.asset(
+                                                        Image.asset(
                                                           addCarController.carTypesList[index].image!,
                                                           width: ScreenUtil().setWidth(
                                                               addCarController.type ==
                                                                   '${addCarController.carTypesList[index].name}'
-                                                                  ? 100
-                                                                  : 85),
+                                                                  ? 115
+                                                                  : 95),
                                                           fit: BoxFit.fill,
-                                                          colorBlendMode: BlendMode.dstATop,
+                                                         // colorBlendMode: BlendMode.dstATop,
                                                           // height: ScreenUtil().setHeight(65),
                                                         ),
                                                        /* Text(
