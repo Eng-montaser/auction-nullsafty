@@ -11,33 +11,39 @@ class SideBarItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(
-        left: ScreenUtil().setWidth(20),
-      ),
-      child: GestureDetector(
-          onTap: (){
+    return  Padding(
+        padding: EdgeInsets.symmetric(vertical: ScreenUtil().setHeight(5),
+            horizontal: ScreenUtil().setWidth(20)),
+         child: IconButton(
+          onPressed: (){
             onTap();
           },
-          child: Padding(
-            padding: EdgeInsets.symmetric(vertical: ScreenUtil().setHeight(5)),
-            child: Container(
-              color: Colors.transparent,
-              height: ScreenUtil().setHeight(50),
-              child: Row(
-                children: [
-                  Icon(
-                    icon,
-                    size: ScreenUtil().setSp(30),
-                    color: FCIColors.primaryColor(),
-                  ),
-                  SizedBox(width: ScreenUtil().setWidth(25),),
-                  // Text('',style: FCITextStyle.bold(20,color: Colors.white),)//text
-                ],
-              ),
-            ),
-          )
-      ),
-    );
+          icon:  Icon(
+            icon,
+            size: ScreenUtil().setSp(30),
+            color: FCIColors.primaryColor(),
+          ),),
+    ) ;
+
+
+    //   GestureDetector(
+    //     onTap: (){
+    //
+    //     },
+    //     child: Padding(
+    //
+    //
+    //       child: Container(
+    //         color: Colors.transparent,
+    //         alignment: Alignment.center,
+    //         height: ScreenUtil().setHeight(50),
+    //         child:  Icon(
+    //           icon,
+    //           size: ScreenUtil().setSp(30),
+    //           color: FCIColors.primaryColor(),
+    //         ),
+    //       ),
+    //     )
+    // );
   }
 }

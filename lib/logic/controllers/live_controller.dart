@@ -10,7 +10,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../database/services/post_service.dart';
-
+import 'package:timezone/standalone.dart' as tz;
+var dubai = tz.getLocation('Asia/Dubai');
 class LiveController extends GetxController {
   var isLoading = false.obs;
   TextEditingController bidController = new TextEditingController();
@@ -33,7 +34,7 @@ class LiveController extends GetxController {
 
   void calculateDur() {
     if (carDetails.end_date != null) {
-      actual = DateTime.parse(carDetails.end_date!).difference(DateTime.now());
+      actual = DateTime.parse(carDetails.end_date!).difference(tz.TZDateTime.now(dubai));
       update();
     }
   }

@@ -7,7 +7,8 @@ import 'package:flutter/animation.dart';
 import 'package:get/get.dart';
 
 import '../../database/services/get_service.dart';
-
+import 'package:timezone/standalone.dart' as tz;
+var dubai = tz.getLocation('Asia/Dubai');
 class CarDetailsController extends GetxController
     with SingleGetTickerProviderMixin {
   late CarModel carData;
@@ -30,7 +31,7 @@ class CarDetailsController extends GetxController
   int selectedImageIndex = 0;
   RxString liveDuration = ''.obs;
   CarStatus carStatus = CarStatus.all;
-  DateTime time = DateTime.now();
+  DateTime time = tz.TZDateTime.now(dubai);
   CarDetails carDetails = CarDetails();
   decrementImageIndex() {
     if (selectedImageIndex > 0) {
@@ -55,14 +56,14 @@ class CarDetailsController extends GetxController
 
   getTimeOfAuction() {
     if (carData.start_date.isNotEmpty && carData.end_date.isNotEmpty) {
-      if (DateTime.now().isBefore(DateTime.parse(carData.start_date))) {
+      if (tz.TZDateTime.now(dubai).isBefore(DateTime.parse(carData.start_date))) {
         carStatus = CarStatus.upComing;
         liveDuration.value =
-            "start after  ${DateTime.parse(carData.start_date).difference(DateTime.now()).inDays}";
-      } else if (DateTime.now().isBefore(DateTime.parse(carData.end_date))) {
+            "start after  ${DateTime.parse(carData.start_date).difference(tz.TZDateTime.now(dubai)).inDays}";
+      } else if (tz.TZDateTime.now(dubai).isBefore(DateTime.parse(carData.end_date))) {
         carStatus = CarStatus.live;
         Duration runningDuration =
-            DateTime.parse(carData.end_date).difference(DateTime.now());
+            DateTime.parse(carData.end_date).difference(tz.TZDateTime.now(dubai));
         liveDuration.value = "end after  ${_printDuration(runningDuration)} ";
       } else {
         carStatus = CarStatus.expired;

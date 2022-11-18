@@ -150,7 +150,7 @@ class _AuctionsViewState extends State<AuctionsView> {
                         child: carController.allCarsLoading?
                         Center(
                           child: CircularProgressIndicator(),
-                        ):carController.getData(CarStatus.all).isNotEmpty
+                        ): carController.getData(CarStatus.all).isNotEmpty
                             ? ListView.builder(
                             itemCount: carController
                                 .getData(CarStatus.all).length,

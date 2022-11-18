@@ -9,7 +9,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-
+import 'package:intl/intl.dart' as intl;
+import 'package:timezone/standalone.dart' as tz;
+var dubai = tz.getLocation('Asia/Dubai');
 class CarCard extends StatefulWidget {
   final CarModel carData;
   const CarCard({
@@ -42,9 +44,10 @@ class _CarCardState extends State<CarCard> with TickerProviderStateMixin {
     super.dispose();
   }
   void calculateDur() {
-    if (widget.carData.end_date != null) {
+    //print('www: ${tz.TZDateTime.now(dubai)}');
+    if (widget.carData.end_date != null && widget.carData.end_date.isNotEmpty) {
       setState(() {
-        actual = DateTime.parse(widget.carData.end_date).difference(DateTime.now());
+        actual = intl.DateFormat('yyyy-mm-dd hh:mm:ss').parse(widget.carData.end_date).difference(tz.TZDateTime.now(dubai));
       });
     }
   }

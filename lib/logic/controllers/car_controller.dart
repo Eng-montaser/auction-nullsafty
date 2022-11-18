@@ -24,7 +24,6 @@ class CarController extends GetxController {
       case CarStatus.live:
         return _runningCars;
       //   break;
-
     }
     return [];
   }
@@ -35,10 +34,7 @@ class CarController extends GetxController {
     try {
       await FCIGetDataXApi().getAllCars().then((value) {
         if (value != null) {
-          print('cval ${value.length}');
           _allCars = value;
-          print('cval2 ${value.length}');
-
           update();
         }
       });
@@ -57,9 +53,7 @@ class CarController extends GetxController {
     update();
     try {
       await FCIGetDataXApi().getUpcoming().then((value) {
-        // print('cval $value');
         if (value != null) {
-          // print('cval ${value.length}');
           _upComingCars = value;
           update();
         }
@@ -79,9 +73,7 @@ class CarController extends GetxController {
     update();
     try {
       await FCIGetDataXApi().getRunning().then((value) {
-        // print('cval $value');
         if (value != null) {
-          // print('cval ${value.length}');
           _runningCars = value;
           update();
         }
@@ -98,17 +90,10 @@ class CarController extends GetxController {
 
   @override
   void onInit() async{
-
-
-    // Timer.periodic(Duration(seconds: 15), (timer) {
-    //   loadAllCars(false);
-    //   loadUpComingCars(false);
-    //   loadRunningCars(false);
-    // });
     super.onInit();
     await loadRunningCars(true);
-    loadAllCars(true);
-    loadUpComingCars(true);
+    await loadAllCars(true);
+    await loadUpComingCars(true);
   }
 
   @override

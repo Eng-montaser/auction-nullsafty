@@ -13,7 +13,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../auction_screens/car_details.dart';
-
+import 'package:timezone/standalone.dart' as tz;
+var dubai = tz.getLocation('Asia/Dubai');
 class BuyCard extends StatefulWidget {
   final CarModel carData;
   final bool showDivider;
@@ -44,7 +45,7 @@ void initState() {
 void calculateDur() {
   if (widget.carData.end_date != null) {
    setState((){
-     actual = DateTime.parse(widget.carData.end_date).difference(DateTime.now());
+     actual = DateTime.parse(widget.carData.end_date).difference(tz.TZDateTime.now(dubai));
 
    });
   }
@@ -68,7 +69,7 @@ void calculateDur() {
         ));
       },
       child: Container(
-        padding: const EdgeInsets.all(8.0),
+        padding: FCIPadding.symmetric(width: 5,height: 5),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -76,7 +77,7 @@ void calculateDur() {
               children: [
                 Container(
                   width: ScreenUtil().setWidth(140),
-                  height: ScreenUtil().setHeight(160),
+                  height: ScreenUtil().setHeight(120),
                   padding: EdgeInsets.symmetric(
                       horizontal: ScreenUtil().setWidth(5)),
                   decoration:
@@ -102,37 +103,36 @@ void calculateDur() {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Container(
-                        width: ScreenUtil().setWidth(200),
+                        width: FCISize.width(context)*0.5,
                         padding:
-                            EdgeInsets.only(top: ScreenUtil().setHeight(10)),
+                            EdgeInsets.only(top: ScreenUtil().setHeight(5)),
                         child: Column(
                           // mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('${widget.carData.title}'),
+                            Text('${widget.carData.title}',
+                          style: FCITextStyle.bold(12),
+                          maxLines: 4,
+                          overflow: TextOverflow.ellipsis,),
                             Padding(
                               padding: EdgeInsets.only(
                                   right: ScreenUtil().setWidth(5),
-                                  top: ScreenUtil().setHeight(10)),
+                                  top: ScreenUtil().setHeight(2)),
                               child: Text(
                                 '${widget.carData.desc}',
-                                style: FCITextStyle.normal(11),
-                                maxLines: 4,
+                                style: FCITextStyle.normal(10),
+                                maxLines: 3,
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  top: ScreenUtil().setHeight(10)),
-                              child: Text(
-                                '${widget.carData.start_date}',
-                                style: FCITextStyle.normal(12),
-                              ),
-                            ),
+
                             if (actual != null && actual.inSeconds>0 )
                               Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+
                                   CardMediterranesnDiet(
                                     animation: Tween<double>(
                                         begin: 1.0, end: 0.0)
@@ -147,17 +147,17 @@ void calculateDur() {
                                     auction_time: actual,
                                     strokeWidth:1.5 ,
                                     qapdivider:2.0 ,
-                                    width:30 ,
+                                    width:20 ,
                                     timeLeftTextstyle: FCITextStyle.normal(8),
                                   ),
                                   Stack(
                                     children: [
                                       SizedBox(
-                                        width: ScreenUtil().setWidth(200),
+                                        width: ScreenUtil().setWidth(100),
                                         height: ScreenUtil().setHeight(30),
                                       ),
                                       Positioned(
-                                        left: ScreenUtil().setWidth(-30),
+                                        left: ScreenUtil().setWidth(-10),
                                         child: Theme(
                                           data: Theme.of(context).copyWith(
                                             sliderTheme: SliderThemeData(
@@ -168,7 +168,7 @@ void calculateDur() {
 
                                           ),
                                           child: SizedBox(
-                                            width: ScreenUtil().setWidth(170),
+                                            width: ScreenUtil().setWidth(150),
                                             height: ScreenUtil().setHeight(30),
                                             child: Slider(
                                               min: 0.0,
@@ -186,14 +186,22 @@ void calculateDur() {
                                         ),
                                       )
                                     ],
-                                  )
+                                  ),
                                 ],
                               ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  top: ScreenUtil().setHeight(2)),
+                              child: Text(
+                                '${widget.carData.start_date}',
+                                style: FCITextStyle.normal(10),
+                              ),
+                            ),
                           ],
                         ),
                       ),
                       Container(
-                        width: ScreenUtil().setWidth(75),
+                        width: ScreenUtil().setWidth(60),
                         padding: EdgeInsets.symmetric(
                             vertical: ScreenUtil().setHeight(30)),
                         decoration: BoxDecoration(
@@ -207,15 +215,15 @@ void calculateDur() {
                             Container(
                               child: Text(
                                 '${convertFromStringToRange('${widget.carData.bid_price}')}\n AED',
-                                style: FCITextStyle.bold(13,
+                                style: FCITextStyle.bold(10,
                                     color: FCIColors.primaryColor()),
                               ),
                               padding: EdgeInsets.symmetric(
                                   horizontal: ScreenUtil().setWidth(0),
-                                  vertical: ScreenUtil().setHeight(8)),
+                                  vertical: ScreenUtil().setHeight(5)),
                             ),
                             Divider(
-                              height: 15,
+                              height: 5,
                               thickness: 1,
                               indent: 3,
                               endIndent: 3,
@@ -225,16 +233,16 @@ void calculateDur() {
                               // alignment: Alignment.center,
                               child: Text(
                                 '  ${widget.carData.miles}\n Miles',
-                                style: FCITextStyle.bold(13,
+                                style: FCITextStyle.bold(10,
                                     color: Colors.black54),
                               ),
                               padding: EdgeInsets.symmetric(
                                   horizontal: ScreenUtil().setWidth(0),
-                                  vertical: ScreenUtil().setHeight(8)),
+                                  vertical: ScreenUtil().setHeight(5)),
                             )
                           ],
                         ),
-                      )
+                      ),
                     ],
                   ),
                 )
@@ -243,11 +251,12 @@ void calculateDur() {
             // SizedBox(
             //   height: ScreenUtil().setHeight(5),
             // ),
+            SizedBox(height: ScreenUtil().setHeight(5),),
             if(widget.showDivider)
             Divider(
               color: FCIColors.diverOrange(),
               thickness: 1,
-              height: ScreenUtil().setHeight(25),
+              height: ScreenUtil().setHeight(5),
             )
           ],
         ),

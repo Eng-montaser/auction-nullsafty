@@ -1,4 +1,5 @@
 import 'package:auction/route/route.dart';
+import 'package:auction/ui/authentication/auth_view.dart';
 import 'package:auction/utils/FCIStyle.dart';
 import 'package:auction/utils/languages.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -7,6 +8,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/standalone.dart' as tz;
+var dubai = tz.getLocation('Asia/Dubai');
 
 Future _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
@@ -14,6 +18,8 @@ Future _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  tz.initializeTimeZones();
+  tz.setLocalLocation(dubai);
   await Firebase.initializeApp();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
@@ -50,7 +56,8 @@ class MyApp extends StatelessWidget {
           // is not restarted.
           primarySwatch: Colors.blue,
         ),
-        getPages: AppRoutes.routes,
+        //getPages: AppRoutes.routes,
+        home: AuthenticationView(),
       ),
     );
   }

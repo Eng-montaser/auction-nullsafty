@@ -46,13 +46,21 @@ dependencies:
   photo_view: ^0.14.0
   image_picker: ^0.8.5+3
   #notifications plugins
+  firebase_auth:
   firebase_messaging: ^13.0.0
   firebase_core: ^1.21.1
   overlay_support: ^2.0.1
   badges: ^2.0.3
   flutter_svg: ^1.1.6
   curved_navigation_bar: ^1.0.3
-  lottie: ^1.4.2
+  video_player: ^2.4.7
+  liquid_swipe: ^3.0.0
+  animated_widgets: ^1.1.0
+  widget_and_text_animator: ^1.0.9
+  timezone: ^0.9.0
+  flutter_facebook_auth: ^5.0.6
+  google_sign_in: ^5.4.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -81,6 +89,7 @@ flutter:
     - assets/lang/
     - assets/fonts/
     - assets/jsonfiles/
+    - assets/video/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
