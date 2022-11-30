@@ -1,24 +1,11 @@
-import 'dart:async';
 
-import 'package:auction/database/getxApi/get_api.dart';
-import 'package:auction/database/models/car_model.dart';
-import 'package:auction/logic/controllers/car_controller.dart';
-import 'package:auction/logic/controllers/car_details_Controller.dart';
-import 'package:auction/ui/widgets/BuyCard.dart';
-import 'package:auction/ui/widgets/CarCard.dart';
-import 'package:auction/ui/widgets/empty_screen_noData.dart';
-import 'package:auction/ui/widgets/image_gallery.dart';
 import 'package:auction/utils/FCIStyle.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-import '../../utils/constants.dart';
-import '../widgets/car_exterior_parts_view.dart';
-import '../widgets/clippath.dart';
 import '../widgets/custom_background.dart';
 
 class CarDetailsShowView extends StatefulWidget {

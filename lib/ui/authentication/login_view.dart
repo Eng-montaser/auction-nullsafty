@@ -151,7 +151,26 @@ class LoginView extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 10),
+
+                ],
+              ),
+               SizedBox(height: ScreenUtil().setHeight(30)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: ScreenUtil().setWidth(80),
+                    child: Divider(
+                      thickness: 1,
+                    ),
+                  ),
+                  Text('Sign In Using',style: FCITextStyle.bold(20,color: FCIColors.primaryColor()),),
+                  Container(
+                    width: ScreenUtil().setWidth(80),
+                    child: Divider(
+                        thickness: 1,
+                    ),
+                  ),
                 ],
               ),
               Padding(

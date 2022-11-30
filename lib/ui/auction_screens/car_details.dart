@@ -223,16 +223,19 @@ class _AuctionsViewState extends State<CarDetailsView>
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Container(
-                                      width: 220,
+                                      width: ScreenUtil().setWidth(200),
                                       child: Text(
                                         '${widget.carData.title}',
                                         style: FCITextStyle.normal(16),
                                       ),
                                     ),
                                     // Text(carController.liveDuration??'',style: FCITextStyle.normal(16),),
-                                    Text(
-                                      '${carController.liveDuration.value}',
-                                      style: FCITextStyle.normal(16),
+                                    Container(
+                                      width: ScreenUtil().setWidth(200),
+                                      child: Text(
+                                        '${carController.liveDuration.value}',
+                                        style: FCITextStyle.normal(16),
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -244,8 +247,8 @@ class _AuctionsViewState extends State<CarDetailsView>
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      widget.carData.bid_price != null
-                                          ? '${widget.carData.bid_price} AED'
+                                      carController.carData.bid_price != null
+                                          ? '${carController.carData.bid_price} AED'
                                           : '',
                                       style: FCITextStyle.bold(25,
                                           color: FCIColors.buttonGreen()),
@@ -274,7 +277,13 @@ class _AuctionsViewState extends State<CarDetailsView>
                                             CarStatus.live) {
                                           Get.to(() => LiveAuctions(
                                                 carModel: widget.carData,
-                                              ));
+                                              ))?.then((value) {
+
+                                            carController.getCarDetails(widget.carData.id);
+                                            carController.update();
+                                          }
+
+                                          );
                                         }
                                       },
                                       child: Container(

@@ -13,29 +13,30 @@ class CarController extends GetxController {
   List<CarModel> _upComingCars = [];
   List<CarModel> _runningCars = [];
   getData(CarStatus carStatus) {
-    // List<CarModel> returnData = [];
+     List<CarModel> returnData = [];
     switch (carStatus) {
       case CarStatus.all:
-        return _allCars;
-      //  break;
+        returnData= _allCars;
+        break;
       case CarStatus.upComing:
-        return _upComingCars;
-      //break;
+        returnData= _upComingCars;
+      break;
       case CarStatus.live:
-        return _runningCars;
-      //   break;
+        returnData= _runningCars;
+         break;
     }
-    return [];
+    return returnData;
   }
 
   Future<List<CarModel>> loadAllCars(bool loading) async {
     if (loading) allCarsLoading = true;
     update();
     try {
-      await FCIGetDataXApi().getAllCars().then((value) {
+      await FCIGetDataXApi().getAllCars().then((value) async{
         if (value != null) {
           _allCars = value;
           update();
+
         }
       });
       allCarsLoading = false;
@@ -72,10 +73,11 @@ class CarController extends GetxController {
     if (loading) runningLoading = true;
     update();
     try {
-      await FCIGetDataXApi().getRunning().then((value) {
+      await FCIGetDataXApi().getRunning().then((value) async{
         if (value != null) {
           _runningCars = value;
           update();
+
         }
       });
       runningLoading = false;
@@ -92,8 +94,9 @@ class CarController extends GetxController {
   void onInit() async{
     super.onInit();
     await loadRunningCars(true);
-    await loadAllCars(true);
-    await loadUpComingCars(true);
+   /* await loadUpComingCars(true);
+    await   loadAllCars(true);*/
+
   }
 
   @override

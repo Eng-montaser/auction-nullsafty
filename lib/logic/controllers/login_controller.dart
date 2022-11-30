@@ -13,8 +13,8 @@ import 'auth_controller.dart';
 
 class LoginController extends GetxController {
   var isLoading = false.obs;
-  TextEditingController emailController = new TextEditingController();
-  TextEditingController passwordController = new TextEditingController();
+  TextEditingController emailController = new TextEditingController(text: '');
+  TextEditingController passwordController = new TextEditingController(text: '');
   //GoogleDriveActions googleDriveActions=new GoogleDriveActions();
   LoginFocusNode? loginFocusNode;
   FocusNode focusNodeEmail = new FocusNode();
@@ -134,8 +134,8 @@ class LoginController extends GetxController {
           if (response.statusCode == 200){
             AuthenticationController _authController =
                 Get.put(AuthenticationController());
-            await _authController.saveUserData(data);
-            Get.offAll(() => MainScreen(), arguments: {'title': 'Home Screen'});
+             _authController.saveUserData(data).then((value) => Get.offAll(() => MainScreen(), arguments: {'title': 'Home Screen'}));
+
             isLoading.value = false;
             update();
           } else {

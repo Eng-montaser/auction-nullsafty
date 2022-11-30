@@ -16,13 +16,16 @@ class AuthenticationController extends GetxController {
 
   FCIAuthUserModel? _userData;
   FCIAuthUserModel? get userData => _userData;
-  saveUserData(json) async {
-    _userData = FCIAuthUserModel.fromLoginJson(json);
+  Future<void> saveUserData(json) async {
+    _userData = await FCIAuthUserModel.fromLoginJson(json);
     SharedPreferences shared_User = await SharedPreferences.getInstance();
     String user = jsonEncode(json['user']);
-    shared_User.setString('user', user);
+
+    await shared_User.setString('user', user);
     String token = jsonEncode(json['token']);
-    shared_User.setString('token', token);
+
+    await shared_User.setString('token', token);
+
   }
 
   @override
@@ -41,10 +44,10 @@ setInit()async{
     loginActive=false;
   }
 }
-  getUserData() async {
+  Future<String> getUserData() async {
     SharedPreferences shared_User = await SharedPreferences.getInstance();
-    var userData = shared_User.getString('user');
-    var tokenData = shared_User.getString('token');
+    var userData = await shared_User.getString('user');
+    var tokenData =await shared_User.getString('token');
     if (tokenData !=null && userData != null) {
       Map userMap = {
         'token':jsonDecode(tokenData),
@@ -53,23 +56,17 @@ setInit()async{
       if (userMap.isNotEmpty)
         _userData = FCIAuthUserModel.fromLoginJson(userMap);
     }
+    return tokenData??'';
   }
 
   logOut() async {
     PostService _postService = new PostService();
     await _postService.logout().then((response) async {
       print(response.body.toString());
-      if (response.statusCode == 200) {
         SharedPreferences shared_User = await SharedPreferences.getInstance();
         shared_User.remove('user');
         shared_User.remove('token');
         Get.offAll(() => AuthenticationView());
-      }else{
-        SharedPreferences shared_User = await SharedPreferences.getInstance();
-        shared_User.remove('user');
-        shared_User.remove('token');
-        Get.offAll(() => AuthenticationView());
-      }
     });
   }
 }

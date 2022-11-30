@@ -28,6 +28,7 @@ import 'package:get/get.dart';
 import '../logic/controllers/auth_controller.dart';
 import 'widgets/notificationBadge.dart';
 import 'package:widget_and_text_animator/widget_and_text_animator.dart';
+
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
 
@@ -37,11 +38,11 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   List<String> menuItems = ["Home", "Auctions", "Notifications", "Help"];
-   late int _totalNotifications;
+  late int _totalNotifications;
   PushNotification? _notificationInfo;
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
-  bool showData=false;
-  int selectedIndex=1;
+  bool showData = false;
+  int selectedIndex = 1;
   @override
   void initState() {
     _totalNotifications = 0;
@@ -57,10 +58,10 @@ class _MainScreenState extends State<MainScreen> {
 
   checkForInitialMessage() async {
     RemoteMessage? initialMessage =
-    await FirebaseMessaging.instance.getInitialMessage();
+        await FirebaseMessaging.instance.getInitialMessage();
 
     if (initialMessage != null) {
-      print('init ${initialMessage.data}');
+      // print('init ${initialMessage.data}');
       PushNotification notification = PushNotification(
         title: initialMessage.notification?.title,
         body: initialMessage.notification?.body,
@@ -78,7 +79,6 @@ class _MainScreenState extends State<MainScreen> {
     // 2. Instantiate Firebase Messaging
 
     // 3. On iOS, this helps to take the user permissions
-
 
     //if (settings.authorizationStatus == AuthorizationStatus.authorized) {
     print('User granted permission');
@@ -102,7 +102,7 @@ class _MainScreenState extends State<MainScreen> {
       var message = CarModel.fromJosn(messageJson);*/
       setState(() {
         //  _notificationInfo = notification;
-        _totalNotifications++;
+        _totalNotifications = _totalNotifications++;
       });
     } else if (data['type'] != 'bid closed') {
       // var messageJson = json.decode(data['message']);
@@ -117,8 +117,9 @@ class _MainScreenState extends State<MainScreen> {
 
     } else if (data['type'] != 'winner') {
       var messageJson = json.decode(data['message']);
-      Utils().showMessage(
-          context, 'Winner', 'Congratulations!\n You are the winner', true);
+      /*Utils().showMessage(
+          context, 'Winner', 'Congratulations!\n You are the winner', true);*/
+    Get.to(()=>CongratulationView());
     }
   }
 
@@ -128,7 +129,11 @@ class _MainScreenState extends State<MainScreen> {
       backgroundColor: FCIColors.menuBack(),
       body: Stack(
         children: [
-          sidebar(),
+          GetBuilder<MainController>(
+              init: MainController(),
+              builder: (controller) {
+                return sidebar(controller);
+              }),
           GetBuilder<MainController>(
               init: MainController(),
               builder: (controller) {
@@ -153,7 +158,7 @@ class _MainScreenState extends State<MainScreen> {
                       if (controller.isDrawerOpen) {
                         controller.changeSideBar(context);
                         setState(() {
-                          showData=false;
+                          showData = false;
                         });
                       }
                     },
@@ -169,12 +174,12 @@ class _MainScreenState extends State<MainScreen> {
                             leading: Container(),
                             bottom: PreferredSize(
                               preferredSize:
-                              Size.fromHeight(ScreenUtil().setHeight(40)),
+                                  Size.fromHeight(ScreenUtil().setHeight(40)),
                               child: Builder(builder: (context) {
                                 return Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     IconButton(
                                       icon: Icon(
@@ -185,7 +190,7 @@ class _MainScreenState extends State<MainScreen> {
                                       onPressed: () {
                                         controller.changeSideBar(context);
                                         setState(() {
-                                          showData=false;
+                                          showData = false;
                                         });
                                       },
                                     ),
@@ -213,7 +218,7 @@ class _MainScreenState extends State<MainScreen> {
                               index: controller.selectedMenuItem,
                               children: [
                                 HomeView(),
-                                AuctionsView(),
+                                AuctionsView(totalNotify: _totalNotifications),
                                 NotificationsView(),
                                 HelpView()
                               ],
@@ -259,36 +264,49 @@ class _MainScreenState extends State<MainScreen> {
                               //                             ),
                               //                           ),
                               //                         )),
-                              Icon(Icons.home, size: ScreenUtil().setSp(30),
-                              color: selectedIndex==0?FCIColors.primaryColor():FCIColors.iconGrey()),
+                              Icon(Icons.home,
+                                  size: ScreenUtil().setSp(30),
+                                  color: selectedIndex == 0
+                                      ? FCIColors.primaryColor()
+                                      : FCIColors.iconGrey()),
                               Badge(
-                                showBadge:
-                                _totalNotifications > 0,
+                                showBadge: _totalNotifications > 0,
                                 elevation: 5,
                                 position: BadgePosition.topEnd(
-                                    top: 0, end: 25),
+                                    top: ScreenUtil().setHeight(-10),
+                                    end: ScreenUtil().setWidth(-10)),
                                 badgeContent: Text(
                                   '$_totalNotifications',
                                   style: FCITextStyle.normal(10,
                                       color: Colors.white),
                                 ),
-                                child: Icon(Icons.directions_car,size: ScreenUtil().setSp(30), color: selectedIndex==1?FCIColors.primaryColor():FCIColors.iconGrey()),
+                                child: Icon(Icons.directions_car,
+                                    size: ScreenUtil().setSp(30),
+                                    color: selectedIndex == 1
+                                        ? FCIColors.primaryColor()
+                                        : FCIColors.iconGrey()),
                               ),
 
-                              Icon(Icons.notifications_active, size: ScreenUtil().setSp(30), color: selectedIndex==2?FCIColors.primaryColor():FCIColors.iconGrey()),
-                              Icon(Icons.help,size: ScreenUtil().setSp(30), color: selectedIndex==3?FCIColors.primaryColor():FCIColors.iconGrey()),
+                              Icon(Icons.notifications_active,
+                                  size: ScreenUtil().setSp(30),
+                                  color: selectedIndex == 2
+                                      ? FCIColors.primaryColor()
+                                      : FCIColors.iconGrey()),
+                              Icon(Icons.help,
+                                  size: ScreenUtil().setSp(30),
+                                  color: selectedIndex == 3
+                                      ? FCIColors.primaryColor()
+                                      : FCIColors.iconGrey()),
                             ],
                             onTap: (index) {
                               setState(() {
-                                selectedIndex=index;
+                                selectedIndex = index;
                               });
                               controller.changeMenuItem(index);
-                                                  if (index == 1 &&
-                                                      _totalNotifications > 0) {
-                                                    _totalNotifications = 0;
-                                                    Get.put(CarController())
-                                                        .onInit();
-                                                  }
+                              if (index == 1 && _totalNotifications > 0) {
+                                _totalNotifications = 0;
+                                Get.put(CarController()).onInit();
+                              }
                             },
                           ),
                           // BottomAppBar(
@@ -358,210 +376,236 @@ class _MainScreenState extends State<MainScreen> {
                   ),
                 );
               }),
-          ScaleAnimatedWidget.tween(
-            enabled: showData,
-            duration: Duration(milliseconds: 600),
-            scaleDisabled: 0.1,
-            scaleEnabled: 1,
-            child: showData?
-            GestureDetector(
-              onTap: (){
-                setState(() {
-                  showData=!showData;
-                });
-              },
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Container(
-                    width: FCISize.width(context) * 0.3,
-                    padding: EdgeInsets.symmetric(
-                        vertical: ScreenUtil().setHeight(15),
-                        horizontal: ScreenUtil().setWidth(15)),
-                    margin:  EdgeInsets.symmetric(
-                        horizontal: ScreenUtil().setWidth(15)),
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(35),
-                        border: Border.all(color: Colors.black,width: 0.5)
-                    ),
-                    child: Column(
-                      children: [
-                        GetBuilder<AuthenticationController>(
-                          init: AuthenticationController(),
-                          builder: (authController) => Column(
-                            children: [
-                              ClipRRect(
-                                child: CircleAvatar(
-                                  child: CachedNetworkImage(
-                                    imageUrl:
-                                    authController.userData!.user.image ?? '',
-                                    errorWidget: (ctx, url, error) => Image.asset(
-                                        'assets/images/defult_profile.png'),
-                                    width: ScreenUtil().setWidth(150),
-                                    height: ScreenUtil().setWidth(150),
-                                    fit: BoxFit.cover,
+          GetBuilder<AuthenticationController>(
+              init: AuthenticationController(),
+              builder: (authController) {
+                return ScaleAnimatedWidget.tween(
+                    enabled: showData,
+                    duration: Duration(milliseconds: 600),
+                    scaleDisabled: 0.1,
+                    scaleEnabled: 1,
+                    child: showData
+                        ? GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                showData = !showData;
+                              });
+                            },
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Container(
+                                  width: FCISize.width(context) * 0.3,
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: ScreenUtil().setHeight(15),
+                                      horizontal: ScreenUtil().setWidth(15)),
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal: ScreenUtil().setWidth(15)),
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(35),
+                                      border: Border.all(
+                                          color: Colors.black, width: 0.5)),
+                                  child: Column(
+                                    children: [
+                                      Column(
+                                        children: [
+                                          ClipRRect(
+                                            child: CircleAvatar(
+                                              child: CachedNetworkImage(
+                                                imageUrl: authController
+                                                        .userData!.user.image ??
+                                                    '',
+                                                errorWidget: (ctx, url,
+                                                        error) =>
+                                                    Image.asset(
+                                                        'assets/images/defult_profile.png'),
+                                                width:
+                                                    ScreenUtil().setWidth(150),
+                                                height:
+                                                    ScreenUtil().setWidth(150),
+                                                fit: BoxFit.cover,
+                                              ),
+                                              radius: ScreenUtil().setSp(20),
+                                            ),
+                                            borderRadius:
+                                                BorderRadius.circular(100),
+                                          ),
+                                          SizedBox(
+                                            width: ScreenUtil().setWidth(20),
+                                          ),
+                                          Text(
+                                            "${authController.userData?.user.firstname ?? "UserName"} ${authController.userData!.user.lastname ?? ""}",
+                                            style: FCITextStyle.bold(12,
+                                                color: Colors.black),
+                                          ),
+                                          SizedBox(
+                                            height: ScreenUtil().setHeight(5),
+                                          ),
+                                          Text(
+                                              authController
+                                                      .userData?.user.email ??
+                                                  "emailemail@email.com",
+                                              style: FCITextStyle.normal(8,
+                                                  color: FCIColors
+                                                      .textFieldHintGrey())),
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        height: ScreenUtil().setHeight(5),
+                                      ),
+                                      Container(
+                                        alignment: Alignment.center,
+                                        width: ScreenUtil().setWidth(80),
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: ScreenUtil().setHeight(5),
+                                            horizontal:
+                                                ScreenUtil().setWidth(5)),
+                                        margin: EdgeInsets.symmetric(
+                                            vertical: ScreenUtil().setHeight(5),
+                                            horizontal:
+                                                ScreenUtil().setWidth(5)),
+                                        child: Text(
+                                          "Verified",
+                                          style: FCITextStyle.bold(18,
+                                              color: Colors.white),
+                                        ),
+                                        color: FCIColors.buttonGreen(),
+                                      ),
+                                      Container(
+                                        alignment: Alignment.center,
+                                        width: ScreenUtil().setWidth(80),
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: ScreenUtil().setHeight(5),
+                                            horizontal:
+                                                ScreenUtil().setWidth(5)),
+                                        margin: EdgeInsets.symmetric(
+                                            vertical: ScreenUtil().setHeight(5),
+                                            horizontal:
+                                                ScreenUtil().setWidth(5)),
+                                        child: Text(
+                                          "Dealer",
+                                          style: FCITextStyle.bold(18,
+                                              color: Colors.white),
+                                        ),
+                                        color: Colors.orangeAccent,
+                                      ),
+                                      Container(
+                                        alignment: Alignment.center,
+                                        width: ScreenUtil().setWidth(120),
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: ScreenUtil().setHeight(8),
+                                            horizontal:
+                                                ScreenUtil().setWidth(8)),
+                                        margin: EdgeInsets.symmetric(
+                                            vertical: ScreenUtil().setHeight(5),
+                                            horizontal:
+                                                ScreenUtil().setWidth(5)),
+                                        decoration: BoxDecoration(
+                                            color: FCIColors.accentColor(),
+                                            borderRadius:
+                                                BorderRadius.circular(15),
+                                            border:
+                                                Border.all(color: Colors.grey)),
+                                        child: Column(
+                                          children: [
+                                            Text(
+                                              "00",
+                                              style: FCITextStyle.bold(25,
+                                                  color: Colors.black),
+                                            ),
+                                            Text(
+                                              "Total vehicles",
+                                              style: FCITextStyle.bold(10,
+                                                  color: Colors.grey),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Container(
+                                        alignment: Alignment.center,
+                                        width: ScreenUtil().setWidth(120),
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: ScreenUtil().setHeight(8),
+                                            horizontal:
+                                                ScreenUtil().setWidth(8)),
+                                        margin: EdgeInsets.symmetric(
+                                            vertical: ScreenUtil().setHeight(5),
+                                            horizontal:
+                                                ScreenUtil().setWidth(5)),
+                                        decoration: BoxDecoration(
+                                            color: FCIColors.accentColor(),
+                                            borderRadius:
+                                                BorderRadius.circular(15),
+                                            border:
+                                                Border.all(color: Colors.grey)),
+                                        child: Column(
+                                          children: [
+                                            Text(
+                                              "00",
+                                              style: FCITextStyle.bold(25,
+                                                  color: Colors.black),
+                                            ),
+                                            Text(
+                                              "Hosted Auction",
+                                              style: FCITextStyle.bold(10,
+                                                  color: Colors.grey),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Container(
+                                        alignment: Alignment.center,
+                                        width: ScreenUtil().setWidth(120),
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: ScreenUtil().setHeight(8),
+                                            horizontal:
+                                                ScreenUtil().setWidth(8)),
+                                        margin: EdgeInsets.symmetric(
+                                            vertical: ScreenUtil().setHeight(5),
+                                            horizontal:
+                                                ScreenUtil().setWidth(5)),
+                                        decoration: BoxDecoration(
+                                            color: FCIColors.accentColor(),
+                                            borderRadius:
+                                                BorderRadius.circular(15),
+                                            border:
+                                                Border.all(color: Colors.grey)),
+                                        child: Column(
+                                          children: [
+                                            Text(
+                                              "00",
+                                              style: FCITextStyle.bold(25,
+                                                  color: Colors.black),
+                                            ),
+                                            Text(
+                                              "Participated",
+                                              style: FCITextStyle.bold(10,
+                                                  color: Colors.grey),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  radius: ScreenUtil().setSp(20),
                                 ),
-                                borderRadius: BorderRadius.circular(100),
-                              ),
-                              SizedBox(
-                                width: ScreenUtil().setWidth(20),
-                              ),
-                              Text(
-                                "${authController.userData?.user.firstname ?? "UserName"} ${authController.userData!.user.lastname ?? ""}",
-                                style:
-                                FCITextStyle.bold(12, color: Colors.black),
-                              ),
-                              SizedBox(
-                                height: ScreenUtil().setHeight(5),
-                              ),
-                              Text(
-                                  authController.userData?.user.email ??
-                                      "emailemail@email.com",
-                                  style: FCITextStyle.normal(8,
-                                      color: FCIColors.textFieldHintGrey())),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: ScreenUtil().setHeight(5),
-                        ),
-                        Container(
-                          alignment: Alignment.center,
-                          width: ScreenUtil().setWidth(80),
-                          padding: EdgeInsets.symmetric(
-                              vertical: ScreenUtil().setHeight(5),
-                              horizontal: ScreenUtil().setWidth(5)),
-                          margin: EdgeInsets.symmetric(
-                              vertical: ScreenUtil().setHeight(5),
-                              horizontal: ScreenUtil().setWidth(5)),
-                          child: Text(
-                            "Verified",
-                            style: FCITextStyle.bold(18,
-                                color: Colors.white),
-                          ),
-                          color: FCIColors.buttonGreen(),
-                        ),
-                        Container(
-                          alignment: Alignment.center,
-                          width: ScreenUtil().setWidth(80),
-                          padding: EdgeInsets.symmetric(
-                              vertical: ScreenUtil().setHeight(5),
-                              horizontal: ScreenUtil().setWidth(5)),
-                          margin: EdgeInsets.symmetric(
-                              vertical: ScreenUtil().setHeight(5),
-                              horizontal: ScreenUtil().setWidth(5)),
-                          child: Text(
-                            "Dealer",
-                            style: FCITextStyle.bold(18,
-                                color: Colors.white),
-                          ),
-                          color: Colors.orangeAccent,
-                        ),
-                        Container(
-                          alignment: Alignment.center,
-                          width: ScreenUtil().setWidth(120),
-                          padding: EdgeInsets.symmetric(
-                              vertical: ScreenUtil().setHeight(8),
-                              horizontal: ScreenUtil().setWidth(8)),
-                          margin: EdgeInsets.symmetric(
-                              vertical: ScreenUtil().setHeight(5),
-                              horizontal: ScreenUtil().setWidth(5)),
-                          decoration: BoxDecoration(
-                              color: FCIColors.accentColor(),
-                              borderRadius: BorderRadius.circular(15),
-                              border: Border.all(color: Colors.grey)),
-                          child: Column(
-                            children: [
-                              Text(
-                                "00",
-                                style: FCITextStyle.bold(25,
-                                    color: Colors.black),
-                              ),
-                              Text(
-                                "Total vehicles",
-                                style: FCITextStyle.bold(10,
-                                    color: Colors.grey),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          alignment: Alignment.center,
-                          width: ScreenUtil().setWidth(120),
-                          padding: EdgeInsets.symmetric(
-                              vertical: ScreenUtil().setHeight(8),
-                              horizontal: ScreenUtil().setWidth(8)),
-                          margin: EdgeInsets.symmetric(
-                              vertical: ScreenUtil().setHeight(5),
-                              horizontal: ScreenUtil().setWidth(5)),
-                          decoration: BoxDecoration(
-                              color: FCIColors.accentColor(),
-                              borderRadius: BorderRadius.circular(15),
-                              border: Border.all(color: Colors.grey)),
-                          child: Column(
-                            children: [
-                              Text(
-                                "00",
-                                style: FCITextStyle.bold(25,
-                                    color: Colors.black),
-                              ),
-                              Text(
-                                "Hosted Auction",
-                                style: FCITextStyle.bold(10,
-                                    color: Colors.grey),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          alignment: Alignment.center,
-                          width: ScreenUtil().setWidth(120),
-                          padding: EdgeInsets.symmetric(
-                              vertical: ScreenUtil().setHeight(8),
-                              horizontal: ScreenUtil().setWidth(8)),
-                          margin: EdgeInsets.symmetric(
-                              vertical: ScreenUtil().setHeight(5),
-                              horizontal: ScreenUtil().setWidth(5)),
-                          decoration: BoxDecoration(
-                              color: FCIColors.accentColor(),
-                              borderRadius: BorderRadius.circular(15),
-                              border: Border.all(color: Colors.grey)),
-                          child: Column(
-                            children: [
-                              Text(
-                                "00",
-                                style: FCITextStyle.bold(25,
-                                    color: Colors.black),
-                              ),
-                              Text(
-                                "Participated",
-                                style: FCITextStyle.bold(10,
-                                    color: Colors.grey),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: ScreenUtil().setHeight(25),)
-                ],
-              ),
-            ):
-                Container()
-          ),
+                                SizedBox(
+                                  height: ScreenUtil().setHeight(25),
+                                )
+                              ],
+                            ),
+                          )
+                        : Container());
+              }),
         ],
       ),
     );
   }
 
-  Widget sidebar() {
-    return GetBuilder<MainController>(
-        init: MainController(),
-        builder: (controller) {
+  Widget sidebar(MainController controller) {
+    return GetBuilder<AuthenticationController>(
+        init: AuthenticationController(),
+        builder: (authController) {
           return Container(
             width: FCISize.width(context),
             height: FCISize.height(context),
@@ -579,54 +623,56 @@ class _MainScreenState extends State<MainScreen> {
                       translationDisabled: Offset(400, 0),
                       translationEnabled: Offset(0, 0),
                       duration: Duration(milliseconds: 1000),
-                      child:
-                      OpacityAnimatedWidget.tween(
-                          enabled: controller.isDrawerOpen,
-                          opacityDisabled: 0,
-                          opacityEnabled: 1,
-                          child: GetBuilder<AuthenticationController>(
-                            init: AuthenticationController(),
-                            builder: (authController) => Row(
-                              children: [
-                                ClipRRect(
-                                  child: CircleAvatar(
-                                    child: CachedNetworkImage(
-                                      imageUrl:
-                                      authController.userData!.user.image ?? '',
-                                      errorWidget: (ctx, url, error) => Image.asset(
-                                          'assets/images/defult_profile.png'),
-                                      width: ScreenUtil().setWidth(150),
-                                      height: ScreenUtil().setWidth(150),
-                                      fit: BoxFit.cover,
-                                    ),
-                                    radius: ScreenUtil().setSp(20),
+                      child: OpacityAnimatedWidget.tween(
+                        enabled: controller.isDrawerOpen,
+                        opacityDisabled: 0,
+                        opacityEnabled: 1,
+                        child: GetBuilder<AuthenticationController>(
+                          init: AuthenticationController(),
+                          builder: (authController) => Row(
+                            children: [
+                              ClipRRect(
+                                child: CircleAvatar(
+                                  child: CachedNetworkImage(
+                                    imageUrl:
+                                        authController.userData!.user.image ??
+                                            '',
+                                    errorWidget: (ctx, url, error) =>
+                                        Image.asset(
+                                            'assets/images/defult_profile.png'),
+                                    width: ScreenUtil().setWidth(150),
+                                    height: ScreenUtil().setWidth(150),
+                                    fit: BoxFit.cover,
                                   ),
-                                  borderRadius: BorderRadius.circular(100),
+                                  radius: ScreenUtil().setSp(20),
                                 ),
-                                SizedBox(
-                                  width: ScreenUtil().setWidth(20),
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "${authController.userData?.user.firstname ?? "UserName"} ${authController.userData!.user.lastname ?? ""}",
-                                      style:
-                                      FCITextStyle.bold(18, color: Colors.white),
-                                    ),
-                                    SizedBox(
-                                      height: ScreenUtil().setHeight(5),
-                                    ),
-                                    Text(
-                                        authController.userData?.user.email ??
-                                            "emailemail@email.com",
-                                        style: FCITextStyle.normal(14,
-                                            color: FCIColors.textFieldHintGrey())),
-                                  ],
-                                )
-                              ],
-                            ),
+                                borderRadius: BorderRadius.circular(100),
+                              ),
+                              SizedBox(
+                                width: ScreenUtil().setWidth(20),
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "${authController.userData?.user.firstname ?? "UserName"} ${authController.userData!.user.lastname ?? ""}",
+                                    style: FCITextStyle.bold(18,
+                                        color: Colors.white),
+                                  ),
+                                  SizedBox(
+                                    height: ScreenUtil().setHeight(5),
+                                  ),
+                                  Text(
+                                      authController.userData?.user.email ??
+                                          "emailemail@email.com",
+                                      style: FCITextStyle.normal(14,
+                                          color:
+                                              FCIColors.textFieldHintGrey())),
+                                ],
+                              )
+                            ],
                           ),
+                        ),
                       ),
                     ),
                     SizedBox(
@@ -637,8 +683,7 @@ class _MainScreenState extends State<MainScreen> {
                       translationDisabled: Offset(0, -150),
                       translationEnabled: Offset(0, 0),
                       duration: Duration(milliseconds: 1000),
-                      child:
-                      OpacityAnimatedWidget.tween(
+                      child: OpacityAnimatedWidget.tween(
                         enabled: controller.isDrawerOpen,
                         opacityDisabled: 0,
                         opacityEnabled: 1,
@@ -647,7 +692,7 @@ class _MainScreenState extends State<MainScreen> {
                             Get.toNamed(AppRoutes.termsConditions);
                             // controller.changeSideBar(context);
                             setState(() {
-                              showData=false;
+                              showData = false;
                             });
                           },
                           text: "Terms & Conditions",
@@ -660,17 +705,16 @@ class _MainScreenState extends State<MainScreen> {
                       translationDisabled: Offset(0, -250),
                       translationEnabled: Offset(0, 0),
                       duration: Duration(milliseconds: 1100),
-                      child:
-                      OpacityAnimatedWidget.tween(
+                      child: OpacityAnimatedWidget.tween(
                         enabled: controller.isDrawerOpen,
                         opacityDisabled: 0,
                         opacityEnabled: 1,
-                        child:    SideBarItem(
+                        child: SideBarItem(
                           onTap: () {
                             Get.toNamed(AppRoutes.aboutUs);
                             // controller.changeSideBar(context);
                             setState(() {
-                              showData=false;
+                              showData = false;
                             });
                           },
                           text: "About Us",
@@ -683,109 +727,96 @@ class _MainScreenState extends State<MainScreen> {
                       translationDisabled: Offset(0, -350),
                       translationEnabled: Offset(0, 0),
                       duration: Duration(milliseconds: 1200),
-                      child:
-                      OpacityAnimatedWidget.tween(
-                        enabled: controller.isDrawerOpen,
-                        opacityDisabled: 0,
-                        opacityEnabled: 1,
-                        child:  WidgetAnimator(
-                          // incomingEffect: WidgetTransitionEffects.incomingSlideInFromBottom(),
-                          atRestEffect: WidgetRestingEffects.rotate(),
-                          child:  SideBarItem(
-                            onTap: () {
-                              Get.toNamed(AppRoutes.settings);
-                              // controller.changeSideBar(context);
-                              setState(() {
-                                showData=false;
-                              });
-                            },
-                            text: "Settings",
-                            icon: Icons.settings,
-                          ),
-                        )
-                      ),
+                      child: OpacityAnimatedWidget.tween(
+                          enabled: controller.isDrawerOpen,
+                          opacityDisabled: 0,
+                          opacityEnabled: 1,
+                          child: WidgetAnimator(
+                            // incomingEffect: WidgetTransitionEffects.incomingSlideInFromBottom(),
+                            atRestEffect: WidgetRestingEffects.rotate(),
+                            child: SideBarItem(
+                              onTap: () {
+                                Get.toNamed(AppRoutes.settings);
+                                // controller.changeSideBar(context);
+                                setState(() {
+                                  showData = false;
+                                });
+                              },
+                              text: "Settings",
+                              icon: Icons.settings,
+                            ),
+                          )),
                     ),
-
                     TranslationAnimatedWidget.tween(
                       enabled: controller.isDrawerOpen, //
                       translationDisabled: Offset(0, -450),
                       translationEnabled: Offset(0, 0),
                       duration: Duration(milliseconds: 1300),
-                      child:
-                      OpacityAnimatedWidget.tween(
-                        enabled: controller.isDrawerOpen,
-                        opacityDisabled: 0,
-                        opacityEnabled: 1,
-                        child:  WidgetAnimator(
-                          // incomingEffect: WidgetTransitionEffects.incomingSlideInFromBottom(),
-                          atRestEffect: WidgetRestingEffects.slide(),
-                          child:   SideBarItem(
-                            onTap: () {
-                              Get.to(() => AddCar());
-                              // controller.changeSideBar(context);
-                              setState(() {
-                                showData=false;
-                              });
-                            },
-                            text: "Add Car",
-                            icon: Icons.directions_car,
-                          ),
-                        )
-                      ),
+                      child: OpacityAnimatedWidget.tween(
+                          enabled: controller.isDrawerOpen,
+                          opacityDisabled: 0,
+                          opacityEnabled: 1,
+                          child: WidgetAnimator(
+                            // incomingEffect: WidgetTransitionEffects.incomingSlideInFromBottom(),
+                            atRestEffect: WidgetRestingEffects.slide(),
+                            child: SideBarItem(
+                              onTap: () {
+                                Get.to(() => AddCar());
+                                // controller.changeSideBar(context);
+                                setState(() {
+                                  showData = false;
+                                });
+                              },
+                              text: "Add Car",
+                              icon: Icons.directions_car,
+                            ),
+                          )),
                     ),
                     TranslationAnimatedWidget.tween(
                       enabled: controller.isDrawerOpen, //
                       translationDisabled: Offset(0, -550),
                       translationEnabled: Offset(0, 0),
                       duration: Duration(milliseconds: 1400),
-                      child:
-                      OpacityAnimatedWidget.tween(
-                        enabled: controller.isDrawerOpen,
-                        opacityDisabled: 0,
-                        opacityEnabled: 1,
-                        child:  WidgetAnimator(
-                          // incomingEffect: WidgetTransitionEffects.incomingSlideInFromBottom(),
-                          atRestEffect: WidgetRestingEffects.swing(),
-                          child:  SideBarItem(
-                            onTap: () {},
-                            text: "العربية",
-                            icon: Icons.language,
-                          ),
-                        )
-                      ),
+                      child: OpacityAnimatedWidget.tween(
+                          enabled: controller.isDrawerOpen,
+                          opacityDisabled: 0,
+                          opacityEnabled: 1,
+                          child: WidgetAnimator(
+                            // incomingEffect: WidgetTransitionEffects.incomingSlideInFromBottom(),
+                            atRestEffect: WidgetRestingEffects.swing(),
+                            child: SideBarItem(
+                              onTap: () {},
+                              text: "العربية",
+                              icon: Icons.language,
+                            ),
+                          )),
                     ),
                     TranslationAnimatedWidget.tween(
                       enabled: controller.isDrawerOpen, //
                       translationDisabled: Offset(0, -650),
                       translationEnabled: Offset(0, 0),
                       duration: Duration(milliseconds: 1500),
-                      child:
-                      OpacityAnimatedWidget.tween(
-                        enabled: controller.isDrawerOpen,
-                        opacityDisabled: 0,
-                        opacityEnabled: 1,
-                        child: WidgetAnimator(
-                          // incomingEffect: WidgetTransitionEffects.incomingSlideInFromBottom(),
-                          atRestEffect: WidgetRestingEffects.wave(),
-                          child:  GetBuilder<AuthenticationController>(
-                            init: AuthenticationController(),
-                            builder: (authController) => SideBarItem(
+                      child: OpacityAnimatedWidget.tween(
+                          enabled: controller.isDrawerOpen,
+                          opacityDisabled: 0,
+                          opacityEnabled: 1,
+                          child: WidgetAnimator(
+                            // incomingEffect: WidgetTransitionEffects.incomingSlideInFromBottom(),
+                            atRestEffect: WidgetRestingEffects.wave(),
+                            child: SideBarItem(
                               onTap: () {
                                 print("login");
                                 authController.logOut();
                                 controller.changeSideBar(context);
                                 setState(() {
-                                  showData=false;
+                                  showData = false;
                                 });
                               },
                               text: "Logout",
                               icon: Icons.logout,
                             ),
-                          ),
-                        )
-                      ),
+                          )),
                     ),
-
                     SizedBox(
                       height: ScreenUtil().setHeight(15),
                     ),
@@ -794,44 +825,42 @@ class _MainScreenState extends State<MainScreen> {
                       translationDisabled: Offset(0, -650),
                       translationEnabled: Offset(0, 0),
                       duration: Duration(milliseconds: 1500),
-                      child:
-                      OpacityAnimatedWidget.tween(
-                        enabled: controller.isDrawerOpen,
-                        opacityDisabled: 0,
-                        opacityEnabled: 1,
-                        child:  WidgetAnimator(
-                          // incomingEffect: WidgetTransitionEffects.incomingSlideInFromBottom(),
-                          atRestEffect: WidgetRestingEffects.fidget(),
-                          child:   !showData?GestureDetector(
-                            onTap: (){
-                              setState(() {
-                                showData=!showData;
-                              });
-                            },
-                            child: GetBuilder<AuthenticationController>(
-                              init: AuthenticationController(),
-                              builder: (authController) => ClipRRect(
-                                child: CircleAvatar(
-                                  child: CachedNetworkImage(
-                                    imageUrl:
-                                    authController.userData!.user.image ?? '',
-                                    errorWidget: (ctx, url, error) => Image.asset(
-                                        'assets/images/defult_profile.png'),
-                                    width: ScreenUtil().setWidth(150),
-                                    height: ScreenUtil().setWidth(150),
-                                    fit: BoxFit.cover,
-                                  ),
-                                  radius: ScreenUtil().setSp(40),
-                                ),
-                                borderRadius: BorderRadius.circular(150),
-                              ),
-                            ),
-                          ):
-                          Container(),
-                        )
-                      ),
+                      child: OpacityAnimatedWidget.tween(
+                          enabled: controller.isDrawerOpen,
+                          opacityDisabled: 0,
+                          opacityEnabled: 1,
+                          child: WidgetAnimator(
+                            // incomingEffect: WidgetTransitionEffects.incomingSlideInFromBottom(),
+                            atRestEffect: WidgetRestingEffects.fidget(),
+                            child: !showData
+                                ? GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        showData = !showData;
+                                      });
+                                    },
+                                    child: ClipRRect(
+                                      child: CircleAvatar(
+                                        child: CachedNetworkImage(
+                                          imageUrl: authController.userData !=
+                                                  null
+                                              ? '${authController.userData!.user.image!}'
+                                              : '',
+                                          errorWidget: (ctx, url, error) =>
+                                              Image.asset(
+                                                  'assets/images/defult_profile.png'),
+                                          width: ScreenUtil().setWidth(150),
+                                          height: ScreenUtil().setWidth(150),
+                                          fit: BoxFit.cover,
+                                        ),
+                                        radius: ScreenUtil().setSp(40),
+                                      ),
+                                      borderRadius: BorderRadius.circular(150),
+                                    ),
+                                  )
+                                : Container(),
+                          )),
                     ),
-
                   ],
                 ),
               ),

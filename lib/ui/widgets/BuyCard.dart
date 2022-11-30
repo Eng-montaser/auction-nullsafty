@@ -147,13 +147,14 @@ void calculateDur() {
                                     auction_time: actual,
                                     strokeWidth:1.5 ,
                                     qapdivider:2.0 ,
-                                    width:20 ,
+                                    width:ScreenUtil().setWidth(35) ,
+
                                     timeLeftTextstyle: FCITextStyle.normal(8),
                                   ),
                                   Stack(
                                     children: [
                                       SizedBox(
-                                        width: ScreenUtil().setWidth(100),
+                                        width: ScreenUtil().setWidth(150),
                                         height: ScreenUtil().setHeight(30),
                                       ),
                                       Positioned(

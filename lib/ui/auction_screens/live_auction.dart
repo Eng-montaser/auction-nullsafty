@@ -96,6 +96,7 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
                     elevation: 0,
                     leading: MaterialButton(
                         onPressed: () {
+                          //Get.put(CarDetailsController(carData: widget.carModel)).getCarDetails(widget.carModel.id);
                           Get.back();
                         },
                         child: Icon(
@@ -245,6 +246,9 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
                                 unselectedLabelColor: Colors.black54,
                                 indicatorSize: TabBarIndicatorSize.tab,
                                 indicatorWeight: 1,
+                                padding: EdgeInsets.zero,
+                                labelPadding: EdgeInsets.zero,
+
                                 indicatorColor: Colors.white,
                                 tabs: [
                                   Tab(
@@ -264,7 +268,7 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
                                       decoration: BoxDecoration(
                                           border: Border.symmetric(
                                               vertical: BorderSide(
-                                                  width: .5,
+                                                //  width: .5,
                                                   color:
                                                       FCIColors.primaryColor()
                                                           .withOpacity(.7)))),
@@ -295,15 +299,23 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
                                     children: [
                                       Container(
                                         height: ScreenUtil().setHeight(60),
-                                        margin: EdgeInsets.symmetric(
+                                       /* margin: EdgeInsets.symmetric(
                                             horizontal:
-                                                ScreenUtil().setWidth(15)),
+                                                ScreenUtil().setWidth(15)),*/
                                         child: Row(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
+                                              MainAxisAlignment.spaceBetween,
                                           children: <Widget>[
                                             Container(
-                                              width: size.width * .22,
+                                              width: (size.width /3)-ScreenUtil().setWidth(12),
+                                             /* decoration:BoxDecoration(
+                                                  border: Border.symmetric(
+                                                      vertical: BorderSide(
+                                                          width: .5,
+                                                          color:
+                                                          FCIColors.primaryColor()
+                                                              .withOpacity(.7)))),*/
+
                                               child: Column(
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: [
@@ -328,48 +340,66 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
                                                 ],
                                               ),
                                             ),
-                                            VerticalDivider(
+                                          /*  VerticalDivider(
                                               color: FCIColors.primaryColor(),
                                               width: ScreenUtil().setWidth(30),
                                               thickness: 1,
                                               endIndent: 12,
                                               indent: 12,
-                                            ),
-                                            Container(
-                                              width: size.width * .22,
-                                              child: Column(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  Text(
-                                                    'Vat Value',
-                                                    style: FCITextStyle.normal(
-                                                            15,
-                                                            color: FCIColors
-                                                                .textFieldBack())
-                                                        .copyWith(
-                                                            fontFamily: ''),
-                                                  ),
-                                                  Text(
-                                                    'None',
-                                                    style: FCITextStyle.normal(
-                                                            15,
-                                                            color: FCIColors
-                                                                .primaryColor())
-                                                        .copyWith(
-                                                            fontFamily: ''),
-                                                  )
-                                                ],
+                                            ),*/
+                                            Expanded(
+                                              child: Container(
+                                                height: ScreenUtil().setHeight(70),
+                                                decoration: BoxDecoration(
+                                                    border: Border.symmetric(
+                                                        vertical: BorderSide(
+                                                         //   width: .5,
+                                                            color:
+                                                            FCIColors.primaryColor()
+                                                                .withOpacity(.7)))),
+
+                                                child: Column(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: [
+                                                    Text(
+                                                      'Vat Value',
+                                                      style: FCITextStyle.normal(
+                                                              15,
+                                                              color: FCIColors
+                                                                  .textFieldBack())
+                                                          .copyWith(
+                                                              fontFamily: ''),
+                                                    ),
+                                                    Text(
+                                                      'None',
+                                                      style: FCITextStyle.normal(
+                                                              15,
+                                                              color: FCIColors
+                                                                  .primaryColor())
+                                                          .copyWith(
+                                                              fontFamily: ''),
+                                                    )
+                                                  ],
+                                                ),
                                               ),
                                             ),
-                                            VerticalDivider(
+                                           /* VerticalDivider(
                                               color: FCIColors.primaryColor(),
                                               width: ScreenUtil().setWidth(30),
                                               thickness: 1,
                                               endIndent: 12,
                                               indent: 12,
-                                            ),
+                                            ),*/
                                             Container(
-                                              width: size.width * .25,
+                                              width: (size.width /3)-ScreenUtil().setWidth(12),
+                                             /* decoration:BoxDecoration(
+                                                  border: Border.symmetric(
+                                                      vertical: BorderSide(
+                                                          width: .5,
+                                                          color:
+                                                          FCIColors.primaryColor()
+                                                              .withOpacity(.7)))),*/
+
                                               child: Column(
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: [
@@ -428,15 +458,15 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
                                                     Text(
                                                       "Current Bid  ",
                                                       style:
-                                                          FCITextStyle.normal(
-                                                              20,
+                                                          FCITextStyle.bold(
+                                                              22,
                                                               color:
                                                                   Colors.black),
                                                     ),
                                                     Text(
                                                       "${convertFromStringToRange('${controller.getMaxBid()}')}",
-                                                      style: FCITextStyle.normal(
-                                                          20,
+                                                      style: FCITextStyle.bold(
+                                                          22,
                                                           color: FCIColors
                                                               .buttonGreen()),
                                                     ),
@@ -841,7 +871,7 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
                   GestureDetector(
                     onTap: () {
                       controller.addConfirm(context, widget.carModel.id,
-                          static_val: 500);
+                           500.00);
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -857,7 +887,7 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
                   GestureDetector(
                     onTap: () {
                       controller.addConfirm(context, widget.carModel.id,
-                          static_val: 1000);
+                          1000.00);
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -873,7 +903,7 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
                   GestureDetector(
                     onTap: () {
                       controller.addConfirm(context, widget.carModel.id,
-                          static_val: 2500);
+                           2500.00);
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -892,6 +922,9 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
             MaterialButton(
               onPressed: () async {
                 controller.addBid(context, widget.carModel.id);
+                /*if(controller.bidController.text.isNotEmpty)
+                controller.addConfirm(context, widget.carModel.id,
+                    double.tryParse(controller.bidController.text)??0.00);*/
               },
               child: controller.isLoading.value
                   ? CircularProgressIndicator()

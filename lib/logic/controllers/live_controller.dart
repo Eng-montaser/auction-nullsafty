@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:auction/database/models/car_model.dart';
 import 'package:auction/database/services/get_service.dart';
+import 'package:auction/logic/controllers/car_details_Controller.dart';
 import 'package:auction/utils/FCIStyle.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/cupertino.dart';
@@ -86,14 +87,14 @@ class LiveController extends GetxController {
     update();
   }
 
-  addConfirm(BuildContext context, int id, {int static_val = 0}) {
-    int bid = 0, charge = 0, total = 0;
-    if (static_val > 0) {
+  addConfirm(BuildContext context, int id,double  static_val ) {
+    double bid = 0, charge = 0, total = 0;
+    //if (static_val > 0) {
       bid = static_val + getMaxBid();
-    } else {
-      bid = int.parse('${bidController.text}');
-    }
-    charge = int.parse('${carDetails.shipping_cost?.toInt() ?? 0}');
+  //  } else {
+  //    bid = double.parse('${bidController.text}');
+  //  }
+    charge = double.parse('${carDetails.shipping_cost?.toInt() ?? 0}');
     total = bid + charge;
     AwesomeDialog(
         context: context,
@@ -185,8 +186,13 @@ class LiveController extends GetxController {
                 isLoading.value = false;
                 showAddBid = false;
                 bidController.text = '';
+
                 // getMyBids(id);
+             //   if(Get.isRegistered<CarDetailsController>())
+
                 update();
+
+
               } else {
                 isLoading.value = false;
                 showAddBid = false;
@@ -281,25 +287,25 @@ class LiveController extends GetxController {
 
     /// password empty validate
     else {
-      if (getMaxBid() >= double.parse('${bidController.text}')) {
-        Get.snackbar('', "",
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.white,
-            titleText: Text(
-              'Bid Error!',
-              style: FCITextStyle.bold(15, color: FCIColors.primaryColor()),
-            ),
-            messageText: Text(
-              'Last bid was ${getMaxBid()}.',
-              style: FCITextStyle.bold(15, color: FCIColors.primaryColor()),
-            ));
-
-        update();
-      }
+      // if (getMaxBid() >= double.parse('${bidController.text}')) {
+      //   Get.snackbar('', "",
+      //       snackPosition: SnackPosition.BOTTOM,
+      //       backgroundColor: Colors.white,
+      //       titleText: Text(
+      //         'Bid Error!',
+      //         style: FCITextStyle.bold(15, color: FCIColors.primaryColor()),
+      //       ),
+      //       messageText: Text(
+      //         'Last bid was ${getMaxBid()}.',
+      //         style: FCITextStyle.bold(15, color: FCIColors.primaryColor()),
+      //       ));
+      //
+      //   update();
+      // }
       // late FCIAuthUserModel fciAuthUserModel;
-      else {
-        addConfirm(context, id);
-      }
+      //else {
+        addConfirm(context, id,double.tryParse(bidController.text)??0.00);
+      //}
       update();
     }
   }

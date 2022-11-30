@@ -8,6 +8,7 @@ class FCIGetDataXApi {
     List<CarModel>? carmodels;
     try {
       await GetService().getAllCars().then((response) {
+        print('sssAllCars ${response.body}');
         if (response.statusCode == 200 || response.statusCode == 201) {
           carmodels = [];
           var data = jsonDecode(response.body);
@@ -26,8 +27,9 @@ class FCIGetDataXApi {
   Future<List<CarModel>?> getRunning() async {
     List<CarModel>? carmodels;
     await GetService().getRunningCars().then((response) {
+      print('sss ${response.body}');
       if (response.statusCode == 200 || response.statusCode == 201) {
-        // print('sss ${response.body}');
+
         //(response.body);
         carmodels = [];
         var data = jsonDecode(response.body);
@@ -43,6 +45,7 @@ class FCIGetDataXApi {
   Future<List<CarModel>?> getUpcoming() async {
     List<CarModel>? carmodels;
     await GetService().getUpcomingCars().then((response) {
+      print('sssgetUpcoming ${response.body}');
       if (response.statusCode == 200 || response.statusCode == 201) {
         // print('sss ${response.body}');
         //(response.body);

@@ -48,13 +48,13 @@ class AppRoutes {
     GetPage(
         name: Routes.register,
         page: () => RegisterView(),
-        binding: AuthenticationBinding()),
+       ),
     GetPage(name: Routes.login, page: () => LoginView()),
     GetPage(name: Routes.splash, page: () => SplashScreen()),
     GetPage(
         name: Routes.auth,
         page: () => AuthenticationView(),
-        binding: AuthenticationBinding()),
+        ),
 
     /// Setting  Screens
     GetPage(
@@ -71,7 +71,7 @@ class AppRoutes {
 
     ///  Home Screens
     GetPage(name: Routes.home, page: () => HomeView()),
-    GetPage(name: Routes.auctions, page: () => AuctionsView()),
+   // GetPage(name: Routes.auctions, page: () => AuctionsView()),
     GetPage(name: Routes.notifications, page: () => NotificationsView()),
     GetPage(name: Routes.help, page: () => HelpView()),
     //  GetPage(name: Routes.live_auction, page: () => LiveAuctions(carModel: ,)),

@@ -38,6 +38,7 @@ class Api {
       'Authorization': 'Bearer $token',
       'Accept': 'application/json',
     };
+    print('header: $headers');
     return headers;
   }
 
@@ -46,11 +47,15 @@ class Api {
   ///*****************************************************
   Future<http.Response> httpGet(String endPath,
       {Map<String, String>? query}) async {
+    var h;
+Future.delayed(Duration(seconds: 1),(){
+ h=getHeaders();
+});
     Uri uri = Uri.https(baseUrl, '$path/$endPath');
     if (query != null) {
       uri = Uri.https(baseUrl, '$path/$endPath', query);
     }
-    return http.get(uri, headers: getHeaders());
+    return http.get(uri, headers: h);
   }
 
   ///*****************************************************

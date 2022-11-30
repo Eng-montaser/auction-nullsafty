@@ -4,13 +4,14 @@ import 'dart:convert';
 import 'package:auction/database/models/car_model.dart';
 import 'package:auction/logic/controllers/car_controller.dart';
 import 'package:flutter/animation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 import '../../database/services/get_service.dart';
 import 'package:timezone/standalone.dart' as tz;
 var dubai = tz.getLocation('Asia/Dubai');
 class CarDetailsController extends GetxController
-    with SingleGetTickerProviderMixin {
+    with GetSingleTickerProviderStateMixin {
   late CarModel carData;
   CarDetailsController({required this.carData});
   @override
@@ -55,15 +56,17 @@ class CarDetailsController extends GetxController
   }
 
   getTimeOfAuction() {
+    var dateNow=tz.TZDateTime.now(dubai);
+    //var dateNow=DateTime.now().add(Duration(days: 1));
     if (carData.start_date.isNotEmpty && carData.end_date.isNotEmpty) {
-      if (tz.TZDateTime.now(dubai).isBefore(DateTime.parse(carData.start_date))) {
+      if (dateNow.isBefore(DateTime.parse(carData.start_date))) {
         carStatus = CarStatus.upComing;
         liveDuration.value =
-            "start after  ${DateTime.parse(carData.start_date).difference(tz.TZDateTime.now(dubai)).inDays}";
-      } else if (tz.TZDateTime.now(dubai).isBefore(DateTime.parse(carData.end_date))) {
+            "start after  ${DateTime.parse(carData.start_date).difference(dateNow).inDays}";
+      } else if (dateNow.isBefore(DateTime.parse(carData.end_date))) {
         carStatus = CarStatus.live;
         Duration runningDuration =
-            DateTime.parse(carData.end_date).difference(tz.TZDateTime.now(dubai));
+            DateTime.parse(carData.end_date).difference(dateNow);
         liveDuration.value = "end after  ${_printDuration(runningDuration)} ";
       } else {
         carStatus = CarStatus.expired;
@@ -86,14 +89,17 @@ class CarDetailsController extends GetxController
     GetService _getService = new GetService();
     try {
       await _getService.getcarDetails(_id).then((response) async {
+        print('ddd: ${response.body}');
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
 
           if (data['success']) {
             carDetails = CarDetails.fromJosn(data['data']);
+            carData = CarModel.fromJosn(data['data']);
+            update();
           }
 
-          update();
+
         } else {
           print(response.statusCode);
           update();
@@ -109,7 +115,12 @@ class CarDetailsController extends GetxController
   // format(Duration d) => d.toString().split('.').first.padLeft(8, "0");
   @override
   void onClose() {
-    // TODO: implement onClose
+
     super.onClose();
+  }
+
+  @override
+  void didChangeDependencies(BuildContext context) {
+    print('get from readys');
   }
 }

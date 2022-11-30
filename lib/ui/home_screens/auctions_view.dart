@@ -3,6 +3,7 @@ import 'package:auction/ui/widgets/BuyCard.dart';
 import 'package:auction/ui/widgets/CarCard.dart';
 import 'package:auction/ui/widgets/empty_screen_noData.dart';
 import 'package:auction/utils/FCIStyle.dart';
+import 'package:badges/badges.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -10,7 +11,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 class AuctionsView extends StatefulWidget {
-  AuctionsView({Key? key}) : super(key: key);
+  final int totalNotify;
+  AuctionsView({Key? key,required this.totalNotify}) : super(key: key);
   @override
   _AuctionsViewState createState() => _AuctionsViewState();
 }
@@ -46,6 +48,12 @@ class _AuctionsViewState extends State<AuctionsView> {
                       setState(() {
                         selectedTap=val;
                       });
+                      if(val==0)
+                        carController.loadAllCars(true);
+                      else if(val==1)
+                        carController.loadUpComingCars(true);
+                      else if(val==2)
+                        carController.loadRunningCars(false);
                     },
                     tabs: [
                       Tab(
@@ -61,21 +69,33 @@ class _AuctionsViewState extends State<AuctionsView> {
                           alignment: Alignment.center,
                           width: double.infinity,
                           height: double.infinity,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text('All Cars',style: selectedTap==0?FCITextStyle.bold(14,color: FCIColors.primaryColor())
-                                  :FCITextStyle.normal(14,color: Colors.black54),),
-                           /*  if(selectedTap==0) IconButton(
-                                  onPressed: () {
-                                    carController.loadAllCars(true);
-                                  },
-                                  icon: Icon(
-                                    Icons.refresh,
-                                    size: ScreenUtil().setSp(20),
-                                    color: FCIColors.iconGrey(),
-                                  ))*/
-                            ],
+                          child: Badge(
+                            showBadge: widget.totalNotify > 0,
+                            elevation: 5,
+                            position: BadgePosition.topEnd(
+                                top: ScreenUtil().setHeight(-10),
+                                end: ScreenUtil().setWidth(-10)),
+                            badgeContent: Text(
+                              '${widget.totalNotify}',
+                              style: FCITextStyle.normal(10,
+                                  color: Colors.white),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text('All Cars',style: selectedTap==0?FCITextStyle.bold(14,color: FCIColors.primaryColor())
+                                    :FCITextStyle.normal(14,color: Colors.black54),),
+                             /*  if(selectedTap==0) IconButton(
+                                    onPressed: () {
+                                      carController.loadAllCars(true);
+                                    },
+                                    icon: Icon(
+                                      Icons.refresh,
+                                      size: ScreenUtil().setSp(20),
+                                      color: FCIColors.iconGrey(),
+                                    ))*/
+                              ],
+                            ),
                           ),
                         ),
                       ),

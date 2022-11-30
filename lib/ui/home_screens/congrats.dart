@@ -120,7 +120,7 @@ class _CongratulationViewState extends State<CongratulationView> {
                 )
             ),
           ),
-          Positioned(
+          /*Positioned(
             bottom: ScreenUtil().setHeight(40),
             right: 0,left: 0,
             child: Container(
@@ -144,7 +144,7 @@ class _CongratulationViewState extends State<CongratulationView> {
                 ],
               ) ,
             ),
-          )
+          )*/
         ],
       ),
     );

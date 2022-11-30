@@ -56,8 +56,8 @@ class MyApp extends StatelessWidget {
           // is not restarted.
           primarySwatch: Colors.blue,
         ),
-        //getPages: AppRoutes.routes,
-        home: AuthenticationView(),
+        getPages: AppRoutes.routes,
+       // home: AuthenticationView(),
       ),
     );
   }
