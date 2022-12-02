@@ -29,29 +29,12 @@ class LiveAuctions extends StatefulWidget {
 class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
   final loginFormKey = GlobalKey<FormState>();
   late AnimationController animationController;
-  late Timer timer;
-  final LiveController _controller = Get.put(LiveController());
-  StreamController<CarDetails> _streamController =
-      StreamController<CarDetails>.broadcast();
 
   @override
   void initState() {
     animationController = AnimationController(
         duration: const Duration(milliseconds: 3000), vsync: this);
     super.initState();
-    init();
-    Timer.periodic(Duration(seconds: 3), (timer) {
-      init();
-    });
-    _controller.calculateDur();
-    timer = Timer.periodic(
-        Duration(seconds: 1), (timer) => _controller.calculateDur());
-  }
-
-  init() {
-    _controller.getCarDetails(widget.carModel.id);
-    _controller.getMyBids(widget.carModel.id);
-    _streamController.sink.add(_controller.carDetails);
   }
   /*init() async {
     await FCIGetDataXApi().getCarDetails(widget.carModel.id).then((value) {
@@ -77,7 +60,7 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
     Size size = MediaQuery.of(context).size;
     // _controller.calculateDur();
     return GetBuilder<LiveController>(
-        init: LiveController(),
+        init: LiveController(widget.carModel.id),
         builder: (controller) => GestureDetector(
               onTap: () {
                 setState(() {
@@ -87,6 +70,7 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
               child: DefaultTabController(
                 length: 3,
                 initialIndex: 0,
+
                 child: Scaffold(
                   backgroundColor: Colors.white,
                   appBar: AppBar(
@@ -97,7 +81,7 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
                     leading: MaterialButton(
                         onPressed: () {
                           //Get.put(CarDetailsController(carData: widget.carModel)).getCarDetails(widget.carModel.id);
-                          Get.back();
+                          Get.back(result: '${controller.getMaxBid()}');
                         },
                         child: Icon(
                           Icons.arrow_back_sharp,
@@ -297,140 +281,135 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
                                 SingleChildScrollView(
                                   child: Column(
                                     children: [
-                                      Container(
-                                        height: ScreenUtil().setHeight(60),
-                                       /* margin: EdgeInsets.symmetric(
-                                            horizontal:
-                                                ScreenUtil().setWidth(15)),*/
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: <Widget>[
-                                            Container(
-                                              width: (size.width /3)-ScreenUtil().setWidth(12),
-                                             /* decoration:BoxDecoration(
-                                                  border: Border.symmetric(
-                                                      vertical: BorderSide(
-                                                          width: .5,
-                                                          color:
-                                                          FCIColors.primaryColor()
-                                                              .withOpacity(.7)))),*/
+                                      DefaultTabController(
+                                        length: 3,
+                                        child: Container(
+                                          /*margin: EdgeInsets.symmetric(
+                                    horizontal: ScreenUtil().setWidth(20)),*/
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                          ),
+                                          child: TabBar(
+                                            labelColor: FCIColors.primaryColor(),
+                                            onTap: (i){
 
-                                              child: Column(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  Text(
-                                                    'Reserve Price',
-                                                    style: FCITextStyle.normal(
+                                            },
+                                            unselectedLabelColor: Colors.black54,
+                                            indicatorSize: TabBarIndicatorSize.tab,
+                                            indicatorWeight: 1,
+                                            padding: EdgeInsets.zero,
+                                            labelPadding: EdgeInsets.zero,
+
+                                            indicatorColor: Colors.white,
+                                            tabs: [
+                                              Tab(
+
+                                                child: Container(
+                                                  alignment: Alignment.center,
+                                                  width: size.width / 3,
+                                                  child: Column(
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: [
+                                                      Text(
+                                                        'Reserve Price',
+                                                        style: FCITextStyle.normal(
                                                             15,
                                                             color: FCIColors
                                                                 .textFieldBack())
-                                                        .copyWith(
+                                                            .copyWith(
                                                             fontFamily: ''),
-                                                  ),
-                                                  Text(
-                                                    'No Reserve',
-                                                    style: FCITextStyle.normal(
+                                                      ),
+                                                      Text(
+                                                        'No Reserve',
+                                                        style: FCITextStyle.normal(
                                                             15,
                                                             color: FCIColors
                                                                 .primaryColor())
-                                                        .copyWith(
+                                                            .copyWith(
                                                             fontFamily: ''),
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                          /*  VerticalDivider(
-                                              color: FCIColors.primaryColor(),
-                                              width: ScreenUtil().setWidth(30),
-                                              thickness: 1,
-                                              endIndent: 12,
-                                              indent: 12,
-                                            ),*/
-                                            Expanded(
-                                              child: Container(
-                                                height: ScreenUtil().setHeight(70),
-                                                decoration: BoxDecoration(
-                                                    border: Border.symmetric(
-                                                        vertical: BorderSide(
-                                                         //   width: .5,
-                                                            color:
-                                                            FCIColors.primaryColor()
-                                                                .withOpacity(.7)))),
-
-                                                child: Column(
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  children: [
-                                                    Text(
-                                                      'Vat Value',
-                                                      style: FCITextStyle.normal(
-                                                              15,
-                                                              color: FCIColors
-                                                                  .textFieldBack())
-                                                          .copyWith(
-                                                              fontFamily: ''),
-                                                    ),
-                                                    Text(
-                                                      'None',
-                                                      style: FCITextStyle.normal(
-                                                              15,
-                                                              color: FCIColors
-                                                                  .primaryColor())
-                                                          .copyWith(
-                                                              fontFamily: ''),
-                                                    )
-                                                  ],
+                                                      )
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                           /* VerticalDivider(
-                                              color: FCIColors.primaryColor(),
-                                              width: ScreenUtil().setWidth(30),
-                                              thickness: 1,
-                                              endIndent: 12,
-                                              indent: 12,
-                                            ),*/
-                                            Container(
-                                              width: (size.width /3)-ScreenUtil().setWidth(12),
-                                             /* decoration:BoxDecoration(
-                                                  border: Border.symmetric(
-                                                      vertical: BorderSide(
-                                                          width: .5,
-                                                          color:
-                                                          FCIColors.primaryColor()
-                                                              .withOpacity(.7)))),*/
+                                              Tab(
+                                                //text: 'two',
 
-                                              child: Column(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  Text(
-                                                    'Starting Bid',
-                                                    style: FCITextStyle.normal(
+                                                child: Container(
+                                                  alignment: Alignment.center,
+                                                  width: size.width / 3,
+                                                  height: double.infinity,
+                                                  decoration: BoxDecoration(
+                                                      border: Border.symmetric(
+                                                          vertical: BorderSide(
+                                                            //  width: .5,
+                                                              color:
+                                                              FCIColors.primaryColor()
+                                                                  .withOpacity(.7)))),
+                                                  child: Column(
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: [
+                                                      Text(
+                                                        'Vat Value',
+                                                        style: FCITextStyle.normal(
                                                             15,
                                                             color: FCIColors
                                                                 .textFieldBack())
-                                                        .copyWith(
+                                                            .copyWith(
                                                             fontFamily: ''),
+                                                      ),
+                                                      Text(
+                                                        'None',
+                                                        style: FCITextStyle.normal(
+                                                            15,
+                                                            color: FCIColors
+                                                                .primaryColor())
+                                                            .copyWith(
+                                                            fontFamily: ''),
+                                                      )
+                                                    ],
                                                   ),
-                                                  if (controller.carDetails
+                                                ),
+                                              ),
+                                              Tab(
+                                                child: Container(
+                                                  alignment: Alignment.center,
+                                                  width: size.width / 3,
+                                                  height: double.infinity,
+                                                  decoration: BoxDecoration(),
+                                                  child: Column(
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: [
+                                                      Text(
+                                                        'Starting Bid',
+                                                        style: FCITextStyle.normal(
+                                                            15,
+                                                            color: FCIColors
+                                                                .textFieldBack())
+                                                            .copyWith(
+                                                            fontFamily: ''),
+                                                      ),
+                                                      if (controller.carDetails
                                                           .min_bid_price !=
-                                                      null)
-                                                    Text(
-                                                      'AED ${convertFromStringToRange('${controller.carDetails.min_bid_price}')}',
-                                                      style: FCITextStyle.normal(
+                                                          null)
+                                                        Text(
+                                                          'AED ${convertFromStringToRange('${controller.carDetails.min_bid_price}')}',
+                                                          style: FCITextStyle.normal(
                                                               15,
                                                               color: FCIColors
                                                                   .primaryColor())
-                                                          .copyWith(
+                                                              .copyWith(
                                                               fontFamily: ''),
-                                                    )
-                                                ],
+                                                        )
+                                                    ],
+                                                  ),
+                                                ),
                                               ),
-                                            ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
                                       ),
-                                      if (_controller.actual != null)
+                                      if (controller.actual != null)
                                         MediterranesnDietView(
                                           animation: Tween<double>(
                                                   begin: 1.0, end: 0.0)
@@ -445,7 +424,7 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
                                           auction_time: controller.actual,
                                         ),
                                       StreamBuilder<CarDetails>(
-                                          stream: _streamController.stream
+                                          stream: controller.streamController.stream
                                               .asBroadcastStream(),
                                           builder: (context, snapshot) {
                                             if (snapshot.hasData)
@@ -503,7 +482,7 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
                                                       backgroundColor:
                                                           Colors.white,
                                                       builder: (context) {
-                                                        return getBiders();
+                                                        return getBiders(controller);
                                                       });
                                               },
                                               child: Container(
@@ -593,9 +572,7 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
                                                             fontFamily: ''),
                                                   ),
                                                   Text(
-                                                    controller.mybids.length > 0
-                                                        ? '${controller.mybids[controller.mybids.length - 1].bid_amount}'
-                                                        : '0.00',
+                                                    '${controller.myLastBid}',
                                                     style: FCITextStyle.normal(
                                                             15,
                                                             color: FCIColors
@@ -783,7 +760,7 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
             // mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                width: MediaQuery.of(context).size.width / 2 - 35,
+                width: MediaQuery.of(context).size.width / 2 - ScreenUtil().setWidth(55),
                 child: Text(
                   '$title',
                   style: FCITextStyle.normal(14,
@@ -791,7 +768,7 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
                 ),
               ),
               Container(
-                width: MediaQuery.of(context).size.width / 2 - 30,
+                width: MediaQuery.of(context).size.width / 2 - ScreenUtil().setWidth(55),
                 child: Text(
                   '$data',
                   style: FCITextStyle.normal(14,
@@ -946,7 +923,7 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
 
   //bool addbidload = false;
 
-  Widget getBiders() {
+  Widget getBiders(LiveController controller) {
     return Container(
       decoration: BoxDecoration(
           color: FCIColors.primaryColor(),
@@ -1001,7 +978,7 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
           columnSpacing: 0,
           headingRowHeight: ScreenUtil().setHeight(40),
           rows: List.generate(
-              _controller.carDetails.bidUsers!.length,
+              controller.carDetails.bidUsers!.length,
               (index) => DataRow(
                       //  height: _controller.carDetails.bidUsers?.length!*20,
                       //  color: FCIColors.primaryColor(),
@@ -1009,7 +986,7 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
                         DataCell(Container(
                           //  padding: EdgeInsets.symmetric(7.0),
                           child: Text(
-                            '${'#${index + 1} Bidder ${_controller.carDetails.bidUsers![index].user.id}'}',
+                            '${'#${index + 1} Bidder ${controller.carDetails.bidUsers![index].user.id}'}',
                             style: TextStyle(color: Colors.white),
                           ),
                         )),
@@ -1017,7 +994,7 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
                           alignment: Alignment.center,
                           //padding: EdgeInsets.all(7.0),
                           child: Text(
-                            'AED ${_controller.carDetails.bidUsers![index].bid_amount}',
+                            'AED ${controller.carDetails.bidUsers![index].bid_amount}',
                             style: TextStyle(color: Colors.white),
                           ),
                         )),
@@ -1025,7 +1002,7 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
                           alignment: Alignment.center,
                           //  padding: EdgeInsets.all(7.0),
                           child: Text(
-                            '${timeago.format(DateTime.parse('${_controller.carDetails.bidUsers![index].updated_at}'))}',
+                            '${timeago.format(DateTime.parse('${controller.carDetails.bidUsers![index].updated_at}'))}',
                             style: TextStyle(color: Colors.white),
                           ),
                         ))

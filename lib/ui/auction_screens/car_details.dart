@@ -278,9 +278,10 @@ class _AuctionsViewState extends State<CarDetailsView>
                                           Get.to(() => LiveAuctions(
                                                 carModel: widget.carData,
                                               ))?.then((value) {
-
-                                            carController.getCarDetails(widget.carData.id);
-                                            carController.update();
+                                           if(value !=null){
+                                             carController.carData.bid_price=value;
+                                             carController.update();
+                                           }
                                           }
 
                                           );

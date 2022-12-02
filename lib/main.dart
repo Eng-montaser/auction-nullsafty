@@ -57,7 +57,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
         ),
         getPages: AppRoutes.routes,
-       // home: AuthenticationView(),
+        //home: AuthenticationView(),
       ),
     );
   }

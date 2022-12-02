@@ -4,6 +4,7 @@ import 'package:auction/logic/controllers/auth_controller.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class BaseApi {
   Api api = Api();
@@ -29,41 +30,49 @@ class Api {
   ///*****************************************************
   ///    set Headers
   ///*****************************************************
-  getHeaders() {
-    AuthenticationController authenticationController =
-        Get.put(AuthenticationController());
-    authenticationController.getUserData();
-    String token = authenticationController.userData?.token ?? '';
+  /*getHeaders() async{
+    SharedPreferences shared_User = await SharedPreferences.getInstance();
+    var token =await shared_User.getString('token');
     Map<String, String> headers = {
       'Authorization': 'Bearer $token',
       'Accept': 'application/json',
     };
-    print('header: $headers');
+
     return headers;
-  }
+  }*/
 
   ///*****************************************************
   ///    Http Get
   ///*****************************************************
   Future<http.Response> httpGet(String endPath,
       {Map<String, String>? query}) async {
-    var h;
-Future.delayed(Duration(seconds: 1),(){
- h=getHeaders();
-});
+    SharedPreferences shared_User = await SharedPreferences.getInstance();
+    var token =await shared_User.getString('token');
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $token',
+      'Accept': 'application/json',
+    };
+   // print('in header get: $endPath');
     Uri uri = Uri.https(baseUrl, '$path/$endPath');
     if (query != null) {
       uri = Uri.https(baseUrl, '$path/$endPath', query);
     }
-    return http.get(uri, headers: h);
+    return http.get(uri, headers:headers);
   }
 
   ///*****************************************************
   ///    Http Post
   ///*****************************************************
   Future<http.Response> httpPost(String endPath, Object body) async {
+    SharedPreferences shared_User = await SharedPreferences.getInstance();
+    var token =await shared_User.getString('token');
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $token',
+      'Accept': 'application/json',
+    };
+    //print('in header post');
     Uri uri = Uri.https(baseUrl, '$path/$endPath');
-    return http.post(uri, body: body, headers: getHeaders());
+    return http.post(uri, body: body, headers: headers);
   }
 
   ///*****************************************************
@@ -72,15 +81,18 @@ Future.delayed(Duration(seconds: 1),(){
   Future<http.Response> httpPostWithFile(
       String endPath, Map<String, String> body,
       {File? file}) async {
+    SharedPreferences shared_User = await SharedPreferences.getInstance();
+    var token =await shared_User.getString('token');
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $token',
+      'Accept': 'application/json',
+    };
     Uri uri = Uri.https(baseUrl, '$path/$endPath');
     var length = await file?.length();
 
-    print('BBBBBBBBBBEEEEEEEGINNNNNNNNNNNNNNNNNNNN');
-    print(file.toString());
-    print(file?.path.toString());
-    print('EEEEEEEEEEEEEEEEEEENNNNNNNNNNNNDDDDDDDD');
+
     http.MultipartRequest request = new http.MultipartRequest('POST', uri)
-      ..headers.addAll(getHeaders())
+      ..headers.addAll(headers)
       ..fields.addAll(body)
       ..files.add(
         ///set name parametter of file in api
@@ -97,6 +109,12 @@ Future.delayed(Duration(seconds: 1),(){
   Future<http.Response> httpPostWithFiles(
       String endPath, Map<String, String> body,
       {List<File>? filesList}) async {
+    SharedPreferences shared_User = await SharedPreferences.getInstance();
+    var token =await shared_User.getString('token');
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $token',
+      'Accept': 'application/json',
+    };
     List<http.MultipartFile> multipartFilesList = [];
     Uri uri = Uri.https(baseUrl, '$path/$endPath');
     for (var file in filesList!) {
@@ -110,7 +128,7 @@ Future.delayed(Duration(seconds: 1),(){
           filename: basename(file.path)));
     }
     http.MultipartRequest request = new http.MultipartRequest('POST', uri)
-      ..headers.addAll(getHeaders())
+      ..headers.addAll(headers)
       ..fields.addAll(body)
       ..files.addAll(multipartFilesList);
     return await http.Response.fromStream(await request.send());

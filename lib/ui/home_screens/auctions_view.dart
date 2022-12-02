@@ -70,11 +70,11 @@ class _AuctionsViewState extends State<AuctionsView> {
                           width: double.infinity,
                           height: double.infinity,
                           child: Badge(
-                            showBadge: widget.totalNotify > 0,
+                            showBadge: widget.totalNotify>0,
                             elevation: 5,
                             position: BadgePosition.topEnd(
-                                top: ScreenUtil().setHeight(-10),
-                                end: ScreenUtil().setWidth(-10)),
+                                top: ScreenUtil().setHeight(-15),
+                                end: ScreenUtil().setWidth(10)),
                             badgeContent: Text(
                               '${widget.totalNotify}',
                               style: FCITextStyle.normal(10,

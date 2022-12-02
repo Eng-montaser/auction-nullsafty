@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:auction/database/models/car_model.dart';
@@ -12,13 +13,24 @@ import 'package:get/get.dart';
 
 import '../../database/services/post_service.dart';
 import 'package:timezone/standalone.dart' as tz;
+
 var dubai = tz.getLocation('Asia/Dubai');
+
 class LiveController extends GetxController {
   var isLoading = false.obs;
   TextEditingController bidController = new TextEditingController();
   CarDetails carDetails = CarDetails();
   List<MyBids> mybids = [];
+  final int carId;
+  String myLastBid = '';
   bool _showAddBid = false;
+  late Timer timer;
+   Timer? timerDetail;
+  // final LiveController _controller = Get.put(LiveController());
+  StreamController<CarDetails> streamController =
+      StreamController<CarDetails>.broadcast();
+
+  LiveController(this.carId);
   bool get showAddBid => _showAddBid;
 
   set showAddBid(bool value) {
@@ -35,7 +47,8 @@ class LiveController extends GetxController {
 
   void calculateDur() {
     if (carDetails.end_date != null) {
-      actual = DateTime.parse(carDetails.end_date!).difference(tz.TZDateTime.now(dubai));
+      actual = DateTime.parse(carDetails.end_date!)
+          .difference(tz.TZDateTime.now(dubai));
       update();
     }
   }
@@ -43,13 +56,39 @@ class LiveController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    //getMyBids();
+    init();
+
+    timer = Timer.periodic(Duration(seconds: 1), (timer) => calculateDur());
+  }
+
+  init() async {
+    await getCarDetails(carId);
+    calculateDur();
+    await getMyBids(carId);
+    streamController.sink.add(carDetails);
+
+      timerDetail=Timer.periodic(Duration(seconds: 5),(timer) async{  if (!isLoading.value) {await getCarDetails(carId);
+      // getMyBids(widget.carModel.id);
+      streamController.sink.add(carDetails);}});
+
   }
 
   @override
   void dispose() {
     if (bidController != null) bidController.dispose();
+    streamController.close();
+    timer.cancel();
+    if(timerDetail != null);
+    timerDetail!.cancel();
     super.dispose();
+  }
+
+  @override
+  void onClose() {
+    timer.cancel();
+    if(timerDetail != null);
+    timerDetail!.cancel();
+    super.onClose();
   }
 
   int getMaxBid() {
@@ -76,6 +115,8 @@ class LiveController extends GetxController {
           }
 
           update();
+
+
         } else {
           update();
         }
@@ -85,15 +126,16 @@ class LiveController extends GetxController {
       update();
     }
     update();
+
   }
 
-  addConfirm(BuildContext context, int id,double  static_val ) {
+  addConfirm(BuildContext context, int id, double static_val) {
     double bid = 0, charge = 0, total = 0;
     //if (static_val > 0) {
-      bid = static_val + getMaxBid();
-  //  } else {
-  //    bid = double.parse('${bidController.text}');
-  //  }
+    bid = static_val + getMaxBid();
+    //  } else {
+    //    bid = double.parse('${bidController.text}');
+    //  }
     charge = double.parse('${carDetails.shipping_cost?.toInt() ?? 0}');
     total = bid + charge;
     AwesomeDialog(
@@ -164,6 +206,7 @@ class LiveController extends GetxController {
         btnOkColor: Color(0xff00d164),
         btnOkOnPress: () async {
           isLoading.value = true;
+          update();
           PostService _postService = new PostService();
           try {
             await _postService.addBid(id, '$bid').then((response) async {
@@ -183,16 +226,15 @@ class LiveController extends GetxController {
                         '${data[0][1]}',
                         style: FCITextStyle.bold(15, color: Colors.white),
                       ));
+                myLastBid = '$bid';
                 isLoading.value = false;
                 showAddBid = false;
                 bidController.text = '';
-
+                await getCarDetails(carId);
                 // getMyBids(id);
-             //   if(Get.isRegistered<CarDetailsController>())
+                //   if(Get.isRegistered<CarDetailsController>())
 
                 update();
-
-
               } else {
                 isLoading.value = false;
                 showAddBid = false;
@@ -247,6 +289,7 @@ class LiveController extends GetxController {
                 mybids.add(myb);
               }
             }
+            myLastBid = '${mybids[mybids.length - 1].bid_amount}';
           }
 
           update();
@@ -304,7 +347,7 @@ class LiveController extends GetxController {
       // }
       // late FCIAuthUserModel fciAuthUserModel;
       //else {
-        addConfirm(context, id,double.tryParse(bidController.text)??0.00);
+      addConfirm(context, id, double.tryParse(bidController.text) ?? 0.00);
       //}
       update();
     }

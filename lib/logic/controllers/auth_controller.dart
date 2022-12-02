@@ -22,9 +22,9 @@ class AuthenticationController extends GetxController {
     String user = jsonEncode(json['user']);
 
     await shared_User.setString('user', user);
-    String token = jsonEncode(json['token']);
+  //  String token = json['token'];
 
-    await shared_User.setString('token', token);
+   // await shared_User.setString('token', token);
 
   }
 

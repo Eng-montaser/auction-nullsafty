@@ -38,14 +38,14 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   List<String> menuItems = ["Home", "Auctions", "Notifications", "Help"];
-  late int _totalNotifications;
+   int totalNotifications=0;
   PushNotification? _notificationInfo;
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
   bool showData = false;
   int selectedIndex = 1;
   @override
   void initState() {
-    _totalNotifications = 0;
+    totalNotifications = 0;
     checkForInitialMessage();
     registerNotification();
     super.initState();
@@ -68,7 +68,7 @@ class _MainScreenState extends State<MainScreen> {
       );
       setState(() {
         _notificationInfo = notification;
-        _totalNotifications++;
+        totalNotifications++;
       });
     }
   }
@@ -100,10 +100,12 @@ class _MainScreenState extends State<MainScreen> {
     if (data['type'] == 'product') {
       /*var messageJson = json.decode(data['message']);
       var message = CarModel.fromJosn(messageJson);*/
+      if(mounted)
       setState(() {
         //  _notificationInfo = notification;
-        _totalNotifications = _totalNotifications++;
-      });
+        totalNotifications = totalNotifications++;
+     });
+      Get.put(CarController()).loadAllCars(false);
     } else if (data['type'] != 'bid closed') {
       // var messageJson = json.decode(data['message']);
       // var message = Bid.fromJosn(messageJson);
@@ -125,6 +127,7 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+   
     return Scaffold(
       backgroundColor: FCIColors.menuBack(),
       body: Stack(
@@ -218,7 +221,7 @@ class _MainScreenState extends State<MainScreen> {
                               index: controller.selectedMenuItem,
                               children: [
                                 HomeView(),
-                                AuctionsView(totalNotify: _totalNotifications),
+                                AuctionsView(totalNotify: totalNotifications),
                                 NotificationsView(),
                                 HelpView()
                               ],
@@ -270,13 +273,13 @@ class _MainScreenState extends State<MainScreen> {
                                       ? FCIColors.primaryColor()
                                       : FCIColors.iconGrey()),
                               Badge(
-                                showBadge: _totalNotifications > 0,
+                                showBadge: totalNotifications > 0,
                                 elevation: 5,
                                 position: BadgePosition.topEnd(
                                     top: ScreenUtil().setHeight(-10),
                                     end: ScreenUtil().setWidth(-10)),
                                 badgeContent: Text(
-                                  '$_totalNotifications',
+                                  '$totalNotifications',
                                   style: FCITextStyle.normal(10,
                                       color: Colors.white),
                                 ),
@@ -303,8 +306,8 @@ class _MainScreenState extends State<MainScreen> {
                                 selectedIndex = index;
                               });
                               controller.changeMenuItem(index);
-                              if (index == 1 && _totalNotifications > 0) {
-                                _totalNotifications = 0;
+                              if (index == 1 && totalNotifications > 0) {
+                                totalNotifications = 0;
                                 Get.put(CarController()).onInit();
                               }
                             },

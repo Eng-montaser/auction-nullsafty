@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../database/services/post_service.dart';
 import '../../ui/main_view.dart';
@@ -132,6 +133,9 @@ class LoginController extends GetxController {
           print('res: ${response.body}');
           var data = jsonDecode(response.body);
           if (response.statusCode == 200){
+            SharedPreferences shared_User = await SharedPreferences.getInstance();
+            String token = data['token'];
+            shared_User.setString('token', token);
             AuthenticationController _authController =
                 Get.put(AuthenticationController());
              _authController.saveUserData(data).then((value) => Get.offAll(() => MainScreen(), arguments: {'title': 'Home Screen'}));
