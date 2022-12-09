@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:auction/database/services/post_service.dart';
 import 'package:auction/logic/controllers/auth_controller.dart';
+import 'package:auction/ui/authentication/auth_view.dart';
 import 'package:auction/ui/main_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
@@ -166,10 +167,10 @@ class RegisterController extends GetxController {
         await _postService.register(getSignUpBody()).then((response) async {
           var data = jsonDecode(response.body);
           if (response.statusCode == 200){
-            AuthenticationController _authController =
+          /*  AuthenticationController _authController =
             Get.put(AuthenticationController());
-            await _authController.saveUserData(data);
-            Get.offAll(() => MainScreen(), arguments: {'title': 'Home Screen'});
+            await _authController.saveUserData(data);*/
+            Get.offAll(() => AuthenticationView());
             isLoading.value = false;
             update();
           } else {

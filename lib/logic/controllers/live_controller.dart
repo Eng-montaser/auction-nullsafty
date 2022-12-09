@@ -4,8 +4,11 @@ import 'dart:convert';
 import 'package:auction/database/models/car_model.dart';
 import 'package:auction/database/services/get_service.dart';
 import 'package:auction/logic/controllers/car_details_Controller.dart';
+import 'package:auction/ui/home_screens/congrats.dart';
 import 'package:auction/utils/FCIStyle.dart';
+import 'package:auction/utils/utils.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -25,7 +28,8 @@ class LiveController extends GetxController {
   String myLastBid = '';
   bool _showAddBid = false;
   late Timer timer;
-   Timer? timerDetail;
+
+  final FirebaseMessaging _messaging = FirebaseMessaging.instance;
   // final LiveController _controller = Get.put(LiveController());
   StreamController<CarDetails> streamController =
       StreamController<CarDetails>.broadcast();
@@ -56,20 +60,62 @@ class LiveController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    registerNotification();
     init();
 
     timer = Timer.periodic(Duration(seconds: 1), (timer) => calculateDur());
   }
+  void registerNotification() async {
+    // 1. Initialize the Firebase app
 
+    // 2. Instantiate Firebase Messaging
+
+    // 3. On iOS, this helps to take the user permissions
+
+    //if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+    print('User granted permission');
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('notif2 ${message.data}');
+      // Parse the message received
+      // PushNotification notification = PushNotification(
+      //   title: message.notification?.title,
+      //   body: message.notification?.body,
+      // );
+      handleNotification(message.data, message);
+    });
+    // } else {
+    //   print('User declined or has not accepted permission');
+    // }
+  }
+
+  handleNotification(data, RemoteMessage message) async {
+    if (data['type'] == 'bid_closed') {
+      /*Utils().showMessage(
+          context, 'Winner', 'Congratulations!\n You are the winner', false);*/
+
+    } else if (data['type'] == 'bid') {
+      var messageJson = json.decode(data['message']);
+      print('m: ${messageJson['product_id']}');
+      if(messageJson['product_id']==carId)
+      await getCarDetails(carId);
+
+    } /*else if (data['type'] == 'winner') {
+      var messageJson = json.decode(data['message']);
+      /*Utils().showMessage(
+          context, 'Winner', 'Congratulations!\n You are the winner', true);*/
+      Get.to(()=>CongratulationView());
+    }*/
+  }
   init() async {
     await getCarDetails(carId);
+    await getMyBids(carId);
     calculateDur();
     await getMyBids(carId);
     streamController.sink.add(carDetails);
 
-      timerDetail=Timer.periodic(Duration(seconds: 5),(timer) async{  if (!isLoading.value) {await getCarDetails(carId);
+      /*timerDetail=Timer.periodic(Duration(seconds: 5),(timer) async{  if (!isLoading.value) {await getCarDetails(carId);
       // getMyBids(widget.carModel.id);
-      streamController.sink.add(carDetails);}});
+      streamController.sink.add(carDetails);}});*/
 
   }
 
@@ -78,16 +124,14 @@ class LiveController extends GetxController {
     if (bidController != null) bidController.dispose();
     streamController.close();
     timer.cancel();
-    if(timerDetail != null);
-    timerDetail!.cancel();
+
     super.dispose();
   }
 
   @override
   void onClose() {
     timer.cancel();
-    if(timerDetail != null);
-    timerDetail!.cancel();
+
     super.onClose();
   }
 
@@ -104,10 +148,12 @@ class LiveController extends GetxController {
   }
 
   getCarDetails(int _id) async {
+
     GetService _getService = new GetService();
     try {
       await _getService.getcarDetails(_id).then((response) async {
         if (response.statusCode == 200) {
+          print('in getdeatails');
           var data = jsonDecode(response.body);
 
           if (data['success']) {

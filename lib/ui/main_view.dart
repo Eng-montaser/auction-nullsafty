@@ -106,18 +106,13 @@ class _MainScreenState extends State<MainScreen> {
         totalNotifications = totalNotifications++;
      });
       Get.put(CarController()).loadAllCars(false);
-    } else if (data['type'] != 'bid closed') {
+    } else if (data['type'] == 'bid_closed') {
       // var messageJson = json.decode(data['message']);
       // var message = Bid.fromJosn(messageJson);
       //Get.put(LiveController()).getCarDetails(_id)
       Utils().showMessageInfo(context, '${message.notification?.title}',
           '${message.notification?.body}');
-    } else if (data['type'] != 'add bid') {
-      // var messageJson = json.decode(data['message']);
-      // var message = Bid.fromJosn(messageJson);
-      // Get.put(CarDetailsController(carData: carData)).
-
-    } else if (data['type'] != 'winner') {
+    }  else if (data['type'] == 'winner') {
       var messageJson = json.decode(data['message']);
       /*Utils().showMessage(
           context, 'Winner', 'Congratulations!\n You are the winner', true);*/

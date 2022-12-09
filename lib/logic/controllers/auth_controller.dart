@@ -47,10 +47,10 @@ setInit()async{
   Future<String> getUserData() async {
     SharedPreferences shared_User = await SharedPreferences.getInstance();
     var userData = await shared_User.getString('user');
-    var tokenData =await shared_User.getString('token');
+    var tokenData = await shared_User.getString('token');
     if (tokenData !=null && userData != null) {
       Map userMap = {
-        'token':jsonDecode(tokenData),
+        'token':tokenData,
         'user':jsonDecode(userData)
       };
       if (userMap.isNotEmpty)
