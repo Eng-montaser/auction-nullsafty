@@ -47,8 +47,8 @@ class MyApp extends StatelessWidget {
           visualDensity: VisualDensity.adaptivePlatformDensity,
           primarySwatch: Colors.blue,
         ),
-        getPages: AppRoutes.routes,
-        //home: AuthenticationView(),
+        //getPages: AppRoutes.routes,
+        home: AuthenticationView(),
       ),
     );
   }
