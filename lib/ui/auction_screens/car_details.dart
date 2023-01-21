@@ -99,202 +99,222 @@ class _AuctionsViewState extends State<CarDetailsView>
                       borderRadius: BorderRadius.circular(15),
                       color: Colors.white,
                     ),
-                    child: Column(
-                      children: [
-                        Stack(
-                          children: [
-                            InkWell(
-                              onTap: () {
-                                Get.to(() => ImagesGallery(
-                                      networkImages: widget.carData.images,
-                                      imageIndex:
-                                          carController.selectedImageIndex,
-                                    ));
-                              },
-                              child: AnimatedBuilder(
-                                animation: carController.controller,
-                                builder: (context, child) => AspectRatio(
-                                  aspectRatio: 1.7,
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(15),
-                                    child: CachedNetworkImage(
-                                      imageUrl: widget.carData.images.length > 0
-                                          ? "${widget.carData.images[carController.selectedImageIndex]}"
-                                          : "",
-                                      errorWidget: (context, url, error) =>
-                                          Icon(Icons.error),
-                                      fit: BoxFit.fill,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          Stack(
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  Get.to(() => ImagesGallery(
+                                        networkImages: widget.carData.images,
+                                        imageIndex:
+                                            carController.selectedImageIndex,
+                                      ));
+                                },
+                                child: AnimatedBuilder(
+                                  animation: carController.controller,
+                                  builder: (context, child) => AspectRatio(
+                                    aspectRatio: 1.7,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(15),
+                                      child: CachedNetworkImage(
+                                        imageUrl: widget.carData.images.length > 0
+                                            ? "${widget.carData.images[carController.selectedImageIndex]}"
+                                            : "",
+                                        errorWidget: (context, url, error) =>
+                                            Icon(Icons.error),
+                                        fit: BoxFit.fill,
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
-                            AspectRatio(
-                              aspectRatio: 1.8,
-                              child: Container(
-                                alignment: Alignment.center,
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    GestureDetector(
-                                      onTap: () async {
-                                        carController.decrementImageIndex();
-                                      },
-                                      child: Container(
-                                        height: ScreenUtil().setHeight(25),
-                                        width: ScreenUtil().setHeight(25),
-                                        decoration: BoxDecoration(
-                                          color: FCIColors.accentColor(),
-                                          shape: BoxShape.circle,
-                                        ),
+                              AspectRatio(
+                                aspectRatio: 1.8,
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () async {
+                                          carController.decrementImageIndex();
+                                        },
                                         child: Container(
-                                          alignment: Alignment.center,
-                                          /*margin: EdgeInsets.all(5),
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    shape: BoxShape.circle,
-                                                  ),*/
-                                          child: Icon(
-                                            CupertinoIcons
-                                                .arrow_left_circle_fill,
-                                            color: carController
-                                                        .selectedImageIndex >
-                                                    0
-                                                ? FCIColors.iconGrey()
-                                                : FCIColors.starGrey(),
-                                            size: ScreenUtil().setSp(20),
+                                          height: ScreenUtil().setHeight(25),
+                                          width: ScreenUtil().setHeight(25),
+                                          decoration: BoxDecoration(
+                                            color: FCIColors.accentColor(),
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: Container(
+                                            alignment: Alignment.center,
+                                            /*margin: EdgeInsets.all(5),
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                      shape: BoxShape.circle,
+                                                    ),*/
+                                            child: Icon(
+                                              CupertinoIcons
+                                                  .arrow_left_circle_fill,
+                                              color: carController
+                                                          .selectedImageIndex >
+                                                      0
+                                                  ? FCIColors.iconGrey()
+                                                  : FCIColors.starGrey(),
+                                              size: ScreenUtil().setSp(20),
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                    GestureDetector(
-                                      onTap: () async {
-                                        carController.incrementImageIndex();
-                                      },
-                                      child: Container(
-                                        height: ScreenUtil().setHeight(25),
-                                        width: ScreenUtil().setHeight(25),
-                                        decoration: BoxDecoration(
-                                          color: FCIColors.accentColor(),
-                                          shape: BoxShape.circle,
-                                        ),
+                                      GestureDetector(
+                                        onTap: () async {
+                                          carController.incrementImageIndex();
+                                        },
                                         child: Container(
-                                          alignment: Alignment.center,
-                                          /*margin: EdgeInsets.all(5),
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              shape: BoxShape.circle,
-                                            ),*/
-                                          child: Icon(
-                                            CupertinoIcons
-                                                .arrow_right_circle_fill,
-                                            color: carController
-                                                        .selectedImageIndex <
-                                                    widget.carData.images
-                                                            .length -
-                                                        1
-                                                ? FCIColors.iconGrey()
-                                                : FCIColors.starGrey(),
-                                            size: ScreenUtil().setSp(20),
+                                          height: ScreenUtil().setHeight(25),
+                                          width: ScreenUtil().setHeight(25),
+                                          decoration: BoxDecoration(
+                                            color: FCIColors.accentColor(),
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: Container(
+                                            alignment: Alignment.center,
+                                            /*margin: EdgeInsets.all(5),
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                shape: BoxShape.circle,
+                                              ),*/
+                                            child: Icon(
+                                              CupertinoIcons
+                                                  .arrow_right_circle_fill,
+                                              color: carController
+                                                          .selectedImageIndex <
+                                                      widget.carData.images
+                                                              .length -
+                                                          1
+                                                  ? FCIColors.iconGrey()
+                                                  : FCIColors.starGrey(),
+                                              size: ScreenUtil().setSp(20),
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: ScreenUtil().setWidth(10)),
-                          child: AspectRatio(
-                            aspectRatio: 1.05,
-                            child: ListView(
-                              physics: AlwaysScrollableScrollPhysics(),
-                              children: [
-                                SizedBox(
-                                  height: ScreenUtil().setHeight(20),
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Container(
-                                      width: ScreenUtil().setWidth(200),
-                                      child: Text(
-                                        '${widget.carData.title}',
-                                        style: FCITextStyle.normal(16),
+                            ],
+                          ),
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: ScreenUtil().setWidth(10)),
+                            child: AspectRatio(
+                              aspectRatio: 1.05,
+                              child: ListView(
+                                physics: AlwaysScrollableScrollPhysics(),
+                                children: [
+                                  SizedBox(
+                                    height: ScreenUtil().setHeight(20),
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Container(
+                                        width: ScreenUtil().setWidth(200),
+                                        child: Text(
+                                          '${widget.carData.title}',
+                                          style: FCITextStyle.normal(16),
+                                        ),
                                       ),
-                                    ),
-                                    // Text(carController.liveDuration??'',style: FCITextStyle.normal(16),),
-                                    Container(
-                                      width: ScreenUtil().setWidth(200),
-                                      child: Text(
-                                        '${carController.liveDuration.value}',
-                                        style: FCITextStyle.normal(16),
+                                      // Text(carController.liveDuration??'',style: FCITextStyle.normal(16),),
+                                      Container(
+                                        width: ScreenUtil().setWidth(200),
+                                        child: Text(
+                                          '${carController.liveDuration.value}',
+                                          style: FCITextStyle.normal(16),
+                                        ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: ScreenUtil().setHeight(20),
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      carController.carData.bid_price != null
-                                          ? '${carController.carData.bid_price} AED'
-                                          : '',
-                                      style: FCITextStyle.bold(25,
-                                          color: FCIColors.buttonGreen()),
-                                    ),
-                                    // Text(carController.liveDuration??'',style: FCITextStyle.normal(16),),
-                                    Row(
-                                      children: List.generate(
-                                          5,
-                                          (index) => Icon(
-                                                Icons.star,
-                                                color: FCIColors.yellowRate(),
-                                              )),
-                                    )
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: ScreenUtil().setHeight(20),
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    InkWell(
-                                      onTap: () {
-                                        if (carController.carStatus ==
-                                            CarStatus.live) {
-                                          Get.to(() => LiveAuctions(
-                                                carModel: widget.carData,
-                                              ))?.then((value) {
-                                           if(value !=null){
-                                             carController.carData.bid_price=value;
-                                             carController.update();
-                                           }
-                                          }
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: ScreenUtil().setHeight(20),
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        carController.carData.bid_price != null
+                                            ? '${carController.carData.bid_price} AED'
+                                            : '',
+                                        style: FCITextStyle.bold(25,
+                                            color: FCIColors.buttonGreen()),
+                                      ),
+                                      // Text(carController.liveDuration??'',style: FCITextStyle.normal(16),),
+                                      Row(
+                                        children: List.generate(
+                                            5,
+                                            (index) => Icon(
+                                                  Icons.star,
+                                                  color: FCIColors.yellowRate(),
+                                                )),
+                                      )
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: ScreenUtil().setHeight(20),
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      InkWell(
+                                        onTap: () {
+                                          if (carController.carStatus ==
+                                              CarStatus.live) {
+                                            Get.to(() => LiveAuctions(
+                                                  carModel: widget.carData,
+                                                ))?.then((value) {
+                                             if(value !=null){
+                                               carController.carData.bid_price=value;
+                                               carController.update();
+                                             }
+                                            }
 
-                                          );
-                                        }
-                                      },
-                                      child: Container(
+                                            );
+                                          }
+                                        },
+                                        child: Container(
+                                          width: size.width / 2 -
+                                              ScreenUtil().setWidth(45),
+                                          decoration: BoxDecoration(
+                                              color: carController.carStatus ==
+                                                      CarStatus.live
+                                                  ? FCIColors.buttonGreen()
+                                                  : Colors.grey,
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: ScreenUtil().setWidth(10),
+                                            vertical: ScreenUtil().setHeight(10),
+                                          ),
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            "PLACE A BID",
+                                            style: FCITextStyle.normal(16,
+                                                color: Colors.white),
+                                          ),
+                                        ),
+                                      ),
+                                      Container(
                                         width: size.width / 2 -
-                                            ScreenUtil().setWidth(45),
+                                            ScreenUtil().setWidth(25),
                                         decoration: BoxDecoration(
-                                            color: carController.carStatus ==
-                                                    CarStatus.live
-                                                ? FCIColors.buttonGreen()
-                                                : Colors.grey,
+                                            color: Colors.grey, // Colors.orange,
                                             borderRadius:
                                                 BorderRadius.circular(10)),
                                         padding: EdgeInsets.symmetric(
@@ -303,126 +323,108 @@ class _AuctionsViewState extends State<CarDetailsView>
                                         ),
                                         alignment: Alignment.center,
                                         child: Text(
-                                          "PLACE A BID",
+                                          "BUY NOW ${widget.carData.bid_price} AED",
                                           style: FCITextStyle.normal(16,
                                               color: Colors.white),
                                         ),
                                       ),
-                                    ),
-                                    Container(
-                                      width: size.width / 2 -
-                                          ScreenUtil().setWidth(25),
-                                      decoration: BoxDecoration(
-                                          color: Colors.grey, // Colors.orange,
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: ScreenUtil().setWidth(10),
-                                        vertical: ScreenUtil().setHeight(10),
-                                      ),
-                                      alignment: Alignment.center,
-                                      child: Text(
-                                        "BUY NOW ${widget.carData.bid_price} AED",
-                                        style: FCITextStyle.normal(16,
-                                            color: Colors.white),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Container(
-                                  height: size.height / 2,
-                                  child: ListView.builder(
-                                    physics: NeverScrollableScrollPhysics(),
-                                    itemCount: groupsButtonList.length,
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      return InkWell(
-                                        onTap: () {
-                                          setState(() {
-                                            groupsButtonList[index].show =
-                                                !groupsButtonList[index].show;
-                                          });
-                                        },
-                                        child: Container(
-                                          width: size.width,
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal:
-                                                  ScreenUtil().setWidth(5),
-                                              vertical:
-                                                  ScreenUtil().setHeight(5)),
-                                          margin: EdgeInsets.symmetric(
-                                              horizontal:
-                                                  ScreenUtil().setWidth(5),
-                                              vertical:
-                                                  ScreenUtil().setHeight(10)),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              InkWell(
-                                                onTap: () {
-                                                  Get.to(
-                                                      () => CarDetailsShowView(
-                                                            title:
-                                                                groupsButtonList[
-                                                                        index]
-                                                                    .title,
-                                                            child: getGroupsButtonWidget(
-                                                                context,
-                                                                groupsButtonList[
-                                                                        index]
-                                                                    .groupsButtonType,
-                                                                carController),
-                                                          ));
-                                                },
-                                                child: Container(
-                                                  padding: EdgeInsets.symmetric(
-                                                    vertical: ScreenUtil()
-                                                        .setHeight(5),
-                                                    horizontal: ScreenUtil()
-                                                        .setWidth(5),
-                                                  ),
-                                                  child: Text(
-                                                      groupsButtonList[index]
-                                                          .title,
-                                                      style:
-                                                          FCITextStyle.normal(
-                                                              18,
-                                                              color: Colors
-                                                                  .black)),
-                                                ),
-                                              ),
-                                              // groupsButtonList[index].show
-                                              //     ?Container(
-                                              //   width: size.width,
-                                              //   child: getGroupsButtonWidget(context,
-                                              //       groupsButtonList[index].groupsButtonType,
-                                              //     carController
-                                              //   ),
-                                              // )
-                                              //     : Container(),
-                                              if (index !=
-                                                  groupsButtonList.length - 1)
-                                                Container(
-                                                  width: size.width,
-                                                  child: Divider(
-                                                    color: Colors.orange,
-                                                    thickness: 0.5,
-                                                    height: 5,
-                                                  ),
-                                                ),
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                    },
+                                    ],
                                   ),
-                                ),
-                              ],
+                                  Container(
+                                    height: size.height / 2,
+                                    child: ListView.builder(
+                                      physics: NeverScrollableScrollPhysics(),
+                                      itemCount: groupsButtonList.length,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        return InkWell(
+                                          onTap: () {
+                                            setState(() {
+                                              groupsButtonList[index].show =
+                                                  !groupsButtonList[index].show;
+                                            });
+                                          },
+                                          child: Container(
+                                            width: size.width,
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal:
+                                                    ScreenUtil().setWidth(5),
+                                                vertical:
+                                                    ScreenUtil().setHeight(5)),
+                                            margin: EdgeInsets.symmetric(
+                                                horizontal:
+                                                    ScreenUtil().setWidth(5),
+                                                vertical:
+                                                    ScreenUtil().setHeight(10)),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                InkWell(
+                                                  onTap: () {
+                                                    Get.to(
+                                                        () => CarDetailsShowView(
+                                                              title:
+                                                                  groupsButtonList[
+                                                                          index]
+                                                                      .title,
+                                                              child: getGroupsButtonWidget(
+                                                                  context,
+                                                                  groupsButtonList[
+                                                                          index]
+                                                                      .groupsButtonType,
+                                                                  carController),
+                                                            ));
+                                                  },
+                                                  child: Container(
+                                                    padding: EdgeInsets.symmetric(
+                                                      vertical: ScreenUtil()
+                                                          .setHeight(5),
+                                                      horizontal: ScreenUtil()
+                                                          .setWidth(5),
+                                                    ),
+                                                    child: Text(
+                                                        groupsButtonList[index]
+                                                            .title,
+                                                        style:
+                                                            FCITextStyle.normal(
+                                                                18,
+                                                                color: Colors
+                                                                    .black)),
+                                                  ),
+                                                ),
+                                                // groupsButtonList[index].show
+                                                //     ?Container(
+                                                //   width: size.width,
+                                                //   child: getGroupsButtonWidget(context,
+                                                //       groupsButtonList[index].groupsButtonType,
+                                                //     carController
+                                                //   ),
+                                                // )
+                                                //     : Container(),
+                                                if (index !=
+                                                    groupsButtonList.length - 1)
+                                                  Container(
+                                                    width: size.width,
+                                                    child: Divider(
+                                                      color: Colors.orange,
+                                                      thickness: 0.5,
+                                                      height: 5,
+                                                    ),
+                                                  ),
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        )
-                      ],
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 );

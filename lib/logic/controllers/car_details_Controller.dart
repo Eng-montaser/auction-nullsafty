@@ -57,21 +57,27 @@ class CarDetailsController extends GetxController
 
   getTimeOfAuction() {
     var dateNow=tz.TZDateTime.now(dubai);
+
     //var dateNow=DateTime.now().add(Duration(days: 1));
     if (carData.start_date.isNotEmpty && carData.end_date.isNotEmpty) {
       if (dateNow.isBefore(DateTime.parse(carData.start_date))) {
+
         carStatus = CarStatus.upComing;
         liveDuration.value =
             "start after  ${DateTime.parse(carData.start_date).difference(dateNow).inDays}";
+        update();
       } else if (dateNow.isBefore(DateTime.parse(carData.end_date))) {
         carStatus = CarStatus.live;
         Duration runningDuration =
             DateTime.parse(carData.end_date).difference(dateNow);
         liveDuration.value = "end after  ${_printDuration(runningDuration)} ";
+        update();
       } else {
         carStatus = CarStatus.expired;
         liveDuration.value = "Expired";
+        update();
       }
+
     }
     update();
   }

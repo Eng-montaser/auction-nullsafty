@@ -409,7 +409,7 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
                                           ),
                                         ),
                                       ),
-                                      if (controller.actual != null)
+                                      if (controller.actual != null && controller.actual.inSeconds>0)
                                         MediterranesnDietView(
                                           animation: Tween<double>(
                                                   begin: 1.0, end: 0.0)
@@ -446,8 +446,8 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
                                                       "${convertFromStringToRange('${controller.getMaxBid()}')}",
                                                       style: FCITextStyle.bold(
                                                           22,
-                                                          color: FCIColors
-                                                              .buttonGreen()),
+                                                          color: controller.color=='green'?FCIColors
+                                                              .buttonGreen():FCIColors.primaryColor()),
                                                     ),
                                                   ],
                                                 ),
@@ -789,7 +789,7 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
 
   Widget addBide(LiveController controller) {
     return Container(
-      height: 250.h,
+     // height: 250.h,
       decoration: BoxDecoration(
           color: FCIColors.primaryColor(),
           borderRadius: BorderRadius.only(
@@ -799,6 +799,7 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
         margin: EdgeInsets.all(8),
         //color: FCIColors.accentColor(),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             Container(
               decoration: BoxDecoration(

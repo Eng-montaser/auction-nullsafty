@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:auction/database/models/car_model.dart';
 import 'package:auction/database/services/get_service.dart';
+import 'package:auction/logic/controllers/auth_controller.dart';
 import 'package:auction/logic/controllers/car_details_Controller.dart';
 import 'package:auction/ui/home_screens/congrats.dart';
 import 'package:auction/utils/FCIStyle.dart';
@@ -33,7 +34,7 @@ class LiveController extends GetxController {
   // final LiveController _controller = Get.put(LiveController());
   StreamController<CarDetails> streamController =
       StreamController<CarDetails>.broadcast();
-
+  AuthenticationController authenticationController=Get.put(AuthenticationController());
   LiveController(this.carId);
   bool get showAddBid => _showAddBid;
 
@@ -134,15 +135,25 @@ class LiveController extends GetxController {
 
     super.onClose();
   }
-
+String color='red';
   int getMaxBid() {
     int max = 0;
     if (carDetails.min_bid_price != null) {
       max = int.parse('${carDetails.min_bid_price?.toInt() ?? 0}');
+
       if (carDetails.bidUsers!.length > 0)
         for (var m in carDetails.bidUsers!) {
-          if (max < m.bid_amount) max = m.bid_amount.toInt();
+          if (max < m.bid_amount) {
+
+            max = m.bid_amount.toInt();
+            authenticationController.getUserData();
+          if(m.user_id == authenticationController.userData!.user.id)
+            color='green';
+          else color='red';
+
+          }
         }
+
     }
     return max;
   }

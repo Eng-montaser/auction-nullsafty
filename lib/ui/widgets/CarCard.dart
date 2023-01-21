@@ -137,6 +137,7 @@ class _CarCardState extends State<CarCard> with TickerProviderStateMixin {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
+
                                 CardMediterranesnDiet(
                                     animation: Tween<double>(
                                         begin: 1.0, end: 0.0)
