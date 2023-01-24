@@ -61,38 +61,39 @@ class CarDetailsController extends GetxController
 
     //var dateNow=DateTime.now().add(Duration(days: 1));
     if (carData.start_date.isNotEmpty && carData.end_date.isNotEmpty) {
-      if ( intl.DateFormat('yyyy-mm-dd hh:mm:ss').parse(dateNow.toString()).isBefore(intl.DateFormat('yyyy-mm-dd hh:mm:ss')
-          .parse( carData.start_date))) {
-
+      if (intl.DateFormat('yyyy-mm-dd hh:mm:ss')
+          .parse(dateNow.toString())
+          .isBefore(intl.DateFormat('yyyy-mm-dd hh:mm:ss')
+          .parse(carData.start_date))) {
         carStatus = CarStatus.upComing;
-        liveDuration.value =
-            "start after  ${DateTime.parse(carData.start_date).difference(dateNow).inDays}";
+        Duration runningDuration =
+        DateTime.parse(carData.start_date).difference(
+            intl.DateFormat('yyyy-mm-dd hh:mm:ss').parse(dateNow.toString()));
+        liveDuration.value = "Start after  ${_printDuration(runningDuration)} ";
         update();
-      } else if ( intl.DateFormat('yyyy-mm-dd hh:mm:ss').parse(dateNow.toString()).isBefore(intl.DateFormat('yyyy-mm-dd hh:mm:ss')
-          .parse( carData.end_date))) {
+      } else if (intl.DateFormat('yyyy-mm-dd hh:mm:ss')
+          .parse(dateNow.toString())
+          .isBefore(intl.DateFormat('yyyy-mm-dd hh:mm:ss')
+          .parse(carData.end_date))) {
         carStatus = CarStatus.live;
         Duration runningDuration =
-            DateTime.parse(carData.end_date).difference(dateNow);
-        liveDuration.value = "end after  ${_printDuration(runningDuration)} ";
+        DateTime.parse(carData.end_date).difference(
+            intl.DateFormat('yyyy-mm-dd hh:mm:ss').parse(dateNow.toString()));
+        liveDuration.value = "End after  ${_printDuration(runningDuration)} ";
         update();
       } else {
         carStatus = CarStatus.expired;
         liveDuration.value = "Expired";
         update();
       }
-
-    }
-    update();
-  }
-
+    }}
   String _printDuration(Duration duration) {
     String twoDigits(int n) => n.toString().padLeft(2, "0");
     String twoDigitDays = twoDigits(duration.inDays.remainder(24));
     String twoDigitHours = twoDigits(duration.inHours.remainder(24));
     String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
     String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
-    return "$twoDigitDays Days $twoDigitHours:$twoDigitMinutes:$twoDigitSeconds";
-  }
+    return "$twoDigitDays ${duration.inDays.remainder(24)>0?'Days':''} $twoDigitHours:$twoDigitMinutes:$twoDigitSeconds";  }
 
   getCarDetails(int _id) async {
     GetService _getService = new GetService();

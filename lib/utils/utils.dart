@@ -7,7 +7,6 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:timezone/standalone.dart' as tz;
 var dubai = tz.getLocation('Asia/Dubai');
-var dateNow = tz.TZDateTime.now(dubai);
 class Utils {
   static Widget loading() {
     return Center(
@@ -113,6 +112,7 @@ class Utils {
       ..show();
   }
   Duration calculateDur(String end_date) {
+    var dateNow = tz.TZDateTime.now(dubai);
 
     if (end_date != null && end_date.isNotEmpty) {
       if(intl.DateFormat('yyyy-mm-dd hh:mm:ss').parse(end_date).isAfter(intl.DateFormat('yyyy-mm-dd hh:mm:ss').parse(dateNow.toString())))

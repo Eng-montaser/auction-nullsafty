@@ -51,10 +51,11 @@ class LiveController extends GetxController {
   } // FocusNode focusNodePassword = new FocusNode();
 
   void calculateDur() {
-if(carDetails !=null)
-      actual=Utils().calculateDur(carDetails.end_date!);
-
-update();  }
+    if (carDetails.end_date != null) {
+      actual = Utils().calculateDur(carDetails.end_date!);
+      update();
+    }
+  }
 
   @override
   void onInit() {
@@ -92,18 +93,13 @@ update();  }
       /*Utils().showMessage(
           context, 'Winner', 'Congratulations!\n You are the winner', false);*/
 
-    } else if (data['type'] == 'bid') {
+    } else if (data['type'] == 'bid' || data['type'] == 'outbid') {
       var messageJson = json.decode(data['message']);
       print('m: ${messageJson['product_id']}');
       if(messageJson['product_id']==carId)
       await getCarDetails(carId);
 
-    } /*else if (data['type'] == 'winner') {
-      var messageJson = json.decode(data['message']);
-      /*Utils().showMessage(
-          context, 'Winner', 'Congratulations!\n You are the winner', true);*/
-      Get.to(()=>CongratulationView());
-    }*/
+    }
   }
   init() async {
     await getCarDetails(carId);
