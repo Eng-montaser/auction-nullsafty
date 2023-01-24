@@ -6,6 +6,7 @@ import 'package:auction/ui/widgets/custom_background.dart';
 import 'package:auction/ui/widgets/mediterranesn_view.dart';
 import 'package:auction/utils/FCIStyle.dart';
 import 'package:auction/utils/constants.dart';
+import 'package:auction/utils/utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -446,14 +447,13 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
                                                       "${convertFromStringToRange('${controller.getMaxBid()}')}",
                                                       style: FCITextStyle.bold(
                                                           22,
-                                                          color: controller.color=='green'?FCIColors
-                                                              .buttonGreen():FCIColors.primaryColor()),
+                                                          color: FCIColors.primaryColor()),
                                                     ),
                                                   ],
                                                 ),
                                               );
                                             else
-                                              return Text('Loading...');
+                                              return Utils.loading();
                                           }),
                                       Container(
                                         height: ScreenUtil().setHeight(60),
@@ -588,17 +588,22 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
                                       ),
                                       GestureDetector(
                                         onTap: () {
-                                          setState(() {
-                                            controller
-                                                .getMyBids(widget.carModel.id);
-                                            controller.showAddBid = true;
-                                          });
+                                          if(controller.actual.inSeconds>=0) {
+                                            setState(() {
+                                              controller
+                                                  .getMyBids(
+                                                  widget.carModel.id);
+                                              controller.showAddBid = true;
+                                            });
+                                          }
                                         },
                                         child: Container(
                                           width: size.width / 2 -
                                               ScreenUtil().setWidth(30),
                                           decoration: BoxDecoration(
-                                              color: FCIColors.buttonGreen(),
+                                              color:controller.actual.inSeconds>=0?
+                                              controller.bidColor:
+                                              Colors.grey,
                                               borderRadius:
                                                   BorderRadius.circular(10)),
                                           padding: EdgeInsets.symmetric(
@@ -614,7 +619,7 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
                                           alignment: Alignment.center,
                                           child: Text(
                                             "PLACE A BID",
-                                            style: FCITextStyle.normal(18,
+                                            style: FCITextStyle.bold(18,
                                                 color: Colors.white),
                                           ),
                                         ),
@@ -802,6 +807,30 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
+              alignment: Alignment.center,
+              padding: FCIPadding.only(bottom:  5),
+              child: Row(
+                mainAxisSize:
+                MainAxisSize.min,
+                children: [
+                  Text(
+                    "Current Bid  ",
+                    style:
+                    FCITextStyle.bold(
+                        22,
+                        color:
+                        Colors.white),
+                  ),
+                  Text(
+                    "${convertFromStringToRange('${controller.getMaxBid()}')}",
+                    style: FCITextStyle.bold(
+                        22,
+                        color: Colors.white),
+                  ),
+                ],
+              ),
+            ),
+            Container(
               decoration: BoxDecoration(
                   color: FCIColors.primaryColor(),
                   borderRadius: BorderRadius.circular(7)),
@@ -922,8 +951,6 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
     );
   }
 
-  //bool addbidload = false;
-
   Widget getBiders(LiveController controller) {
     return Container(
       decoration: BoxDecoration(
@@ -1012,10 +1039,4 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
       ),
     );
   }
-
-//      DateTime endDate = new DateTime(today.year, today.month, today.day,
-//          today.hour + int.parse('${provider?.userData?.shift_hours}'));
-
-// actual = temp;
-
 }

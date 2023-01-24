@@ -4,6 +4,8 @@ import 'package:auction/database/models/car_model.dart';
 import 'package:auction/ui/auction_screens/car_details.dart';
 import 'package:auction/ui/widgets/mediterranesn_view.dart';
 import 'package:auction/utils/FCIStyle.dart';
+import 'package:auction/utils/constants.dart';
+import 'package:auction/utils/utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -33,9 +35,15 @@ class _CarCardState extends State<CarCard> with TickerProviderStateMixin {
         duration: const Duration(milliseconds: 3000), vsync: this);
     super.initState();
 
-    calculateDur();
+
     timer = Timer.periodic(
-        Duration(seconds: 1), (timer) => calculateDur());
+        Duration(seconds: 1), (timer) => calCulate());
+  }
+  calCulate(){
+    setState((){
+      actual=Utils().calculateDur(widget.carData.end_date);
+
+    });
   }
   @override
   void dispose() {
@@ -43,18 +51,10 @@ class _CarCardState extends State<CarCard> with TickerProviderStateMixin {
     timer.cancel();
     super.dispose();
   }
-  void calculateDur() {
-    //print('www: ${tz.TZDateTime.now(dubai)}');
-    if (widget.carData.end_date != null && widget.carData.end_date.isNotEmpty) {
-      setState(() {
-        actual = intl.DateFormat('yyyy-mm-dd hh:mm:ss').parse(widget.carData.end_date).difference(tz.TZDateTime.now(dubai));
-      });
-    }
-  }
+
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
      return GestureDetector(
       onTap: () {
         Get.to(CarDetailsView(
@@ -85,6 +85,7 @@ class _CarCardState extends State<CarCard> with TickerProviderStateMixin {
                         height: FCISize.height(context)*0.2,
                         width: FCISize.width(context),
                         fit: BoxFit.cover,
+                       // alignment: Alignment.center,
                       ),
                       SizedBox(height: ScreenUtil().setWidth(5)),
 
@@ -109,7 +110,7 @@ class _CarCardState extends State<CarCard> with TickerProviderStateMixin {
                                       bottom: ScreenUtil().setHeight(15),
                                   ),
                                   child: Text(
-                                    '${widget.carData.desc}',
+                                    '${removeAllHtmlTags(widget.carData.desc)}',
                                     //style: FCITextStyle.normal(12),
                                     style: FCITextStyle.normal(12),
                                     maxLines: 4,

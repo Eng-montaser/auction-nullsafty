@@ -43,6 +43,7 @@ setInit()async{
   }else{
     loginActive=false;
   }
+  getUserData();
 }
   Future<String> getUserData() async {
     SharedPreferences shared_User = await SharedPreferences.getInstance();

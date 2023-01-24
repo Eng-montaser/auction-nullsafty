@@ -1,14 +1,19 @@
+import 'package:auction/logic/controllers/car_controller.dart';
+import 'package:auction/utils/FCIStyle.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-
+import 'package:intl/intl.dart' as intl;
+import 'package:timezone/standalone.dart' as tz;
+var dubai = tz.getLocation('Asia/Dubai');
+var dateNow = tz.TZDateTime.now(dubai);
 class Utils {
   static Widget loading() {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: CircularProgressIndicator(),
+        child: CircularProgressIndicator(color: FCIColors.primaryColor()),
       ) /* Image.asset(
         'assets/images/loading.gif',
         width: ScreenUtil().setWidth(100),
@@ -107,4 +112,37 @@ class Utils {
         onDissmissCallback: (type) {})
       ..show();
   }
+  Duration calculateDur(String end_date) {
+
+    if (end_date != null && end_date.isNotEmpty) {
+      if(intl.DateFormat('yyyy-mm-dd hh:mm:ss').parse(end_date).isAfter(intl.DateFormat('yyyy-mm-dd hh:mm:ss').parse(dateNow.toString())))
+
+         return intl.DateFormat('yyyy-mm-dd hh:mm:ss').parse(end_date).difference(intl.DateFormat('yyyy-mm-dd hh:mm:ss').parse(dateNow.toString()));
+
+      else
+        return Duration(seconds: 0);
+
+    }
+    return Duration(seconds: 0);
+  }
+  CarStatus getTimeOfAuction(start_date,end_date) {
+    CarStatus carStatus;
+    var dateNow=tz.TZDateTime.now(dubai);
+    if (start_date.isNotEmpty && end_date.isNotEmpty) {
+      if ( intl.DateFormat('yyyy-mm-dd hh:mm:ss').parse(dateNow.toString()).isBefore(intl.DateFormat('yyyy-mm-dd hh:mm:ss')
+          .parse( start_date))) {
+        carStatus = CarStatus.upComing;
+      } else if (( intl.DateFormat('yyyy-mm-dd hh:mm:ss').parse(dateNow.toString()).isBefore(intl.DateFormat('yyyy-mm-dd hh:mm:ss')
+          .parse( end_date)))) {
+        carStatus = CarStatus.live;
+      } else {
+        carStatus = CarStatus.expired;
+      }
+    }
+    else {
+      carStatus =CarStatus.all;
+    }
+    return carStatus;
+  }
+
 }

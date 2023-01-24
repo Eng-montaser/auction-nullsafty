@@ -51,12 +51,10 @@ class LiveController extends GetxController {
   } // FocusNode focusNodePassword = new FocusNode();
 
   void calculateDur() {
-    if (carDetails.end_date != null) {
-      actual = DateTime.parse(carDetails.end_date!)
-          .difference(tz.TZDateTime.now(dubai));
-      update();
-    }
-  }
+if(carDetails !=null)
+      actual=Utils().calculateDur(carDetails.end_date!);
+
+update();  }
 
   @override
   void onInit() {
@@ -135,26 +133,33 @@ class LiveController extends GetxController {
 
     super.onClose();
   }
-String color='red';
+Color bidColor=Colors.orangeAccent;
   int getMaxBid() {
-    int max = 0;
-    if (carDetails.min_bid_price != null) {
-      max = int.parse('${carDetails.min_bid_price?.toInt() ?? 0}');
 
-      if (carDetails.bidUsers!.length > 0)
-        for (var m in carDetails.bidUsers!) {
-          if (max < m.bid_amount) {
-
-            max = m.bid_amount.toInt();
-            authenticationController.getUserData();
-          if(m.user_id == authenticationController.userData!.user.id)
-            color='green';
-          else color='red';
-
+    bool userFound=false;
+    for (var bidUser in carDetails.bidUsers!) {
+      if(bidUser.user_id == authenticationController.userData!.user.id) {
+        userFound = true;
+      }
+      }
+      int max = 0;
+      if (carDetails.min_bid_price != null) {
+        max = int.parse('${carDetails.min_bid_price?.toInt() ?? 0}');
+        if (carDetails.bidUsers!.length > 0)
+          for (var m in carDetails.bidUsers!) {
+            if (max < m.bid_amount) {
+              max = m.bid_amount.toInt();
+              if(userFound){
+                if (m.user_id == authenticationController.userData!.user.id) {
+                  bidColor = FCIColors
+                      .buttonGreen();
+                }else {
+                  bidColor=Colors.red;
+                }
+              }
+            }
           }
-        }
-
-    }
+      }
     return max;
   }
 

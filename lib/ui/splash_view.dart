@@ -15,6 +15,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:liquid_swipe/liquid_swipe.dart';
+import 'package:shared_preferences/shared_preferences.dart';
  import 'package:video_player/video_player.dart';
 
 import 'main_view.dart';
@@ -33,8 +34,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
   int active = 0;
   bool splashLoading = true;
-  final PageController _pageController = PageController();
-  final CarouselController _controller = CarouselController();
+  // final PageController _pageController = PageController();
+  // final CarouselController _controller = CarouselController();
   VideoPlayerController? _videoPlayerController;
   bool _visible = false;
 
@@ -64,28 +65,44 @@ class _SplashScreenState extends State<SplashScreen> {
         VideoPlayerController.asset("assets/video/splash_video.mp4");
     _videoPlayerController!.initialize().then((_) async {
       _videoPlayerController!.setLooping(false);
-      await Timer(const Duration(seconds: 1), () async {
-        AuthenticationController authenticationController =
-        Get.put(AuthenticationController());
-        await authenticationController.getUserData();
-        if (authenticationController.userData?.token != null) {
-          Get.to(() => MainScreen(), arguments: {'title': 'Home Screen'});
-        } else {
-          setState(() {
-            splashLoading = false;
-            _videoPlayerController!.play();
-            timer = Timer.periodic(Duration(seconds: 1), (timer) {
-              if (!_videoPlayerController!.value.isPlaying) {
-                setState(() {
-                  _visible = false;
-                  timer.cancel();
-                });
-              }
-            });
-            _visible = true;
-          });
-        }
+      ///---1   play video---------------
+      setState(() {
+        splashLoading = false;
+        _visible = true;
       });
+          _videoPlayerController!.play();
+      ///---2   if  video End ---------------
+          timer = Timer.periodic(Duration(seconds: 1), (timer) async {
+            if (!_videoPlayerController!.value.isPlaying) {
+              print('splashLoading = true');
+              setState(() {
+                splashLoading = true;
+              });
+                AuthenticationController authenticationController =
+                Get.put(AuthenticationController(),permanent: true);
+                await authenticationController.getUserData();
+                if (authenticationController.userData?.token != null) {
+                  Get.offAll(() => MainScreen(), arguments: {'title': 'Home Screen'});
+                }
+                else {
+                  SharedPreferences shared_User = await SharedPreferences.getInstance();
+                  bool? result = await shared_User.getBool('first');
+                  if(result!=null) {
+                      Get.offAllNamed(AppRoutes.auth);
+                  }else{
+                    await shared_User.setBool('first', true);
+                    setState(() {
+                      splashLoading = false;
+                      _visible = false;
+                    });
+                  }
+                }
+                timer.cancel();
+            }
+          });
+          // _visible = true;
+
+      // });
     });
   }
 

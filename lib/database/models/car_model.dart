@@ -10,6 +10,7 @@ class CarModel {
   String end_date;
   bool isFinished;
   int? members;
+  int? auction_num;
   String miles;
 
   CarModel(
@@ -19,6 +20,7 @@ class CarModel {
       required this.title,
       required this.desc,
        this.members,
+       this.auction_num,
       required this.bid_price,
       required this.start_date,
       required this.end_date,
@@ -39,7 +41,6 @@ class CarModel {
         if (!memList.contains(json['bidding_history'][i]['user_id'])) {
           memList.add(json['bidding_history'][i]['user_id']);
         }
-        print('##### before ${price}');
         if (double.parse(json['bidding_history'][i]['bid_amount']) > price) {
           price = double.parse(json['bidding_history'][i]['bid_amount']);
         }
@@ -48,7 +49,7 @@ class CarModel {
       membersCount = memList.length;
     } else
       bidPrice = '${json['min_bid_price']}';
-
+    print('mmen: ${json['bidding_history'].length}');
     return CarModel(
         id: int.parse('${json['id']}'),
         images: imags,
@@ -59,7 +60,8 @@ class CarModel {
         end_date: json['end_date'] ?? '',
         desc: json['description'] ?? '',
         isFinished: int.parse('${json['bid_complete']}') == 1,
-        members: membersCount // json['mileage'],
+        members: membersCount,
+      auction_num:json['bidding_history']!=null?json['bidding_history'].length:0 // json['mileage'],
         );
   }
 }

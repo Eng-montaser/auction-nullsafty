@@ -5,6 +5,7 @@ import 'package:auction/ui/widgets/CarCard.dart';
 import 'package:auction/ui/widgets/mediterranesn_view.dart';
 import 'package:auction/utils/FCIStyle.dart';
 import 'package:auction/utils/constants.dart';
+import 'package:auction/utils/utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -287,18 +288,15 @@ class _BuyCardState extends State<BuyCard> with TickerProviderStateMixin {
     animationController = AnimationController(
         duration: const Duration(milliseconds: 3000), vsync: this);
     super.initState();
-    calculateDur();
     timer = Timer.periodic(
         Duration(seconds: 1), (timer) => calculateDur());
 
   }
   void calculateDur() {
-    if (widget.carData.end_date != null) {
-      setState((){
-        actual = DateTime.parse(widget.carData.end_date).difference(tz.TZDateTime.now(dubai));
+    setState((){
+      actual=Utils().calculateDur(widget.carData.end_date);
 
-      });
-    }
+    });
   }
 
   @override
@@ -311,7 +309,6 @@ class _BuyCardState extends State<BuyCard> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
     return  (actual != null && actual.inSeconds>0 )?GestureDetector(
       onTap: () {
         Get.to(CarDetailsView(
@@ -348,7 +345,7 @@ class _BuyCardState extends State<BuyCard> with TickerProviderStateMixin {
                     //SizedBox(height: ScreenUtil().setWidth(5)),
                   //  if (widget.carData.isFinished)
                       Positioned(
-                          top: ScreenUtil().setHeight(10),
+                          top: ScreenUtil().setHeight(0),
                           right: ScreenUtil().setWidth(0),
                           child: Container(
                             padding: EdgeInsets.symmetric(
@@ -360,6 +357,23 @@ class _BuyCardState extends State<BuyCard> with TickerProviderStateMixin {
                               style: FCITextStyle.normal(14, color: Colors.white),
                             ),
                           )),
+                    if(widget.carData.auction_num! >= 4)Positioned(
+                        top: ScreenUtil().setHeight(0),
+                        left: ScreenUtil().setWidth(0),
+                        child: Container(
+                          height: ScreenUtil().setHeight(30),
+                          width: ScreenUtil().setWidth(30),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: ScreenUtil().setWidth(10),
+                              vertical: ScreenUtil().setHeight(10)),
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage(
+                                  'assets/images/fireicon.png'
+                              )
+                            )
+                          ),
+                        )),
                     Positioned(
                       bottom: 0.0,
                       left: 0.0,
