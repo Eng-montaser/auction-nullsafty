@@ -1,6 +1,4 @@
 import 'package:auction/route/route.dart';
-import 'package:auction/ui/authentication/auth_view.dart';
-import 'package:auction/ui/splash_view.dart';
 import 'package:auction/utils/FCIStyle.dart';
 import 'package:auction/utils/languages.dart';
 import 'package:firebase_core/firebase_core.dart';

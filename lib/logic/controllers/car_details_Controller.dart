@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:auction/database/models/car_model.dart';
 import 'package:auction/logic/controllers/car_controller.dart';
+import 'package:auction/utils/utils.dart';
 import 'package:flutter/animation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
@@ -69,7 +70,7 @@ class CarDetailsController extends GetxController
         Duration runningDuration =
         DateTime.parse(carData.start_date).difference(
             intl.DateFormat('yyyy-mm-dd hh:mm:ss').parse(dateNow.toString()));
-        liveDuration.value = "Start after  ${_printDuration(runningDuration)} ";
+        liveDuration.value = "Start after  ${Utils().printDuration(runningDuration)} ";
         update();
       } else if (intl.DateFormat('yyyy-mm-dd hh:mm:ss')
           .parse(dateNow.toString())
@@ -79,7 +80,7 @@ class CarDetailsController extends GetxController
         Duration runningDuration =
         DateTime.parse(carData.end_date).difference(
             intl.DateFormat('yyyy-mm-dd hh:mm:ss').parse(dateNow.toString()));
-        liveDuration.value = "End after  ${_printDuration(runningDuration)} ";
+        liveDuration.value = "End after  ${Utils().printDuration(runningDuration)} ";
         update();
       } else {
         carStatus = CarStatus.expired;
@@ -87,13 +88,6 @@ class CarDetailsController extends GetxController
         update();
       }
     }}
-  String _printDuration(Duration duration) {
-    String twoDigits(int n) => n.toString().padLeft(2, "0");
-    String twoDigitDays = twoDigits(duration.inDays.remainder(24));
-    String twoDigitHours = twoDigits(duration.inHours.remainder(24));
-    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
-    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
-    return "$twoDigitDays ${duration.inDays.remainder(24)>0?'Days':''} $twoDigitHours:$twoDigitMinutes:$twoDigitSeconds";  }
 
   getCarDetails(int _id) async {
     GetService _getService = new GetService();

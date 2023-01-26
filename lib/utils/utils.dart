@@ -144,5 +144,12 @@ class Utils {
     }
     return carStatus;
   }
+  String printDuration(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, "0");
+    String twoDigitDays = twoDigits(duration.inDays.remainder(24));
+    String twoDigitHours = twoDigits(duration.inHours.remainder(24));
+    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+    return "$twoDigitDays ${duration.inDays.remainder(24)>0?'Days':''} $twoDigitHours:$twoDigitMinutes:$twoDigitSeconds";  }
 
 }

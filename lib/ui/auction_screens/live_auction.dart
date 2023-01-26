@@ -61,7 +61,7 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
     Size size = MediaQuery.of(context).size;
     // _controller.calculateDur();
     return GetBuilder<LiveController>(
-        init: LiveController(widget.carModel.id),
+        init: LiveController(widget.carModel.id,context),
         builder: (controller) => GestureDetector(
               onTap: () {
                 setState(() {

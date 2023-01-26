@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:auction/database/models/car_model.dart';
+import 'package:auction/logic/controllers/car_controller.dart';
 import 'package:auction/ui/auction_screens/car_details.dart';
 import 'package:auction/ui/widgets/mediterranesn_view.dart';
 import 'package:auction/utils/FCIStyle.dart';
@@ -41,8 +42,8 @@ class _CarCardState extends State<CarCard> with TickerProviderStateMixin {
   }
   calCulate(){
     setState((){
-      actual=Utils().calculateDur(widget.carData.end_date);
-
+      actual=Utils().calculateDur( Utils().getTimeOfAuction(
+          widget.carData.start_date, widget.carData.end_date)==CarStatus.upComing?widget.carData.start_date:widget.carData.end_date);
     });
   }
   @override
@@ -94,7 +95,7 @@ class _CarCardState extends State<CarCard> with TickerProviderStateMixin {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Flexible(
-                            flex: 2,
+                            flex: 1,
                             child: Column(
                               // mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,7 +104,7 @@ class _CarCardState extends State<CarCard> with TickerProviderStateMixin {
                                   '${widget.carData.title}',
                                   style: FCITextStyle.bold(15, color: Colors.black),
                                 ),
-                                Padding(
+                                 Padding(
                                   padding: EdgeInsets.only(
                                       right: ScreenUtil().setWidth(10),
                                       top: ScreenUtil().setHeight(5),
@@ -134,55 +135,71 @@ class _CarCardState extends State<CarCard> with TickerProviderStateMixin {
                               ],
                             ),
                           ),
-                          if (actual != null && actual.inSeconds>0 )
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-
-                                CardMediterranesnDiet(
-                                    animation: Tween<double>(
-                                        begin: 1.0, end: 0.0)
-                                        .animate(CurvedAnimation(
-                                        parent: animationController,
-                                        curve: Interval(
-                                            (1 / count) * 3, 1.0,
-                                            curve: Curves
-                                                .fastOutSlowIn))),
-                                    animationController:
-                                    animationController,
-                                    auction_time: actual,
-                                    width: ScreenUtil().setWidth(30),
-                                    timeLeftTextstyle: FCITextStyle.normal(8)
-                                ),
-                                Container(
-                                  width: ScreenUtil().setWidth(170),
-                                  height: ScreenUtil().setHeight(10),
-                                  child: Theme(
-                                    data: Theme.of(context).copyWith(
-                                      sliderTheme: SliderThemeData(
-                                        thumbShape: SquareSliderComponentShape(),
-                                        trackShape: MyRoundedRectSliderTrackShape(),
+                          if (actual != null && actual.inSeconds>0 ) Flexible(
+                              flex: 1,
+                              child:
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Utils().getTimeOfAuction(
+                                      widget.carData.start_date, widget.carData.end_date)==CarStatus.upComing?
+                                  Container(
+                                    width: ScreenUtil().setWidth(200),
+                                    child: Text(
+                                      'Start After ${Utils().printDuration(Utils().calculateDur(widget.carData.start_date))}',
+                                      style: FCITextStyle.normal(16),
+                                    ),
+                                  ):
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      CardMediterranesnDiet(
+                                          animation: Tween<double>(
+                                              begin: 1.0, end: 0.0)
+                                              .animate(CurvedAnimation(
+                                              parent: animationController,
+                                              curve: Interval(
+                                                  (1 / count) * 3, 1.0,
+                                                  curve: Curves
+                                                      .fastOutSlowIn))),
+                                          animationController:
+                                          animationController,
+                                          auction_time: actual,
+                                          width: ScreenUtil().setWidth(30),
+                                          timeLeftTextstyle: FCITextStyle.normal(8)
                                       ),
-                                    ),
-                                    child: Slider(
-                                      min: 0.0,
-                                      max: 100.0,
-                                      value: widget.carData.members!>=100.0?100.0:widget.carData.members!.toDouble()+10.0,
-                                      divisions: 10,
-                                      activeColor: Color.lerp(Color(0xffff0000), Color(0xff00ff00),  widget.carData.members!>=100?1.0:(widget.carData.members!.toDouble()+10.0)/100),
-                                      label: '${'${widget.carData.members??'0.0'}'}',
-                                      onChanged: (value) {
-                                      },
-                                    ),
-                                  ),
-                                )
-                              ],
-                            )
+                                      Container(
+                                        width: ScreenUtil().setWidth(170),
+                                        height: ScreenUtil().setHeight(10),
+                                        child: Theme(
+                                          data: Theme.of(context).copyWith(
+                                            sliderTheme: SliderThemeData(
+                                              thumbShape: SquareSliderComponentShape(),
+                                              trackShape: MyRoundedRectSliderTrackShape(),
+                                            ),
+                                          ),
+                                          child: Slider(
+                                            min: 0.0,
+                                            max: 100.0,
+                                            value: widget.carData.members!>=100.0?100.0:widget.carData.members!.toDouble()+10.0,
+                                            divisions: 10,
+                                            activeColor: Color.lerp(Color(0xffff0000), Color(0xff00ff00),  widget.carData.members!>=100?1.0:(widget.carData.members!.toDouble()+10.0)/100),
+                                            label: '${'${widget.carData.members??'0.0'}'}',
+                                            onChanged: (value) {
+                                            },
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  )
+                                ],
+                              )
+                          ),
+
                         ],
                       )
                     ],
                   ),
-
                 ],
               ),
             ),

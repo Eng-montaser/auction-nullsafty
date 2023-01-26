@@ -27,6 +27,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../logic/controllers/auth_controller.dart';
 import 'widgets/notificationBadge.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:widget_and_text_animator/widget_and_text_animator.dart';
 
 class MainScreen extends StatefulWidget {
@@ -110,12 +111,27 @@ class _MainScreenState extends State<MainScreen> {
       // var messageJson = json.decode(data['message']);
       // var message = Bid.fromJosn(messageJson);
       //Get.put(LiveController()).getCarDetails(_id)
-      Utils().showMessageInfo(context, '${message.notification?.title}',
-          '${message.notification?.body}');
+      Fluttertoast.showToast(
+          msg:  '${message.notification?.title}',
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.TOP,
+          timeInSecForIosWeb: 1,
+          backgroundColor: FCIColors.primaryColor(),
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
     }  else if (data['type'] == 'winner') {
       var messageJson = json.decode(data['message']);
-      /*Utils().showMessage(
-          context, 'Winner', 'Congratulations!\n You are the winner', true);*/
+
+      Fluttertoast.showToast(
+          msg:'${message.notification?.title}',
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.TOP,
+          timeInSecForIosWeb: 1,
+          backgroundColor: FCIColors.primaryColor(),
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
     Get.to(()=>CongratulationView());
     }
   }

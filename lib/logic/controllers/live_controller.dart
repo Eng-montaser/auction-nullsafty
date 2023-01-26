@@ -4,8 +4,6 @@ import 'dart:convert';
 import 'package:auction/database/models/car_model.dart';
 import 'package:auction/database/services/get_service.dart';
 import 'package:auction/logic/controllers/auth_controller.dart';
-import 'package:auction/logic/controllers/car_details_Controller.dart';
-import 'package:auction/ui/home_screens/congrats.dart';
 import 'package:auction/utils/FCIStyle.dart';
 import 'package:auction/utils/utils.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
@@ -14,7 +12,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-
+import 'package:fluttertoast/fluttertoast.dart';
 import '../../database/services/post_service.dart';
 import 'package:timezone/standalone.dart' as tz;
 
@@ -28,6 +26,7 @@ class LiveController extends GetxController {
   final int carId;
   String myLastBid = '';
   bool _showAddBid = false;
+  final BuildContext context;
   late Timer timer;
 
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
@@ -35,7 +34,7 @@ class LiveController extends GetxController {
   StreamController<CarDetails> streamController =
       StreamController<CarDetails>.broadcast();
   AuthenticationController authenticationController=Get.put(AuthenticationController());
-  LiveController(this.carId);
+  LiveController(this.carId,this.context);
   bool get showAddBid => _showAddBid;
 
   set showAddBid(bool value) {
@@ -89,13 +88,26 @@ class LiveController extends GetxController {
   }
 
   handleNotification(data, RemoteMessage message) async {
-    if (data['type'] == 'bid_closed') {
-      /*Utils().showMessage(
-          context, 'Winner', 'Congratulations!\n You are the winner', false);*/
+    /*if (data['type'] == 'bid_closed') {
+      Utils().showMessageInfo(context, '${message.notification?.title}',
+          '${message.notification?.body}');
 
-    } else if (data['type'] == 'bid' || data['type'] == 'outbid') {
+    } else */if (data['type'] == 'bid' || data['type'] == 'outbid'
+    || data['type'] == 'bid_time_increment') {
+      print('${message.notification?.title}');
+      Fluttertoast.showToast(
+          msg:  '${message.notification?.title}',
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.TOP,
+          timeInSecForIosWeb: 1,
+          backgroundColor: FCIColors.finishMark(),
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
+      /*Utils().showMessageInfo(context, '${message.notification?.title}',
+          '${message.notification?.body}');*/
       var messageJson = json.decode(data['message']);
-      print('m: ${messageJson['product_id']}');
+      //print('m: ${messageJson['product_id']}');
       if(messageJson['product_id']==carId)
       await getCarDetails(carId);
 
