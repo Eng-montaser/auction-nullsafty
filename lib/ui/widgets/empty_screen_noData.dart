@@ -7,10 +7,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class EmptyCarsData extends StatefulWidget {
   final String message;
   final Function reloadData;
+  final bool load;
   const EmptyCarsData({
     Key? key,
     required this.message,
-    required this.reloadData,
+    required this.reloadData ,
+    this.load=true
   }) : super(key: key);
   @override
   _BuyCardState createState() => _BuyCardState();
@@ -34,7 +36,7 @@ class _BuyCardState extends State<EmptyCarsData> {
                   '${widget.message}',
                   style: FCITextStyle.normal(16),
                 ),
-                IconButton(
+                if(widget.load)IconButton(
                     onPressed: () {
                       widget.reloadData();
                     },

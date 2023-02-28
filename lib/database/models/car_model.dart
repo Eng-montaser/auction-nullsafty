@@ -1,4 +1,8 @@
 import 'package:auction/database/models/user_model.dart';
+import 'package:auction/logic/controllers/auth_controller.dart';
+import 'package:get/get.dart';
+
+import '../../logic/controllers/live_controller.dart';
 
 class CarModel {
   int id;
@@ -12,7 +16,7 @@ class CarModel {
   int? members;
   int? auction_num;
   String miles;
-
+  double? totalAmount;
   CarModel(
       {required this.miles,
       required this.id,
@@ -20,15 +24,20 @@ class CarModel {
       required this.title,
       required this.desc,
        this.members,
+        this.totalAmount,
        this.auction_num,
       required this.bid_price,
       required this.start_date,
       required this.end_date,
       required this.isFinished});
-  factory CarModel.fromJosn(Map<String, dynamic> json) {
+  factory CarModel.fromJosn(Map<String, dynamic> json,
+      {  imageWithPath=true,   total_amount}) {
     List<String> imags = [];
     if (json['images'] != null) if (json['images'].length > 0) {
-      for (var im in json['images']) imags.add(im);
+      for (var im in json['images']){
+        imageWithPath?
+        imags.add(im):imags.add('https://tradeinsolutions.ae/auction/assets/images/products/${im}');
+      }
     }
     String bidPrice = '';
     int membersCount = 0;
@@ -37,7 +46,6 @@ class CarModel {
       List<int> memList = [json['bidding_history'][0]['user_id']];
       double price = double.parse(json['bidding_history'][0]['bid_amount']);
       for (int i = 1; i < json['bidding_history'].length; i++) {
-        print(memList.contains(json['bidding_history'][i]['user_id']));
         if (!memList.contains(json['bidding_history'][i]['user_id'])) {
           memList.add(json['bidding_history'][i]['user_id']);
         }
@@ -49,7 +57,7 @@ class CarModel {
       membersCount = memList.length;
     } else
       bidPrice = '${json['min_bid_price']}';
-    print('mmen: ${json['bidding_history'].length}');
+
     return CarModel(
         id: int.parse('${json['id']}'),
         images: imags,
@@ -61,7 +69,8 @@ class CarModel {
         desc: json['description'] ?? '',
         isFinished: int.parse('${json['bid_complete']}') == 1,
         members: membersCount,
-      auction_num:json['bidding_history']!=null?json['bidding_history'].length:0 // json['mileage'],
+        auction_num:json['bidding_history']!=null?json['bidding_history'].length:0 ,// json['mileage'],
+        totalAmount:total_amount??0.0,
         );
   }
 }
@@ -131,6 +140,11 @@ class CarDetails {
   String? sun_roof;
   String? interior_omment;
   List<BidUser>? bidUsers;
+  MyBidStatus? myBidStatus;
+  double? max_bid_price;
+  int? totalBids;
+  double? customerPrice;
+  double? vatValue;
   CarDetails(
       {this.start_date,
       this.end_date,
@@ -195,13 +209,45 @@ class CarDetails {
       this.interior_comment,
       this.navigation,
       this.sun_roof,
-      this.interior_omment});
+      this.interior_omment,
+      this.myBidStatus,
+      this.max_bid_price,
+      this.totalBids,
+        this.customerPrice,
+        this.vatValue,
+      });
 
   factory CarDetails.fromJosn(Map<String, dynamic> json) {
     List<BidUser> bidUsers = [];
     if (json['bidding_history'].length > 0) {
       for (var im in json['bidding_history'])
         bidUsers.add(BidUser.fromJosn(im));
+    }
+    MyBidStatus bidStatus=MyBidStatus.noBid;
+    bool userFound=false;
+    for (var bidUser in  bidUsers) {
+      if(bidUser.user_id == Get.find<AuthenticationController>()
+          .userData!.user.id) {
+        userFound = true;
+      }
+    }
+
+    double maxBidPrice=0.0;
+    if ( json['min_bid_price']  != null) {
+      maxBidPrice = double.parse(json['min_bid_price'].toString())  ;
+      if ( bidUsers .length > 0)
+        for (var m in  bidUsers) {
+          if (maxBidPrice < m.bid_amount) {
+            maxBidPrice = m.bid_amount ;
+            if(userFound){
+              if (m.user_id == Get.find<AuthenticationController>().userData!.user.id) {
+                bidStatus=MyBidStatus.lastBid;
+              }else {
+                bidStatus=MyBidStatus.outBid;
+              }
+            }
+          }
+        }
     }
 
     return CarDetails(
@@ -305,8 +351,14 @@ class CarDetails {
       navigation: json['navigation'],
       sun_roof: json['sun_roof'],
       interior_omment: json['interior_omment'],
+      myBidStatus: bidStatus,
+      max_bid_price: maxBidPrice,
+      totalBids: json['total_bids'].round(),
+      customerPrice: double.tryParse(json['customer_price'].toString()),
+      vatValue:   (double.tryParse(json['vat'].toString())??0.0 * maxBidPrice)/100
     );
   }
+
 }
 
 class BidUser {

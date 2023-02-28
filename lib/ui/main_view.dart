@@ -7,6 +7,7 @@ import 'package:animated_widgets/widgets/translation_animated.dart';
 import 'package:auction/database/getxApi/post_api.dart';
 import 'package:auction/logic/controllers/MainController.dart';
 import 'package:auction/logic/controllers/car_controller.dart';
+import 'package:auction/logic/controllers/home_controller.dart';
 import 'package:auction/route/route.dart';
 import 'package:auction/ui/add_car/AddCar.dart';
 import 'package:auction/ui/home_screens/auctions_view.dart';
@@ -26,8 +27,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../logic/controllers/auth_controller.dart';
+import '../logic/controllers/notifications_controller.dart';
 import 'widgets/notificationBadge.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:widget_and_text_animator/widget_and_text_animator.dart';
 
 class MainScreen extends StatefulWidget {
@@ -38,12 +39,12 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  List<String> menuItems = ["Home", "Auctions", "Notifications", "Help"];
+  List<String> menuItems = [ "Auctions","Home", "Notifications", "Help"];
    int totalNotifications=0;
   PushNotification? _notificationInfo;
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
   bool showData = false;
-  int selectedIndex = 1;
+  int selectedIndex = 0;
   @override
   void initState() {
     totalNotifications = 0;
@@ -106,32 +107,17 @@ class _MainScreenState extends State<MainScreen> {
         //  _notificationInfo = notification;
         totalNotifications = totalNotifications++;
      });
-      Get.put(CarController()).loadAllCars(false);
+      // Get.put(CarController()).loadAllCars(false);
     } else if (data['type'] == 'bid_closed') {
       // var messageJson = json.decode(data['message']);
       // var message = Bid.fromJosn(messageJson);
       //Get.put(LiveController()).getCarDetails(_id)
-      Fluttertoast.showToast(
-          msg:  '${message.notification?.title}',
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.TOP,
-          timeInSecForIosWeb: 1,
-          backgroundColor: FCIColors.primaryColor(),
-          textColor: Colors.white,
-          fontSize: 16.0
-      );
+      Utils().showMessageInfo(context, '${message.notification?.title}',
+          '${message.notification?.body}');
     }  else if (data['type'] == 'winner') {
       var messageJson = json.decode(data['message']);
-
-      Fluttertoast.showToast(
-          msg:'${message.notification?.title}',
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.TOP,
-          timeInSecForIosWeb: 1,
-          backgroundColor: FCIColors.primaryColor(),
-          textColor: Colors.white,
-          fontSize: 16.0
-      );
+      /*Utils().showMessage(
+          context, 'Winner', 'Congratulations!\n You are the winner', true);*/
     Get.to(()=>CongratulationView());
     }
   }
@@ -209,7 +195,7 @@ class _MainScreenState extends State<MainScreen> {
                                       },
                                     ),
                                     Text(
-                                      menuItems[controller.selectedMenuItem],
+                                      menuItems[controller.selectedMenuItem].tr,
                                       style: FCITextStyle.bold(22,
                                           color: Colors.white),
                                     ),
@@ -231,10 +217,10 @@ class _MainScreenState extends State<MainScreen> {
                             child: IndexedStack(
                               index: controller.selectedMenuItem,
                               children: [
+                                AuctionsHomeView(totalNotify: totalNotifications),
                                 HomeView(),
-                                AuctionsView(totalNotify: totalNotifications),
                                 NotificationsView(),
-                                HelpView()
+                                HelpView( )
                               ],
                             ),
                           ),
@@ -278,11 +264,6 @@ class _MainScreenState extends State<MainScreen> {
                               //                             ),
                               //                           ),
                               //                         )),
-                              Icon(Icons.home,
-                                  size: ScreenUtil().setSp(30),
-                                  color: selectedIndex == 0
-                                      ? FCIColors.primaryColor()
-                                      : FCIColors.iconGrey()),
                               Badge(
                                 showBadge: totalNotifications > 0,
                                 elevation: 5,
@@ -296,11 +277,15 @@ class _MainScreenState extends State<MainScreen> {
                                 ),
                                 child: Icon(Icons.directions_car,
                                     size: ScreenUtil().setSp(30),
-                                    color: selectedIndex == 1
+                                    color: selectedIndex == 0
                                         ? FCIColors.primaryColor()
                                         : FCIColors.iconGrey()),
                               ),
-
+                              Icon(Icons.home,
+                                  size: ScreenUtil().setSp(30),
+                                  color: selectedIndex == 1
+                                      ? FCIColors.primaryColor()
+                                      : FCIColors.iconGrey()),
                               Icon(Icons.notifications_active,
                                   size: ScreenUtil().setSp(30),
                                   color: selectedIndex == 2
@@ -317,10 +302,13 @@ class _MainScreenState extends State<MainScreen> {
                                 selectedIndex = index;
                               });
                               controller.changeMenuItem(index);
-                              if (index == 1 && totalNotifications > 0) {
+                              if (index == 0 && totalNotifications > 0) {
                                 totalNotifications = 0;
-                                Get.put(CarController()).onInit();
-                              }
+                              }else if (index == 1) {
+                                Get.put(HomeController()).onInit();
+                               }else if (index == 2) {
+                                Get.put(NotificationsController()).onInit();
+                               }
                             },
                           ),
                           // BottomAppBar(
@@ -449,7 +437,7 @@ class _MainScreenState extends State<MainScreen> {
                                             width: ScreenUtil().setWidth(20),
                                           ),
                                           Text(
-                                            "${authController.userData?.user.firstname ?? "UserName"} ${authController.userData!.user.lastname ?? ""}",
+                                            "${authController.userData?.user.firstname ?? "UserName".tr} ${authController.userData!.user.lastname ?? ""}",
                                             style: FCITextStyle.bold(12,
                                                 color: Colors.black),
                                           ),
@@ -459,7 +447,7 @@ class _MainScreenState extends State<MainScreen> {
                                           Text(
                                               authController
                                                       .userData?.user.email ??
-                                                  "emailemail@email.com",
+                                                  "",
                                               style: FCITextStyle.normal(8,
                                                   color: FCIColors
                                                       .textFieldHintGrey())),
@@ -480,7 +468,7 @@ class _MainScreenState extends State<MainScreen> {
                                             horizontal:
                                                 ScreenUtil().setWidth(5)),
                                         child: Text(
-                                          "Verified",
+                                          "Verified".tr,
                                           style: FCITextStyle.bold(18,
                                               color: Colors.white),
                                         ),
@@ -498,7 +486,7 @@ class _MainScreenState extends State<MainScreen> {
                                             horizontal:
                                                 ScreenUtil().setWidth(5)),
                                         child: Text(
-                                          "Dealer",
+                                          "Dealer".tr,
                                           style: FCITextStyle.bold(18,
                                               color: Colors.white),
                                         ),
@@ -529,7 +517,7 @@ class _MainScreenState extends State<MainScreen> {
                                                   color: Colors.black),
                                             ),
                                             Text(
-                                              "Total vehicles",
+                                              "Total vehicles".tr,
                                               style: FCITextStyle.bold(10,
                                                   color: Colors.grey),
                                             ),
@@ -561,7 +549,7 @@ class _MainScreenState extends State<MainScreen> {
                                                   color: Colors.black),
                                             ),
                                             Text(
-                                              "Hosted Auction",
+                                              "Hosted Auction".tr,
                                               style: FCITextStyle.bold(10,
                                                   color: Colors.grey),
                                             ),
@@ -593,7 +581,7 @@ class _MainScreenState extends State<MainScreen> {
                                                   color: Colors.black),
                                             ),
                                             Text(
-                                              "Participated",
+                                              "Participated".tr,
                                               style: FCITextStyle.bold(10,
                                                   color: Colors.grey),
                                             ),
@@ -669,7 +657,7 @@ class _MainScreenState extends State<MainScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "${authController.userData?.user.firstname ?? "UserName"} ${authController.userData!.user.lastname ?? ""}",
+                                    "${authController.userData?.user.firstname ?? "UserName".tr} ${authController.userData!.user.lastname ?? ""}",
                                     style: FCITextStyle.bold(18,
                                         color: Colors.white),
                                   ),
@@ -678,7 +666,7 @@ class _MainScreenState extends State<MainScreen> {
                                   ),
                                   Text(
                                       authController.userData?.user.email ??
-                                          "emailemail@email.com",
+                                          "",
                                       style: FCITextStyle.normal(14,
                                           color:
                                               FCIColors.textFieldHintGrey())),
@@ -697,21 +685,16 @@ class _MainScreenState extends State<MainScreen> {
                       translationDisabled: Offset(0, -150),
                       translationEnabled: Offset(0, 0),
                       duration: Duration(milliseconds: 1000),
-                      child: OpacityAnimatedWidget.tween(
-                        enabled: controller.isDrawerOpen,
-                        opacityDisabled: 0,
-                        opacityEnabled: 1,
-                        child: SideBarItem(
-                          onTap: () {
-                            Get.toNamed(AppRoutes.termsConditions);
-                            // controller.changeSideBar(context);
-                            setState(() {
-                              showData = false;
-                            });
-                          },
-                          text: "Terms & Conditions",
-                          icon: Icons.storage,
-                        ),
+                      child: SideBarItem(
+                        onTap: () {
+                          Get.toNamed(AppRoutes.termsConditions);
+                          // controller.changeSideBar(context);
+                          setState(() {
+                            showData = false;
+                          });
+                        },
+                        text: "Terms & Conditions",
+                        icon: Icons.storage,
                       ),
                     ),
                     TranslationAnimatedWidget.tween(
@@ -719,21 +702,16 @@ class _MainScreenState extends State<MainScreen> {
                       translationDisabled: Offset(0, -250),
                       translationEnabled: Offset(0, 0),
                       duration: Duration(milliseconds: 1100),
-                      child: OpacityAnimatedWidget.tween(
-                        enabled: controller.isDrawerOpen,
-                        opacityDisabled: 0,
-                        opacityEnabled: 1,
-                        child: SideBarItem(
-                          onTap: () {
-                            Get.toNamed(AppRoutes.aboutUs);
-                            // controller.changeSideBar(context);
-                            setState(() {
-                              showData = false;
-                            });
-                          },
-                          text: "About Us",
-                          icon: Icons.text_snippet_outlined,
-                        ),
+                      child: SideBarItem(
+                        onTap: () {
+                          Get.toNamed(AppRoutes.aboutUs);
+                          // controller.changeSideBar(context);
+                          setState(() {
+                            showData = false;
+                          });
+                        },
+                        text: "About Us".tr,
+                        icon: Icons.text_snippet_outlined,
                       ),
                     ),
                     TranslationAnimatedWidget.tween(
@@ -741,95 +719,67 @@ class _MainScreenState extends State<MainScreen> {
                       translationDisabled: Offset(0, -350),
                       translationEnabled: Offset(0, 0),
                       duration: Duration(milliseconds: 1200),
-                      child: OpacityAnimatedWidget.tween(
-                          enabled: controller.isDrawerOpen,
-                          opacityDisabled: 0,
-                          opacityEnabled: 1,
-                          child: WidgetAnimator(
-                            // incomingEffect: WidgetTransitionEffects.incomingSlideInFromBottom(),
-                            atRestEffect: WidgetRestingEffects.rotate(),
-                            child: SideBarItem(
-                              onTap: () {
-                                Get.toNamed(AppRoutes.settings);
-                                // controller.changeSideBar(context);
-                                setState(() {
-                                  showData = false;
-                                });
-                              },
-                              text: "Settings",
-                              icon: Icons.settings,
-                            ),
-                          )),
+                      child: SideBarItem(
+                        onTap: () {
+                          Get.toNamed(AppRoutes.settings);
+                          // controller.changeSideBar(context);
+                          setState(() {
+                            showData = false;
+                          });
+                        },
+                        text: "Settings".tr,
+                        icon: Icons.settings,
+                      ),
                     ),
                     TranslationAnimatedWidget.tween(
                       enabled: controller.isDrawerOpen, //
                       translationDisabled: Offset(0, -450),
                       translationEnabled: Offset(0, 0),
                       duration: Duration(milliseconds: 1300),
-                      child: OpacityAnimatedWidget.tween(
-                          enabled: controller.isDrawerOpen,
-                          opacityDisabled: 0,
-                          opacityEnabled: 1,
-                          child: WidgetAnimator(
-                            // incomingEffect: WidgetTransitionEffects.incomingSlideInFromBottom(),
-                            atRestEffect: WidgetRestingEffects.slide(),
-                            child: SideBarItem(
-                              onTap: () {
-                                Get.to(() => AddCar());
-                                // controller.changeSideBar(context);
-                                setState(() {
-                                  showData = false;
-                                });
-                              },
-                              text: "Add Car",
-                              icon: Icons.directions_car,
-                            ),
-                          )),
+                      child: SideBarItem(
+                        onTap: () {
+                          Get.to(() => AddCar());
+                          // controller.changeSideBar(context);
+                          setState(() {
+                            showData = false;
+                          });
+                        },
+                        text: "Add Car".tr,
+                        icon: Icons.directions_car,
+                      ),
                     ),
                     TranslationAnimatedWidget.tween(
                       enabled: controller.isDrawerOpen, //
                       translationDisabled: Offset(0, -550),
                       translationEnabled: Offset(0, 0),
                       duration: Duration(milliseconds: 1400),
-                      child: OpacityAnimatedWidget.tween(
-                          enabled: controller.isDrawerOpen,
-                          opacityDisabled: 0,
-                          opacityEnabled: 1,
-                          child: WidgetAnimator(
-                            // incomingEffect: WidgetTransitionEffects.incomingSlideInFromBottom(),
-                            atRestEffect: WidgetRestingEffects.swing(),
-                            child: SideBarItem(
-                              onTap: () {},
-                              text: "العربية",
-                              icon: Icons.language,
-                            ),
-                          )),
+                      child:  SideBarItem(
+                        onTap: () async{
+                          controller.changeSideBar(context);
+                          await controller.updateLanguage();
+                        },
+                        text: "العربية",
+                        icon: Icons.language,
+                      ),
                     ),
                     TranslationAnimatedWidget.tween(
                       enabled: controller.isDrawerOpen, //
                       translationDisabled: Offset(0, -650),
                       translationEnabled: Offset(0, 0),
                       duration: Duration(milliseconds: 1500),
-                      child: OpacityAnimatedWidget.tween(
-                          enabled: controller.isDrawerOpen,
-                          opacityDisabled: 0,
-                          opacityEnabled: 1,
-                          child: WidgetAnimator(
-                            // incomingEffect: WidgetTransitionEffects.incomingSlideInFromBottom(),
-                            atRestEffect: WidgetRestingEffects.wave(),
-                            child: SideBarItem(
-                              onTap: () {
-                                print("login");
-                                authController.logOut();
-                                controller.changeSideBar(context);
-                                setState(() {
-                                  showData = false;
-                                });
-                              },
-                              text: "Logout",
-                              icon: Icons.logout,
-                            ),
-                          )),
+                      child:  SideBarItem(
+                        onTap: () {
+                          print("login");
+                          authController.logOut();
+                          controller.changeSideBar(context);
+                          setState(() {
+                            showData = false;
+                          });
+                          controller.changeSideBar(context);
+                        },
+                        text: "Logout".tr,
+                        icon: Icons.logout,
+                      ),
                     ),
                     SizedBox(
                       height: ScreenUtil().setHeight(15),
@@ -839,41 +789,33 @@ class _MainScreenState extends State<MainScreen> {
                       translationDisabled: Offset(0, -650),
                       translationEnabled: Offset(0, 0),
                       duration: Duration(milliseconds: 1500),
-                      child: OpacityAnimatedWidget.tween(
-                          enabled: controller.isDrawerOpen,
-                          opacityDisabled: 0,
-                          opacityEnabled: 1,
-                          child: WidgetAnimator(
-                            // incomingEffect: WidgetTransitionEffects.incomingSlideInFromBottom(),
-                            atRestEffect: WidgetRestingEffects.fidget(),
-                            child: !showData
-                                ? GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        showData = !showData;
-                                      });
-                                    },
-                                    child: ClipRRect(
-                                      child: CircleAvatar(
-                                        child: CachedNetworkImage(
-                                          imageUrl: authController.userData !=
-                                                  null
-                                              ? '${authController.userData!.user.image!}'
-                                              : '',
-                                          errorWidget: (ctx, url, error) =>
-                                              Image.asset(
-                                                  'assets/images/defult_profile.png'),
-                                          width: ScreenUtil().setWidth(150),
-                                          height: ScreenUtil().setWidth(150),
-                                          fit: BoxFit.cover,
-                                        ),
-                                        radius: ScreenUtil().setSp(40),
-                                      ),
-                                      borderRadius: BorderRadius.circular(150),
-                                    ),
-                                  )
-                                : Container(),
-                          )),
+                      child: !showData
+                          ? GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            showData = !showData;
+                          });
+                        },
+                        child: ClipRRect(
+                          child: CircleAvatar(
+                            child: CachedNetworkImage(
+                              imageUrl: authController.userData !=
+                                  null
+                                  ? '${authController.userData!.user.image!}'
+                                  : '',
+                              errorWidget: (ctx, url, error) =>
+                                  Image.asset(
+                                      'assets/images/defult_profile.png'),
+                              width: ScreenUtil().setWidth(150),
+                              height: ScreenUtil().setWidth(150),
+                              fit: BoxFit.cover,
+                            ),
+                            radius: ScreenUtil().setSp(40),
+                          ),
+                          borderRadius: BorderRadius.circular(150),
+                        ),
+                      )
+                          : Container(),
                     ),
                   ],
                 ),

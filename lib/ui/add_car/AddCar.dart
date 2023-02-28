@@ -4,6 +4,7 @@ import 'package:auction/logic/controllers/addCar_controller.dart';
 import 'package:auction/ui/widgets/ColorPicker.dart';
 import 'package:auction/ui/widgets/custom_background.dart';
 import 'package:auction/utils/FCIStyle.dart';
+import 'package:auction/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -29,7 +30,7 @@ class _AddCar extends State<AddCar> {
               centerTitle: true,
               backgroundColor: FCIColors.primaryColor(),
               title: Text(
-                'Add Car',
+                'Add Car'.tr,
               ),
               elevation: 0,
               leading: MaterialButton(
@@ -77,7 +78,7 @@ class _AddCar extends State<AddCar> {
                           ),
                           alignment: Alignment.center,
                           child: Text(
-                            "Add from Gallery",
+                            "Add from Gallery".tr,
                             style: FCITextStyle.bold(18, color: Colors.white),
                           ),
                         ),
@@ -107,7 +108,7 @@ class _AddCar extends State<AddCar> {
                           ),
                           alignment: Alignment.center,
                           child: Text(
-                            "Add from Camera",
+                            "Add from Camera".tr,
                             style: FCITextStyle.bold(18, color: FCIColors.primaryColor()),
                           ),
                         ),
@@ -138,13 +139,13 @@ class _AddCar extends State<AddCar> {
                             ),
                           ),*/
                             //if (addCarController.menuItems.length > 0)
-                            selectRow('Make', "make", addCarController.makesItems.value,
+                            selectRow('Make'.tr, "make", addCarController.makesItems.value,
                                 addCarController),
-                            selectRow('Model', "model",
+                            selectRow('Model'.tr, "model",
                                 addCarController.modelsItems.value, addCarController),
-                            selectRow('Year', "year", addCarController.yearsItems.value,
+                            selectRow('Year'.tr, "year", addCarController.yearsItems.value,
                                 addCarController),
-                            selectRow('Trim', "trim", addCarController.trimList.value,
+                            selectRow('Trim'.tr, "trim", addCarController.trimList.value,
                                 addCarController),
                             // Container(
                             //   margin: EdgeInsets.symmetric(
@@ -303,9 +304,9 @@ class _AddCar extends State<AddCar> {
                                   addCarController.colorValue = val;
                                 });
                               },
-                              keyboardType: TextInputType.number,
+                              keyboardType: TextInputType.text,
                               decoration: InputDecoration(
-                                hintText: 'Color',
+                                hintText: 'Color'.tr,
                                 hintStyle: FCITextStyle.normal(16,color: FCIColors.textFieldHintGrey()),
                                 border: OutlineInputBorder(
                                   borderSide: BorderSide(
@@ -342,7 +343,7 @@ class _AddCar extends State<AddCar> {
                                     },
                                     keyboardType: TextInputType.number,
                                     decoration: InputDecoration(
-                                      hintText: 'Enter Car Mileage',
+                                      hintText: 'Enter Car Mileage'.tr,
                                       border: OutlineInputBorder(
                                         borderSide: BorderSide(
                                           color: Color(0xfff1f1f1)
@@ -379,7 +380,7 @@ class _AddCar extends State<AddCar> {
                                 ),
                                 alignment: Alignment.center,
                                 child: Text(
-                                  "Next",
+                                  "Next".tr,
                                   style: FCITextStyle.normal(18, color: Colors.white),
                                 ),
                               ),
@@ -412,11 +413,11 @@ class _AddCar extends State<AddCar> {
           height: ScreenUtil().setHeight(15),
         ),
         DropdownButtonFormField<String>(
-          hint: Text('Select $label'),
+          hint: Text('${'Select'.tr} $label'),
           //iconEnabledColor: Colors.red,
           icon: items.length > 0
               ? Icon(Icons.arrow_drop_down_outlined)
-              : Text('Loading...'),
+              :Utils.loading(),
           // borderRadius: BorderRadius.circular(15),
           value: items.length > 0 ? items[0].value : null,
           // style: TextStyle(),

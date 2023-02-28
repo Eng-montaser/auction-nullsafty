@@ -79,8 +79,7 @@ class _AddCar extends State<AddPreview> {
             getRow('Mileage', '${widget.mileago}', 'assets/images/icon_3.png'),
             getRow('Trim', '${widget.trim}', 'assets/images/icon_4.png'),
             getRow('Color', '${widget.color}', ''),
-            getRow(
-                'Type', '${widget.type}', '${widget.typeImage}'),
+            getRow('Type', '${widget.type}', '${widget.typeImage}'),
             GestureDetector(
               onTap: () {
                 var data = {
@@ -114,7 +113,7 @@ class _AddCar extends State<AddPreview> {
                           color: Colors.white,
                         )
                       : Text(
-                          "Submit for Auction",
+                          "Submit for Auction".tr,
                           style: FCITextStyle.normal(18, color: Colors.white),
                         ),
                 ),
@@ -157,7 +156,7 @@ class _AddCar extends State<AddPreview> {
                       ? Container(
                           // width: ScreenUtil().setWidth(25),
                           // height: ScreenUtil().setWidth(25),
-                           child: Text(label,style: FCITextStyle.bold(16),),
+                           child: Text(label.tr,style: FCITextStyle.bold(16),),
                              )
                       : Image.asset(
                           '$iconname',
@@ -169,7 +168,7 @@ class _AddCar extends State<AddPreview> {
                   // alignment: Alignment.bottomCenter,
                   width: ScreenUtil().setWidth(70),
                   child: Text(
-                    '$label',
+                    label.tr,
                     style: FCITextStyle.bold(16),
                   ),
                 ),

@@ -46,7 +46,7 @@ class _UserProfileViewViewState extends State<UserProfileView> {
                     Get.back();
                   },
                 ),
-                Text("User Profile",style: FCITextStyle.bold(22,color: Colors.white),),
+                Text("User Profile".tr,style: FCITextStyle.bold(22,color: Colors.white),),
                 IconButton(
                   icon: Icon(
                     Icons.search_rounded,
@@ -160,18 +160,18 @@ class _UserProfileViewViewState extends State<UserProfileView> {
                                     //     ],
                                     //   ),
                                     // ),
-                                    btnCancelText: "Gallery",
+                                    btnCancelText: "Gallery".tr,
                                     btnCancelColor: FCIColors.primaryColor(),
                                     btnCancelOnPress: () {
                                       controller.pickImage(ImageSource.gallery);
                                     },
-                                    btnOkText: "Camera",
+                                    btnOkText: "Camera".tr,
                                     btnOkColor: Colors.blue,
                                     btnOkOnPress: () async {
                                       controller.pickImage(ImageSource.camera);
                                     },
                                     onDissmissCallback: (type) {})
-                                  ..show();
+                                  .show();
                               },
                               child: circleImage(
                                   100,
@@ -202,7 +202,7 @@ class _UserProfileViewViewState extends State<UserProfileView> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 ProfileTextField(
-                                  hintText: "First Name",
+                                  hintText: "First Name".tr,
                                   controller: controller.firstNameController,
                                   focusNode: controller.focusNodeFirstName,
                                   onTap: () {
@@ -214,7 +214,7 @@ class _UserProfileViewViewState extends State<UserProfileView> {
                                   width: FCISize.width(context)*0.39,
                                 ),
                                 ProfileTextField(
-                                  hintText: "Last Name",
+                                  hintText: "Last Name".tr,
                                   controller: controller.lastNameController,
                                   focusNode: controller.focusNodeLastName,
                                   onTap: () {
@@ -229,7 +229,7 @@ class _UserProfileViewViewState extends State<UserProfileView> {
                             ),
 
                             ProfileTextField(
-                              hintText: "Email Address",
+                              hintText: "Email".tr,
                               controller: controller.emailController,
                               // focusNode: controller.focusNodeEmail,
                               onTap: () {
@@ -268,7 +268,7 @@ class _UserProfileViewViewState extends State<UserProfileView> {
                              */
 
                             ProfileTextField(
-                              hintText: "State",
+                              hintText: "State".tr,
                               controller: controller.stateController ,
                               focusNode: controller.focusNodeState,
                               onTap: () {
@@ -279,7 +279,7 @@ class _UserProfileViewViewState extends State<UserProfileView> {
                               },
                             ),
                             ProfileTextField(
-                              hintText: "City",
+                              hintText: "City".tr,
                               controller: controller.cityController ,
                               focusNode: controller.focusNodeCity,
                               onTap: () {
@@ -290,7 +290,7 @@ class _UserProfileViewViewState extends State<UserProfileView> {
                               },
                             ),
                             ProfileTextField(
-                              hintText: "Zip",
+                              hintText: "Zip".tr,
                               controller: controller.zipController ,
                               focusNode: controller.focusNodeZip,
                               onTap: () {

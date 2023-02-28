@@ -39,16 +39,14 @@ class _AuctionsViewState extends State<CarDetailsShowView>{
               mainAxisAlignment:
               MainAxisAlignment.spaceBetween,
               children: [
-                IconButton(
-                  icon: Icon(
-                    Icons.arrow_back_ios,
-                    color: Colors.white,
-                    size: ScreenUtil().setSp(35),
-                  ),
-                  onPressed: () {
-                    Get.back();
-                  },
-                ),
+                MaterialButton(
+                    onPressed: () {
+                      Get.back();
+                    },
+                    child: Icon(
+                      Icons.arrow_back_sharp,
+                      color: FCIColors.accentColor(),
+                    )),
                 Text(
                   '${widget.title}',
                   style: FCITextStyle.bold(22,

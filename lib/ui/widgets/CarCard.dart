@@ -15,214 +15,214 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:timezone/standalone.dart' as tz;
 var dubai = tz.getLocation('Asia/Dubai');
-class CarCard extends StatefulWidget {
-  final CarModel carData;
-  const CarCard({
-    Key? key,
-    required this.carData,
-  }) : super(key: key);
-  @override
-  _CarCardState createState() => _CarCardState();
-}
-
-class _CarCardState extends State<CarCard> with TickerProviderStateMixin {
-  late AnimationController animationController;
-  late Timer timer;
-  Duration actual = new Duration();
-  int count = 9;
-  @override
-  void initState() {
-    animationController = AnimationController(
-        duration: const Duration(milliseconds: 3000), vsync: this);
-    super.initState();
-
-
-    timer = Timer.periodic(
-        Duration(seconds: 1), (timer) => calCulate());
-  }
-  calCulate(){
-    setState((){
-      actual=Utils().calculateDur( Utils().getTimeOfAuction(
-          widget.carData.start_date, widget.carData.end_date)==CarStatus.upComing?widget.carData.start_date:widget.carData.end_date);
-    });
-  }
-  @override
-  void dispose() {
-    animationController.dispose();
-    timer.cancel();
-    super.dispose();
-  }
-
-
-  @override
-  Widget build(BuildContext context) {
-     return GestureDetector(
-      onTap: () {
-        Get.to(CarDetailsView(
-          carData: widget.carData,
-        ));
-      },
-      child: Card(
-        // margin: EdgeInsets.all(20),
-        child: Stack(
-          children: [
-            Padding(
-              padding: FCIPadding.symmetric(width: 10,height: 10),
-              child: Stack(
-                children: [
-                  Column(
-                    children: [
-                      CachedNetworkImage(
-                        imageUrl: widget.carData.images.length > 0
-                            ? "${widget.carData.images[0]}"
-                            : "",
-                        placeholder: (context, url) => Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CircularProgressIndicator(),
-                          ],
-                        ),
-                        errorWidget: (context, url, error) => Icon(Icons.error),
-                        height: FCISize.height(context)*0.2,
-                        width: FCISize.width(context),
-                        fit: BoxFit.cover,
-                       // alignment: Alignment.center,
-                      ),
-                      SizedBox(height: ScreenUtil().setWidth(5)),
-
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Flexible(
-                            flex: 1,
-                            child: Column(
-                              // mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  '${widget.carData.title}',
-                                  style: FCITextStyle.bold(15, color: Colors.black),
-                                ),
-                                 Padding(
-                                  padding: EdgeInsets.only(
-                                      right: ScreenUtil().setWidth(10),
-                                      top: ScreenUtil().setHeight(5),
-                                      bottom: ScreenUtil().setHeight(15),
-                                  ),
-                                  child: Text(
-                                    '${removeAllHtmlTags(widget.carData.desc)}',
-                                    //style: FCITextStyle.normal(12),
-                                    style: FCITextStyle.normal(12),
-                                    maxLines: 4,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                                Container(
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          color: FCIColors.primaryColor(),
-                                          width: 1),
-                                      borderRadius: BorderRadius.circular(30)),
-                                  child: Text(
-                                    '${widget.carData.miles} ${'miles'.tr}',
-                                    style: FCITextStyle.normal(13),
-                                  ),
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: ScreenUtil().setWidth(20),
-                                      vertical: ScreenUtil().setHeight(8)),
-                                ),
-                              ],
-                            ),
-                          ),
-                          if (actual != null && actual.inSeconds>0 ) Flexible(
-                              flex: 1,
-                              child:
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Utils().getTimeOfAuction(
-                                      widget.carData.start_date, widget.carData.end_date)==CarStatus.upComing?
-                                  Container(
-                                    width: ScreenUtil().setWidth(200),
-                                    child: Text(
-                                      'Start After ${Utils().printDuration(Utils().calculateDur(widget.carData.start_date))}',
-                                      style: FCITextStyle.normal(16),
-                                    ),
-                                  ):
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      CardMediterranesnDiet(
-                                          animation: Tween<double>(
-                                              begin: 1.0, end: 0.0)
-                                              .animate(CurvedAnimation(
-                                              parent: animationController,
-                                              curve: Interval(
-                                                  (1 / count) * 3, 1.0,
-                                                  curve: Curves
-                                                      .fastOutSlowIn))),
-                                          animationController:
-                                          animationController,
-                                          auction_time: actual,
-                                          width: ScreenUtil().setWidth(30),
-                                          timeLeftTextstyle: FCITextStyle.normal(8)
-                                      ),
-                                      Container(
-                                        width: ScreenUtil().setWidth(170),
-                                        height: ScreenUtil().setHeight(10),
-                                        child: Theme(
-                                          data: Theme.of(context).copyWith(
-                                            sliderTheme: SliderThemeData(
-                                              thumbShape: SquareSliderComponentShape(),
-                                              trackShape: MyRoundedRectSliderTrackShape(),
-                                            ),
-                                          ),
-                                          child: Slider(
-                                            min: 0.0,
-                                            max: 100.0,
-                                            value: widget.carData.members!>=100.0?100.0:widget.carData.members!.toDouble()+10.0,
-                                            divisions: 10,
-                                            activeColor: Color.lerp(Color(0xffff0000), Color(0xff00ff00),  widget.carData.members!>=100?1.0:(widget.carData.members!.toDouble()+10.0)/100),
-                                            label: '${'${widget.carData.members??'0.0'}'}',
-                                            onChanged: (value) {
-                                            },
-                                          ),
-                                        ),
-                                      )
-                                    ],
-                                  )
-                                ],
-                              )
-                          ),
-
-                        ],
-                      )
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            if (widget.carData.isFinished)
-              Positioned(
-                  top: ScreenUtil().setHeight(20),
-                  right: ScreenUtil().setWidth(10),
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: ScreenUtil().setWidth(20),
-                        vertical: ScreenUtil().setHeight(5)),
-                    decoration: BoxDecoration(color: FCIColors.finishMark()),
-                    child: Text(
-                      'Finished',
-                      style: FCITextStyle.normal(14, color: Colors.white),
-                    ),
-                  )),
-          ],
-        ),
-      ),
-    );
-  }
-}
+// class CarCard extends StatefulWidget {
+//   final CarModel carData;
+//   const CarCard({
+//     Key? key,
+//     required this.carData,
+//   }) : super(key: key);
+//   @override
+//   _CarCardState createState() => _CarCardState();
+// }
+//
+// class _CarCardState extends State<CarCard> with TickerProviderStateMixin {
+//   late AnimationController animationController;
+//   late Timer timer;
+//   Duration actual = new Duration();
+//   int count = 9;
+//   @override
+//   void initState() {
+//     animationController = AnimationController(
+//         duration: const Duration(milliseconds: 3000), vsync: this);
+//     super.initState();
+//
+//
+//     timer = Timer.periodic(
+//         Duration(seconds: 1), (timer) => calCulate());
+//   }
+//   calCulate(){
+//     setState((){
+//       actual=Utils().calculateDur( Utils().getTimeOfAuction(
+//           widget.carData.start_date, widget.carData.end_date)==CarStatus.upComing?widget.carData.start_date:widget.carData.end_date);
+//     });
+//   }
+//   @override
+//   void dispose() {
+//     animationController.dispose();
+//     timer.cancel();
+//     super.dispose();
+//   }
+//
+//
+//   @override
+//   Widget build(BuildContext context) {
+//      return GestureDetector(
+//       onTap: () {
+//         Get.to(CarDetailsView(
+//           carData: widget.carData,
+//         ));
+//       },
+//       child: Card(
+//         // margin: EdgeInsets.all(20),
+//         child: Stack(
+//           children: [
+//             Padding(
+//               padding: FCIPadding.symmetric(width: 10,height: 10),
+//               child: Stack(
+//                 children: [
+//                   Column(
+//                     children: [
+//                       CachedNetworkImage(
+//                         imageUrl: widget.carData.images.length > 0
+//                             ? "${widget.carData.images[0]}"
+//                             : "",
+//                         placeholder: (context, url) => Column(
+//                           mainAxisAlignment: MainAxisAlignment.center,
+//                           children: [
+//                             CircularProgressIndicator(),
+//                           ],
+//                         ),
+//                         errorWidget: (context, url, error) => Icon(Icons.error),
+//                         height: FCISize.height(context)*0.2,
+//                         width: FCISize.width(context),
+//                         fit: BoxFit.cover,
+//                        // alignment: Alignment.center,
+//                       ),
+//                       SizedBox(height: ScreenUtil().setWidth(5)),
+//
+//                       Row(
+//                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                         crossAxisAlignment: CrossAxisAlignment.start,
+//                         children: [
+//                           Flexible(
+//                             flex: 1,
+//                             child: Column(
+//                               // mainAxisSize: MainAxisSize.min,
+//                               crossAxisAlignment: CrossAxisAlignment.start,
+//                               children: [
+//                                 Text(
+//                                   '${widget.carData.title}',
+//                                   style: FCITextStyle.bold(15, color: Colors.black),
+//                                 ),
+//                                  Padding(
+//                                   padding: EdgeInsets.only(
+//                                       right: ScreenUtil().setWidth(10),
+//                                       top: ScreenUtil().setHeight(5),
+//                                       bottom: ScreenUtil().setHeight(15),
+//                                   ),
+//                                   child: Text(
+//                                     '${removeAllHtmlTags(widget.carData.desc)}',
+//                                     //style: FCITextStyle.normal(12),
+//                                     style: FCITextStyle.normal(12),
+//                                     maxLines: 4,
+//                                     overflow: TextOverflow.ellipsis,
+//                                   ),
+//                                 ),
+//                                 Container(
+//                                   decoration: BoxDecoration(
+//                                       border: Border.all(
+//                                           color: FCIColors.primaryColor(),
+//                                           width: 1),
+//                                       borderRadius: BorderRadius.circular(30)),
+//                                   child: Text(
+//                                     '${widget.carData.miles} ${'miles'.tr}',
+//                                     style: FCITextStyle.normal(13),
+//                                   ),
+//                                   padding: EdgeInsets.symmetric(
+//                                       horizontal: ScreenUtil().setWidth(20),
+//                                       vertical: ScreenUtil().setHeight(8)),
+//                                 ),
+//                               ],
+//                             ),
+//                           ),
+//                           if (actual != null && actual.inSeconds>0 ) Flexible(
+//                               flex: 1,
+//                               child:
+//                               Column(
+//                                 crossAxisAlignment: CrossAxisAlignment.end,
+//                                 children: [
+//                                   Utils().getTimeOfAuction(
+//                                       widget.carData.start_date, widget.carData.end_date)==CarStatus.upComing?
+//                                   Container(
+//                                     width: ScreenUtil().setWidth(200),
+//                                     child: Text(
+//                                       'Start After ${Utils().printDuration(Utils().calculateDur(widget.carData.start_date))}',
+//                                       style: FCITextStyle.normal(16),
+//                                     ),
+//                                   ):
+//                                   Column(
+//                                     crossAxisAlignment: CrossAxisAlignment.end,
+//                                     children: [
+//                                       CardMediterranesnDiet(
+//                                           animation: Tween<double>(
+//                                               begin: 1.0, end: 0.0)
+//                                               .animate(CurvedAnimation(
+//                                               parent: animationController,
+//                                               curve: Interval(
+//                                                   (1 / count) * 3, 1.0,
+//                                                   curve: Curves
+//                                                       .fastOutSlowIn))),
+//                                           animationController:
+//                                           animationController,
+//                                           auction_time: actual,
+//                                           width: ScreenUtil().setWidth(30),
+//                                           timeLeftTextstyle: FCITextStyle.normal(8)
+//                                       ),
+//                                       Container(
+//                                         width: ScreenUtil().setWidth(170),
+//                                         height: ScreenUtil().setHeight(10),
+//                                         child: Theme(
+//                                           data: Theme.of(context).copyWith(
+//                                             sliderTheme: SliderThemeData(
+//                                               thumbShape: SquareSliderComponentShape(),
+//                                               trackShape: MyRoundedRectSliderTrackShape(),
+//                                             ),
+//                                           ),
+//                                           child: Slider(
+//                                             min: 0.0,
+//                                             max: 100.0,
+//                                             value: widget.carData.members!>=100.0?100.0:widget.carData.members!.toDouble()+10.0,
+//                                             divisions: 10,
+//                                             activeColor: Color.lerp(Color(0xffff0000), Color(0xff00ff00),  widget.carData.members!>=100?1.0:(widget.carData.members!.toDouble()+10.0)/100),
+//                                             label: '${'${widget.carData.members??'0.0'}'}',
+//                                             onChanged: (value) {
+//                                             },
+//                                           ),
+//                                         ),
+//                                       )
+//                                     ],
+//                                   )
+//                                 ],
+//                               )
+//                           ),
+//
+//                         ],
+//                       )
+//                     ],
+//                   ),
+//                 ],
+//               ),
+//             ),
+//             if (widget.carData.isFinished)
+//               Positioned(
+//                   top: ScreenUtil().setHeight(20),
+//                   right: ScreenUtil().setWidth(10),
+//                   child: Container(
+//                     padding: EdgeInsets.symmetric(
+//                         horizontal: ScreenUtil().setWidth(20),
+//                         vertical: ScreenUtil().setHeight(5)),
+//                     decoration: BoxDecoration(color: FCIColors.finishMark()),
+//                     child: Text(
+//                       'Finished',
+//                       style: FCITextStyle.normal(14, color: Colors.white),
+//                     ),
+//                   )),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
 class SquareSliderComponentShape extends SliderComponentShape {
   @override
   Size getPreferredSize(bool isEnabled, bool isDiscrete) {
@@ -336,6 +336,217 @@ class MyRoundedRectSliderTrackShape extends SliderTrackShape
         bottomRight: activeTrackRadius,
       ),
       rightTrackPaint,
+    );
+  }
+}
+
+
+
+
+class CarCardView extends StatefulWidget {
+  final CarModel carData;
+  final CarsStatus carStatus;
+  const CarCardView({
+    Key? key,
+    required this.carData,
+    required this.carStatus,
+  }) : super(key: key);
+  @override
+  _CarCardViewState createState() => _CarCardViewState();
+}
+
+class _CarCardViewState extends State<CarCardView> with TickerProviderStateMixin {
+  late AnimationController animationController;
+  late Timer timer;
+
+  Duration actual = new Duration();
+  int count = 9;
+  @override
+  void initState() {
+    animationController = AnimationController(
+        duration: const Duration(milliseconds: 3000), vsync: this);
+    super.initState();
+    timer = Timer.periodic(
+        Duration(seconds: 1), (timer) => calCulate());
+  }
+  calCulate(){
+    setState((){
+      actual=widget.carStatus.index
+      ==CarsStatus.upComing.index?Utils().getUpcomingDuration(widget.carData.start_date)
+      :Utils().getLiveDuration(widget.carData.end_date);
+    });
+  }
+  @override
+  void dispose() {
+    animationController.dispose();
+    timer.cancel();
+    super.dispose();
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Get.to(CarDetailsView(
+          carData: widget.carData,
+        ));
+      },
+      child: Card(
+        // margin: EdgeInsets.all(20),
+        child: Stack(
+          children: [
+            Padding(
+              padding: FCIPadding.symmetric(width: 10,height: 10),
+              child:  Column(
+                children: [
+                  CachedNetworkImage(
+                    imageUrl: widget.carData.images.length > 0
+                        ? "${widget.carData.images[0]}"
+                        : "",
+                    placeholder: (context, url) => Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircularProgressIndicator(),
+                      ],
+                    ),
+                    errorWidget: (context, url, error) => Icon(Icons.error),
+                    height: FCISize.height(context)*0.2,
+                    width: FCISize.width(context),
+                    fit: BoxFit.cover,
+                    // alignment: Alignment.center,
+                  ),
+                  SizedBox(height: ScreenUtil().setWidth(5)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Flexible(
+                        flex: 1,
+                        child: Column(
+                          // mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '${widget.carData.title}',
+                              style: FCITextStyle.bold(15, color: Colors.black),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                right: ScreenUtil().setWidth(10),
+                                top: ScreenUtil().setHeight(5),
+                                bottom: ScreenUtil().setHeight(15),
+                              ),
+                              child: Text(
+                                '${removeAllHtmlTags(widget.carData.desc)}',
+                                //style: FCITextStyle.normal(12),
+                                style: FCITextStyle.normal(12),
+                                maxLines: 4,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                         Container(
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: FCIColors.primaryColor(),
+                                      width: 1),
+                                  borderRadius: BorderRadius.circular(30)),
+                              child: Text(
+                                '${widget.carData.miles} ${'miles'.tr}',
+                                style: FCITextStyle.normal(13),
+                              ),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: ScreenUtil().setWidth(20),
+                                  vertical: ScreenUtil().setHeight(8)),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Flexible(
+                          flex: 1,
+                          child:
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              if(widget.carStatus.index==CarsStatus.upComing.index)
+                                Container(
+                                  width: ScreenUtil().setWidth(200),
+                                  child: Text(
+                                    'Start After ${Utils().printDuration(Utils().getUpcomingDuration(widget.carData.start_date))}',
+                                    style: FCITextStyle.bold(14),
+                                  ),
+                                ),
+                              if(widget.carStatus.index==CarsStatus.live.index)
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Container(
+                                      width: ScreenUtil().setWidth(170),
+                                      child: CardMediterranesnDiet(
+                                          animation: Tween<double>(
+                                              begin: 1.0, end: 0.0)
+                                              .animate(CurvedAnimation(
+                                              parent: animationController,
+                                              curve: Interval(
+                                                  (1 / count) * 3, 1.0,
+                                                  curve: Curves
+                                                      .fastOutSlowIn))),
+                                          animationController:
+                                          animationController,
+                                          auction_time: actual,
+                                          width: ScreenUtil().setWidth(30),
+                                          timeLeftTextstyle: FCITextStyle.normal(8)
+                                      ),
+                                    ),
+                                    Container(
+                                      width: ScreenUtil().setWidth(170),
+                                      height: ScreenUtil().setHeight(10),
+                                      child: Theme(
+                                        data: Theme.of(context).copyWith(
+                                          sliderTheme: SliderThemeData(
+                                            thumbShape: SquareSliderComponentShape(),
+                                            trackShape: MyRoundedRectSliderTrackShape(),
+                                          ),
+                                        ),
+                                        child: Slider(
+                                          min: 0.0,
+                                          max: 100.0,
+                                          value: widget.carData.members!>=100.0?100.0:widget.carData.members!.toDouble()+10.0,
+                                          divisions: 10,
+                                          activeColor: Color.lerp(Color(0xffff0000), Color(0xff00ff00),  widget.carData.members!>=100?1.0:(widget.carData.members!.toDouble()+10.0)/100),
+                                          label: '${'${widget.carData.members??'0.0'}'}',
+                                          onChanged: (value) {
+                                          },
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                            ],
+                          )
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+            if (widget.carData.isFinished)
+              Positioned(
+                  top: ScreenUtil().setHeight(20),
+                  right: ScreenUtil().setWidth(10),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: ScreenUtil().setWidth(20),
+                        vertical: ScreenUtil().setHeight(5)),
+                    decoration: BoxDecoration(color: FCIColors.finishMark()),
+                    child: Text(
+                      'Finished',
+                      style: FCITextStyle.normal(14, color: Colors.white),
+                    ),
+                  )),
+          ],
+        ),
+      ),
     );
   }
 }

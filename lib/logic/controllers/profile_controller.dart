@@ -32,9 +32,9 @@ class ProfileController extends GetxController {
           if (response.statusCode == 200) {
             var data = jsonDecode(response.body);
             saveUserData(data);
+            init();
             update();
           } else {
-            print(response.statusCode);
             init();
             update();
           }
@@ -54,11 +54,9 @@ class ProfileController extends GetxController {
     var userData = shared_User.getString('user');
     if (tokenData != null && userData != null) {
       Map userMap = {
-        'token': jsonDecode(tokenData),
+        'token': tokenData,
         'user': jsonDecode(userData)
       };
-      print(userMap['token']);
-      print(userMap['user']);
       if (userMap.isNotEmpty) {
         _userData = FCIAuthUserModel.fromLoginJson(userMap);
       }
@@ -77,7 +75,6 @@ class ProfileController extends GetxController {
 
   File? imageData;
   init(){
-    print('*/*/*/*/*/*/**/*/*/*');
       firstNameController=TextEditingController(text: _userData?.user.firstname??'');
       lastNameController=TextEditingController(text: _userData?.user.lastname??'');
       emailController=TextEditingController(text: _userData?.user.email??'');

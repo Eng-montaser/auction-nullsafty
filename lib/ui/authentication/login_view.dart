@@ -1,7 +1,7 @@
 import 'dart:convert';
-
 import 'package:auction/logic/controllers/login_controller.dart';
 import 'package:auction/ui/authentication/googlefacebookLogin.dart';
+import 'package:auction/ui/widgets/custom_textFeild.dart';
 import 'package:auction/utils/FCIStyle.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +13,6 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 class LoginView extends StatelessWidget {
   LoginView({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -28,130 +27,37 @@ class LoginView extends StatelessWidget {
             children: [
               Column(
                 children: [
-                  Container(
-                    width: FCISize.width(context) * 0.75,
-                    // decoration:controller.registerFocusNode==RegisterFocusNode.email
-                    //     ? BoxDecoration(
-                    //     color: Colors.white,
-                    //     borderRadius:
-                    //     BorderRadius.circular(50),
-                    //     boxShadow: [
-                    //       BoxShadow(
-                    //         color: FCIColors.shadow(),
-                    //         spreadRadius: 7,
-                    //         blurRadius: 10,
-                    //         offset: Offset(0, 15), //
-                    //       )
-                    //     ])
-                    //     :BoxDecoration(
-                    //     color: FCIColors.accentColor(),
-                    //     borderRadius:
-                    //     BorderRadius.circular(50),
-                    //     border: Border.all(
-                    //         color: FCIColors.borderOrange()
-                    //     )
-                    //   // boxShadow: [
-                    //   //   BoxShadow(
-                    //   //     color: FCIColors.shadow(),
-                    //   //     spreadRadius: 7,
-                    //   //     blurRadius: 10,
-                    //   //     offset: Offset(0, 15), //
-                    //   //   )
-                    //   // ]
-                    // ),
-                    child: TextFormField(
+                  AuthTextField(
                       controller: controller.emailController,
-                      focusNode: controller.focusNodeEmail,
-                      onTap: () {
+                      focusNode:  controller.focusNodeEmail,
+                      filled:  controller.loginFocusNode == LoginFocusNode.email,
+                      onTap:(){
                         controller.setFocus(LoginFocusNode.email, context);
-                      },
-                      onEditingComplete: () {
+                      } ,
+                      onEditingComplete: (){
                         controller.setNextFocus(LoginFocusNode.email, context);
                       },
-                      validator: (v) {},
-                      onSaved: (v) {},
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
-                        filled: controller.loginFocusNode == LoginFocusNode.email,
-                        fillColor: Colors.white,
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white, width: 2.0),
-                          borderRadius: BorderRadius.circular(25.0),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: FCIColors.borderOrange(), width: 2.0),
-                          borderRadius: BorderRadius.circular(25.0),
-                        ),
-                        border: InputBorder.none,
-                        hintText: "email",
-                        prefixIcon: const Icon(Icons.email),
-                      ),
-                    ),
+                      inputType: TextInputType.emailAddress,
+                      obsecure: false,
+                      hintText: "Email".tr,
+                      icon:Icons.email
                   ),
                   const SizedBox(height: 10),
-                  Container(
-                    width: FCISize.width(context) * 0.75,
-                    // decoration:controller.passwordActive? BoxDecoration(
-                    //     color: Colors.white,
-                    //     borderRadius:
-                    //     BorderRadius.circular(50),
-                    //     boxShadow: [
-                    //       BoxShadow(
-                    //         color: FCIColors.shadow(),
-                    //         spreadRadius: 7,
-                    //         blurRadius: 10,
-                    //         offset: Offset(0, 15), //
-                    //       )
-                    //     ])
-                    //     :BoxDecoration(
-                    //     color: FCIColors.accentColor(),
-                    //     borderRadius:
-                    //     BorderRadius.circular(50),
-                    //     border: Border.all(
-                    //         color: FCIColors.borderOrange()
-                    //     )
-                    //   // boxShadow: [
-                    //   //   BoxShadow(
-                    //   //     color: FCIColors.shadow(),
-                    //   //     spreadRadius: 7,
-                    //   //     blurRadius: 10,
-                    //   //     offset: Offset(0, 15), //
-                    //   //   )
-                    //   // ]
-                    // ),
-                    child: TextFormField(
-                      controller: controller.passwordController,
-                      focusNode: controller.focusNodePassword,
-                      onTap: () {
-                        controller.setFocus(LoginFocusNode.password, context);
-                      },
-                      onEditingComplete: () {
-                        controller.setNextFocus(LoginFocusNode.password, context);
-                      },
-                      validator: (v) {},
-                      onSaved: (v) {},
-                      keyboardType: TextInputType.text,
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        filled:
-                            controller.loginFocusNode == LoginFocusNode.password,
-                        fillColor: Colors.white,
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white, width: 2.0),
-                          borderRadius: BorderRadius.circular(25.0),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: FCIColors.borderOrange(), width: 2.0),
-                          borderRadius: BorderRadius.circular(25.0),
-                        ),
-                        hintText: "password",
-                        prefixIcon: const Icon(Icons.lock),
-                      ),
-                    ),
+                  AuthTextField(
+                    controller: controller.passwordController,
+                    focusNode: controller.focusNodePassword,
+                    filled:  controller.loginFocusNode == LoginFocusNode.password,
+                    onTap:(){
+                      controller.setFocus(LoginFocusNode.password, context);
+                    } ,
+                    onEditingComplete: (){
+                      controller.setNextFocus(LoginFocusNode.password, context);
+                    },
+                    inputType: TextInputType.text,
+                    obsecure: true,
+                    hintText: "Password".tr,
+                    icon:Icons.lock
                   ),
-
                 ],
               ),
                SizedBox(height: ScreenUtil().setHeight(30)),
@@ -164,7 +70,7 @@ class LoginView extends StatelessWidget {
                       thickness: 1,
                     ),
                   ),
-                  Text('Sign In Using',style: FCITextStyle.bold(20,color: FCIColors.primaryColor()),),
+                  Text('Sign In Using'.tr,style: FCITextStyle.bold(20,color: FCIColors.primaryColor()),),
                   Container(
                     width: ScreenUtil().setWidth(80),
                     child: Divider(

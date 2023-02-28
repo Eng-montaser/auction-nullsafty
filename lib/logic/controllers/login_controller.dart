@@ -177,8 +177,7 @@ class LoginController extends GetxController {
       checking = false;
     update();
     if (accessToken != null) {
-      print("is Logged:::: ${prettyPrint(accessToken1!.toJson())}");
-      // now you can call to  FacebookAuth.instance.getUserData();
+       // now you can call to  FacebookAuth.instance.getUserData();
       final userData1 = await FacebookAuth.instance.getUserData();
       // final userData = await FacebookAuth.instance.getUserData(fields: "email,birthday,friends,gender,link");
       accessToken = accessToken1;

@@ -1,102 +1,52 @@
 import 'dart:async';
-
 import 'package:auction/database/models/car_model.dart';
 import 'package:get/get.dart';
-
 import '../../database/getxApi/get_api.dart';
-
-class CarController extends GetxController {
+import '../../utils/utils.dart';
+class CarsController extends GetxController {
   bool allCarsLoading = true;
-  bool upComingLoading = true;
-  bool runningLoading = true;
-  List<CarModel> _allCars = [];
-  List<CarModel> _upComingCars = [];
-  List<CarModel> _runningCars = [];
-  getData(CarStatus carStatus) {
-     List<CarModel> returnData = [];
+  List<CarModel>  allCars = [];
+  StreamController<List<CarModel>> streamController = StreamController();
+  void startTimer() async{
+    Timer.periodic(Duration(seconds: 3), (timer)async {
+      try {
+        await FCIGetDataXApi().getAllCars().then((value) async{
+          if (value != null) {
+            allCars = value;
+            streamController.sink.add(  allCars);
+            allCarsLoading = false;
+            update();
+          }
+        });
+      } catch (e) {
+        update();
+      }
+    });
+  }
+  void endTimer() async{
+    streamController.close();
+  }
+  List<CarModel>getData(CarsStatus carStatus) {
     switch (carStatus) {
-      case CarStatus.all:
-        returnData= _allCars;
+      case CarsStatus.live:
+        return allCars.where((element) => Utils().getTypeOfAuction(start_date:  element.start_date ,end_date:  element.end_date)
+            .index==CarsStatus.live.index).toList();
         break;
-      case CarStatus.upComing:
-        returnData= _upComingCars;
-      break;
-      case CarStatus.live:
-        returnData= _runningCars;
-         break;
-    }
-    return returnData;
-  }
-
-  Future<List<CarModel>> loadAllCars(bool loading) async {
-    if (loading) allCarsLoading = true;
-    update();
-    try {
-      await FCIGetDataXApi().getAllCars().then((value) async{
-        if (value != null) {
-          _allCars = value;
-          update();
-
-        }
-      });
-      allCarsLoading = false;
-      update();
-      return _allCars;
-    } catch (e) {
-      allCarsLoading = false;
-      update();
-      return <CarModel>[];
+      default :
+        return allCars;
+        break;
     }
   }
-
-  Future<List<CarModel>> loadUpComingCars(bool loading) async {
-    if (loading) upComingLoading = true;
-    update();
-    try {
-      await FCIGetDataXApi().getUpcoming().then((value) {
-        if (value != null) {
-          _upComingCars = value;
-          update();
-        }
-      });
-      upComingLoading = false;
-      update();
-      return _upComingCars;
-    } catch (e) {
-      upComingLoading = false;
-      update();
-      return <CarModel>[];
-    }
+  Duration calActual({start_date, end_date,   isRunning}){
+    Duration actual = new Duration();
+    actual=isRunning?Utils().getLiveDuration(end_date):
+    Utils().getUpcomingDuration(start_date);
+    return actual;
   }
-
-  Future<List<CarModel>> loadRunningCars(bool loading) async {
-    if (loading) runningLoading = true;
-    update();
-    try {
-      await FCIGetDataXApi().getRunning().then((value) async{
-        if (value != null) {
-          _runningCars = value;
-          update();
-
-        }
-      });
-      runningLoading = false;
-      update();
-      return _runningCars;
-    } catch (e) {
-      runningLoading = false;
-      update();
-      return <CarModel>[];
-    }
-  }
-
   @override
   void onInit() async{
     super.onInit();
-    await loadRunningCars(true);
-   /* await loadUpComingCars(true);
-    await   loadAllCars(true);*/
-
+    startTimer();
   }
 
   @override
@@ -105,5 +55,4 @@ class CarController extends GetxController {
     super.onClose();
   }
 }
-
-enum CarStatus { all, upComing, live, expired }
+enum CarsStatus { all, upComing, live, expired }

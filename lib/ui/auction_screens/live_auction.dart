@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:auction/database/models/car_model.dart';
 import 'package:auction/logic/controllers/live_controller.dart';
@@ -16,6 +17,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
+import '../../database/services/get_service.dart';
 import '../../logic/controllers/car_details_Controller.dart';
 import '../widgets/image_gallery.dart';
 
@@ -54,6 +56,7 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
   }
 
   int count = 9, imageIndex = 0;
+  int selectedIndex=0;
   @override
   Widget build(BuildContext context) {
     CarDetailsController carController =
@@ -61,7 +64,7 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
     Size size = MediaQuery.of(context).size;
     // _controller.calculateDur();
     return GetBuilder<LiveController>(
-        init: LiveController(widget.carModel.id,context),
+        init: LiveController(widget.carModel.id),
         builder: (controller) => GestureDetector(
               onTap: () {
                 setState(() {
@@ -69,7 +72,8 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
                 });
               },
               child: DefaultTabController(
-                length: 3,
+                length: 2,
+
                 initialIndex: 0,
 
                 child: Scaffold(
@@ -77,12 +81,12 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
                   appBar: AppBar(
                     centerTitle: true,
                     backgroundColor: FCIColors.primaryColor(),
-                    title: Text('Live Auction'),
+                    title: Text('Live Auction'.tr,style: FCITextStyle.bold(16,color: Colors.white),),
                     elevation: 0,
                     leading: MaterialButton(
                         onPressed: () {
                           //Get.put(CarDetailsController(carData: widget.carModel)).getCarDetails(widget.carModel.id);
-                          Get.back(result: '${controller.getMaxBid()}');
+                          Get.back(result: '${controller.carDetails.max_bid_price}');
                         },
                         child: Icon(
                           Icons.arrow_back_sharp,
@@ -227,6 +231,11 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
                                 color: Colors.white,
                               ),
                               child: TabBar(
+                                onTap: (val){
+                                  setState(() {
+                                    selectedIndex=val;
+                                  });
+                                },
                                 labelColor: FCIColors.primaryColor(),
                                 unselectedLabelColor: Colors.black54,
                                 indicatorSize: TabBarIndicatorSize.tab,
@@ -239,8 +248,10 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
                                   Tab(
                                     child: Container(
                                       alignment: Alignment.center,
-                                      width: size.width / 3,
-                                      child: Text('Auction'),
+                                      width: size.width / 2,
+                                      child: Text('Auction'.tr,style:
+                                      selectedIndex==0?FCITextStyle.bold(15,color: FCIColors.primaryColor())
+                                          :FCITextStyle.normal(14),),
                                     ),
                                   ),
                                   Tab(
@@ -248,27 +259,29 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
 
                                     child: Container(
                                       alignment: Alignment.center,
-                                      width: size.width / 3,
+                                      width: size.width / 2,
                                       height: double.infinity,
                                       decoration: BoxDecoration(
-                                          border: Border.symmetric(
-                                              vertical: BorderSide(
+                                          border:Border(
+                                              left:  BorderSide(
                                                 //  width: .5,
                                                   color:
                                                       FCIColors.primaryColor()
                                                           .withOpacity(.7)))),
-                                      child: Text('Car Details'),
+                                      child: Text('Car details'.tr,style:
+                                      selectedIndex==1?FCITextStyle.bold(15,color: FCIColors.primaryColor())
+                                          :FCITextStyle.normal(14),),
                                     ),
                                   ),
-                                  Tab(
-                                    child: Container(
-                                      alignment: Alignment.center,
-                                      width: size.width / 3,
-                                      height: double.infinity,
-                                      decoration: BoxDecoration(),
-                                      child: Text('Auction Status'),
-                                    ),
-                                  ),
+                                  // Tab(
+                                  //   child: Container(
+                                  //     alignment: Alignment.center,
+                                  //     width: size.width / 3,
+                                  //     height: double.infinity,
+                                  //     decoration: BoxDecoration(),
+                                  //     child: Text('Auction Status'),
+                                  //   ),
+                                  // ),
                                 ],
                               ),
                             ),
@@ -304,7 +317,6 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
                                             indicatorColor: Colors.white,
                                             tabs: [
                                               Tab(
-
                                                 child: Container(
                                                   alignment: Alignment.center,
                                                   width: size.width / 3,
@@ -312,7 +324,7 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
                                                     mainAxisSize: MainAxisSize.min,
                                                     children: [
                                                       Text(
-                                                        'Reserve Price',
+                                                        'CustomerPrice'.tr,
                                                         style: FCITextStyle.normal(
                                                             15,
                                                             color: FCIColors
@@ -321,7 +333,7 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
                                                             fontFamily: ''),
                                                       ),
                                                       Text(
-                                                        'No Reserve',
+                                                        '${carController.carDetails.customerPrice??0.0}',
                                                         style: FCITextStyle.normal(
                                                             15,
                                                             color: FCIColors
@@ -351,7 +363,7 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
                                                     mainAxisSize: MainAxisSize.min,
                                                     children: [
                                                       Text(
-                                                        'Vat Value',
+                                                        'Vat Value'.tr,
                                                         style: FCITextStyle.normal(
                                                             15,
                                                             color: FCIColors
@@ -360,7 +372,7 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
                                                             fontFamily: ''),
                                                       ),
                                                       Text(
-                                                        'None',
+                                                        '${carController.carDetails.vatValue??0.0}',
                                                         style: FCITextStyle.normal(
                                                             15,
                                                             color: FCIColors
@@ -382,7 +394,7 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
                                                     mainAxisSize: MainAxisSize.min,
                                                     children: [
                                                       Text(
-                                                        'Starting Bid',
+                                                        'Starting Bid'.tr,
                                                         style: FCITextStyle.normal(
                                                             15,
                                                             color: FCIColors
@@ -424,37 +436,31 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
                                               animationController,
                                           auction_time: controller.actual,
                                         ),
-                                      StreamBuilder<CarDetails>(
-                                          stream: controller.streamController.stream
-                                              .asBroadcastStream(),
-                                          builder: (context, snapshot) {
-                                            if (snapshot.hasData)
-                                              return Container(
-                                                alignment: Alignment.center,
-                                                child: Row(
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
-                                                  children: [
-                                                    Text(
-                                                      "Current Bid  ",
-                                                      style:
-                                                          FCITextStyle.bold(
-                                                              22,
-                                                              color:
-                                                                  Colors.black),
-                                                    ),
-                                                    Text(
-                                                      "${convertFromStringToRange('${controller.getMaxBid()}')}",
-                                                      style: FCITextStyle.bold(
-                                                          22,
-                                                          color: FCIColors.primaryColor()),
-                                                    ),
-                                                  ],
-                                                ),
-                                              );
-                                            else
-                                              return Utils.loading();
-                                          }),
+                                      Container(
+                                        alignment: Alignment.center,
+                                        child: Row(
+                                          mainAxisSize:
+                                          MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              "${'Current Bid'.tr}  ",
+                                              style:
+                                              FCITextStyle.bold(
+                                                  22,
+                                                  color:
+                                                  Colors.black),
+                                            ),
+                                            if(controller.carDetails.
+                                            max_bid_price!=null)Text(
+                                              "${convertFromStringToRange('${controller.carDetails.
+                                                  max_bid_price!.round().toString()}')}",
+                                              style: FCITextStyle.bold(
+                                                  22,
+                                                  color: FCIColors.primaryColor()),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
                                       Container(
                                         height: ScreenUtil().setHeight(60),
                                         margin: EdgeInsets.symmetric(
@@ -464,53 +470,22 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceEvenly,
                                           children: <Widget>[
-                                            GestureDetector(
-                                              onTap: () {
-                                                if (controller.carDetails
-                                                        .bidUsers!.length >
-                                                    0)
-                                                  showModalBottomSheet(
-                                                      context: context,
-                                                      isDismissible: true,
-                                                      enableDrag: false,
-                                                      barrierColor:
-                                                          Colors.transparent,
-                                                      elevation: 0,
-                                                      /* constraints: BoxConstraints(
-                maxWidth: context.bottomPickerWidth,
-              ),*/
-                                                      backgroundColor:
-                                                          Colors.white,
-                                                      builder: (context) {
-                                                        return getBiders(controller);
-                                                      });
-                                              },
-                                              child: Container(
-                                                width: size.width * .22,
-                                                child: Column(
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
-                                                  children: [
-                                                    Text(
-                                                      'Bidders',
-                                                      style: FCITextStyle.normal(
-                                                              15,
-                                                              color: FCIColors
-                                                                  .textFieldBack())
-                                                          .copyWith(
-                                                              fontFamily: ''),
-                                                    ),
-                                                    Text(
-                                                      '${controller.carDetails.bidUsers?.length ?? 0} Active',
-                                                      style: FCITextStyle.normal(
-                                                              15,
-                                                              color: FCIColors
-                                                                  .buttonGreen())
-                                                          .copyWith(
-                                                              fontFamily: ''),
-                                                    )
-                                                  ],
-                                                ),
+                                            Container(
+                                              width: size.width * .22,
+                                              child: Column(
+                                                mainAxisSize:
+                                                MainAxisSize.min,
+                                                children: [
+                                                  Text( controller.getMyBidStatusTitle(),
+                                                    style: FCITextStyle.normal(
+                                                        15,
+                                                        color:controller.getMyBidStatusColor())
+                                                        .copyWith(
+                                                        fontFamily: ''),
+                                                    textAlign: TextAlign.center,
+                                                  ),
+
+                                                ],
                                               ),
                                             ),
                                             VerticalDivider(
@@ -520,34 +495,31 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
                                               endIndent: 12,
                                               indent: 12,
                                             ),
-                                            GestureDetector(
-                                              onTap: () {},
-                                              child: Container(
-                                                width: size.width * .22,
-                                                child: Column(
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
-                                                  children: [
-                                                    Text(
-                                                      'Total Bids',
-                                                      style: FCITextStyle.normal(
-                                                              15,
-                                                              color: FCIColors
-                                                                  .textFieldBack())
-                                                          .copyWith(
-                                                              fontFamily: ''),
-                                                    ),
-                                                    Text(
-                                                      '${controller.carDetails.bidUsers?.length ?? 0.0}',
-                                                      style: FCITextStyle.normal(
-                                                              15,
-                                                              color: FCIColors
-                                                                  .buttonGreen())
-                                                          .copyWith(
-                                                              fontFamily: ''),
-                                                    )
-                                                  ],
-                                                ),
+                                            Container(
+                                              width: size.width * .22,
+                                              child: Column(
+                                                mainAxisSize:
+                                                MainAxisSize.min,
+                                                children: [
+                                                  Text(
+                                                    'Total Bids'.tr,
+                                                    style: FCITextStyle.normal(
+                                                        15,
+                                                        color: FCIColors
+                                                            .textFieldBack())
+                                                        .copyWith(
+                                                        fontFamily: ''),
+                                                  ),
+                                                  Text(
+                                                    '${controller.carDetails.totalBids ?? 0.0}',
+                                                    style: FCITextStyle.normal(
+                                                        15,
+                                                        color: FCIColors
+                                                            .buttonGreen())
+                                                        .copyWith(
+                                                        fontFamily: ''),
+                                                  )
+                                                ],
                                               ),
                                             ),
                                             VerticalDivider(
@@ -563,7 +535,7 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: [
                                                   Text(
-                                                    'Your Last Bid',
+                                                    'Your Last Bid'.tr,
                                                     style: FCITextStyle.normal(
                                                             15,
                                                             color: FCIColors
@@ -602,7 +574,7 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
                                               ScreenUtil().setWidth(30),
                                           decoration: BoxDecoration(
                                               color:controller.actual.inSeconds>=0?
-                                              controller.bidColor:
+                                              controller.getMyBidStatusColor():
                                               Colors.grey,
                                               borderRadius:
                                                   BorderRadius.circular(10)),
@@ -618,7 +590,7 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
                                           ),
                                           alignment: Alignment.center,
                                           child: Text(
-                                            "PLACE A BID",
+                                            "PLACE A BID".tr,
                                             style: FCITextStyle.bold(18,
                                                 color: Colors.white),
                                           ),
@@ -634,113 +606,113 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Text(
-                                            'cardetails'.tr,
-                                            style: FCITextStyle.bold(22,
-                                                color:
-                                                    FCIColors.primaryColor()),
-                                          ),
-                                          Divider(
-                                            color: FCIColors.buttonGreen(),
-                                            thickness: .5,
-                                            // width: 1,
-                                          ),
+                                          // Text(
+                                          //   'cardetails'.tr,
+                                          //   style: FCITextStyle.bold(22,
+                                          //       color:
+                                          //           FCIColors.primaryColor()),
+                                          // ),
+                                          // Divider(
+                                          //   color: FCIColors.buttonGreen(),
+                                          //   thickness: .5,
+                                          //   // width: 1,
+                                          // ),
                                           rowDetails('Ref ID',
                                               '${widget.carModel.id}'),
-                                          rowDetails('Make',
+                                          rowDetails('Make'.tr,
                                               '${controller.carDetails.make}'),
-                                          rowDetails('Model',
+                                          rowDetails('Model'.tr,
                                               '${controller.carDetails.model}'),
                                           if (controller.carDetails.year !=
                                               null)
-                                            rowDetails('Year',
+                                            rowDetails('Year'.tr,
                                                 '${controller.carDetails.year}'),
                                           if (widget.carModel.miles != null)
-                                            rowDetails('Mileage',
+                                            rowDetails('Mileage'.tr,
                                                 '${widget.carModel.miles}'),
                                           if (controller
                                                   .carDetails.specification !=
                                               null)
-                                            rowDetails('Specification',
+                                            rowDetails('Specification'.tr,
                                                 '${controller.carDetails.specification}'),
                                           if (controller.carDetails.body_type !=
                                               null)
-                                            rowDetails('Body Type',
+                                            rowDetails('Body Type'.tr,
                                                 '${controller.carDetails.body_type}'),
                                           if (controller
                                                   .carDetails.engine_size !=
                                               null)
-                                            rowDetails('Engine Size',
+                                            rowDetails('Engine Size'.tr,
                                                 '${controller.carDetails.engine_size}'),
                                           if (controller
                                                   .carDetails.service_hstory !=
                                               null)
-                                            rowDetails('Service History',
+                                            rowDetails('Service History'.tr,
                                                 '${controller.carDetails.service_hstory}'),
                                           if (controller.carDetails.warranty !=
                                               null)
-                                            rowDetails('Warranty',
+                                            rowDetails('Warranty'.tr,
                                                 '${controller.carDetails.warranty}'),
                                           if (controller
                                                   .carDetails.transmission !=
                                               null)
-                                            rowDetails('Transmission',
+                                            rowDetails('Transmission'.tr,
                                                 '${controller.carDetails.transmission}'),
                                           if (controller.carDetails.mortgage !=
                                               null)
-                                            rowDetails('Mortgage',
+                                            rowDetails('Mortgage'.tr,
                                                 '${controller.carDetails.mortgage}'),
                                           if (controller
                                                   .carDetails.number_of_keys !=
                                               null)
-                                            rowDetails('Number of Keys',
+                                            rowDetails('Number of Keys'.tr,
                                                 '${controller.carDetails.number_of_keys}'),
                                           if (controller
                                                   .carDetails.central_locking !=
                                               null)
-                                            rowDetails('Central locking',
+                                            rowDetails('Central locking'.tr,
                                                 '${controller.carDetails.central_locking}'),
                                         ],
                                       )),
                                 ),
-                                SingleChildScrollView(
-                                  child: Container(
-                                      margin: EdgeInsets.all(20),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            'cardetails'.tr,
-                                            style: FCITextStyle.bold(22,
-                                                color:
-                                                    FCIColors.primaryColor()),
-                                          ),
-                                          Divider(
-                                            color: FCIColors.buttonGreen(),
-                                            thickness: .5,
-                                            // width: 1,
-                                          ),
-                                          if (controller
-                                                  .carDetails.start_date !=
-                                              null)
-                                            rowDetails('Auction Date/Time',
-                                                '${DateFormat('dd MMM').format(DateTime.parse('${controller.carDetails.start_date}'))}'),
-                                          if (controller.carDetails.end_date !=
-                                              null)
-                                            rowDetails('Auction End Time',
-                                                '${DateFormat('dd MMM').format(DateTime.parse('${controller.carDetails.end_date}'))}'),
-                                          rowDetails('Car Reserver Price', ''),
-                                          rowDetails('Start bid price',
-                                              '${controller.carDetails.min_bid_price}'),
-                                          rowDetails('Highest bid price', ''),
-                                          rowDetails('Total Participation', ''),
-                                          rowDetails(
-                                              'Active Participation', ''),
-                                          rowDetails('Auction extended', ''),
-                                        ],
-                                      )),
-                                ),
+                                // SingleChildScrollView(
+                                //   child: Container(
+                                //       margin: EdgeInsets.all(20),
+                                //       child: Column(
+                                //         crossAxisAlignment:
+                                //             CrossAxisAlignment.start,
+                                //         children: [
+                                //           Text(
+                                //             'cardetails'.tr,
+                                //             style: FCITextStyle.bold(22,
+                                //                 color:
+                                //                     FCIColors.primaryColor()),
+                                //           ),
+                                //           Divider(
+                                //             color: FCIColors.buttonGreen(),
+                                //             thickness: .5,
+                                //             // width: 1,
+                                //           ),
+                                //           if (controller
+                                //                   .carDetails.start_date !=
+                                //               null)
+                                //             rowDetails('Auction Date/Time',
+                                //                 '${DateFormat('dd MMM').format(DateTime.parse('${controller.carDetails.start_date}'))}'),
+                                //           if (controller.carDetails.end_date !=
+                                //               null)
+                                //             rowDetails('Auction End Time',
+                                //                 '${DateFormat('dd MMM').format(DateTime.parse('${controller.carDetails.end_date}'))}'),
+                                //           rowDetails('Car Reserver Price', ''),
+                                //           rowDetails('Start bid price',
+                                //               '${controller.carDetails.min_bid_price}'),
+                                //           rowDetails('Highest bid price', ''),
+                                //           rowDetails('Total Participation', ''),
+                                //           rowDetails(
+                                //               'Active Participation', ''),
+                                //           rowDetails('Auction extended', ''),
+                                //         ],
+                                //       )),
+                                // ),
                               ]),
                             ),
                           ],
@@ -814,7 +786,7 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
                 MainAxisSize.min,
                 children: [
                   Text(
-                    "Current Bid  ",
+                    "${'Current Bid'.tr}  ",
                     style:
                     FCITextStyle.bold(
                         22,
@@ -822,7 +794,7 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
                         Colors.white),
                   ),
                   Text(
-                    "${convertFromStringToRange('${controller.getMaxBid()}')}",
+                    "${convertFromStringToRange('${controller.carDetails.max_bid_price}')}",
                     style: FCITextStyle.bold(
                         22,
                         color: Colors.white),
@@ -843,7 +815,7 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   // labelText: '\u1d2c\u1d31\u1d30',
-                  hintText: 'Enter Price \u1d2c\u1d31\u1d30',
+                  hintText: '${'Enter Price'.tr} \u1d2c\u1d31\u1d30',
                   labelStyle:
                       FCITextStyle.bold(18, color: FCIColors.accentColor()),
                   filled: true,
@@ -854,7 +826,7 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
                     onTap: () {
                       controller.bidController.text = '';
                     },
-                    child: Text('\u1d2c\u1d31\u1d30   Clear',
+                    child: Text('\u1d2c\u1d31\u1d30   ${'Clear'.tr}',
                         style: FCITextStyle.bold(14,
                             color: FCIColors.accentColor())),
                   ),
@@ -877,8 +849,7 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      controller.addConfirm(context, widget.carModel.id,
-                           500.00);
+                      controller.addConfirm(context, widget.carModel.id,500.00,true);
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -893,8 +864,7 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
                   ),
                   GestureDetector(
                     onTap: () {
-                      controller.addConfirm(context, widget.carModel.id,
-                          1000.00);
+                      controller.addConfirm(context, widget.carModel.id,  1000.00,true);
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -902,15 +872,14 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
                           borderRadius: BorderRadius.circular(7)),
                       padding: EdgeInsets.all(10),
                       child: Text(
-                        'AED 1000',
+                        'AED 1,000',
                         style: FCITextStyle.normal(18, color: Colors.black),
                       ),
                     ),
                   ),
                   GestureDetector(
                     onTap: () {
-                      controller.addConfirm(context, widget.carModel.id,
-                           2500.00);
+                      controller.addConfirm(context, widget.carModel.id, 2500.00,true);
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -918,7 +887,7 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
                           borderRadius: BorderRadius.circular(7)),
                       padding: EdgeInsets.all(10),
                       child: Text(
-                        'AED 2500',
+                        'AED 2,500',
                         style: FCITextStyle.normal(18, color: Colors.black),
                       ),
                     ),
@@ -936,7 +905,7 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
               child: controller.isLoading.value
                   ? CircularProgressIndicator()
                   : Text(
-                      'PLace Bid',
+                      'PLace Bid'.tr,
                       style: FCITextStyle.bold(
                         16,
                       ),
@@ -968,7 +937,7 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
           columns: [
             DataColumn(
               label: Text(
-                'Bidder',
+                'Bidder'.tr,
                 style: TextStyle(
                     fontStyle: FontStyle.italic,
                     color: Colors.white,
@@ -980,7 +949,7 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
               label: Container(
                 alignment: Alignment.center,
                 child: Text(
-                  '  Amount',
+                  '  ${'Amount'.tr}',
                   style: TextStyle(
                       fontStyle: FontStyle.italic,
                       color: Colors.white,
@@ -993,7 +962,7 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
               label: Container(
                 alignment: Alignment.center,
                 child: Text(
-                  '  Time',
+                  '  ${'Time'.tr}',
                   style: TextStyle(
                       fontStyle: FontStyle.italic,
                       color: Colors.white,
@@ -1014,7 +983,7 @@ class _auctions extends State<LiveAuctions> with TickerProviderStateMixin {
                         DataCell(Container(
                           //  padding: EdgeInsets.symmetric(7.0),
                           child: Text(
-                            '${'#${index + 1} Bidder ${controller.carDetails.bidUsers![index].user.id}'}',
+                            '${'#${index + 1} ${'Bidder'.tr} ${controller.carDetails.bidUsers![index].user.id}'}',
                             style: TextStyle(color: Colors.white),
                           ),
                         )),

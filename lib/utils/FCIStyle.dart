@@ -1,12 +1,14 @@
+import 'package:auction/database/services/get_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
 class FCITextStyle {
   static TextStyle normal(int fontSize,
       {Color? color, String? fontFamily, double? height, FontStyle? fontStyle}) {
     return TextStyle(
-        color: color != null ? color : Colors.black,
-        fontFamily: fontFamily != null ? fontFamily : "Changa",
+        color: color ?? Colors.black,
+        fontFamily:  Get.locale!.languageCode == 'en' ? 'Roboto':'Cairo',
         fontWeight: FontWeight.normal,
         fontSize: ScreenUtil().setSp(fontSize),
         height: height,
@@ -16,8 +18,8 @@ class FCITextStyle {
   static TextStyle bold(int fontSize,
       {Color? color, String? fontFamily, double? height, FontStyle? fontStyle}) {
     return TextStyle(
-        color: color != null ? color : Colors.black,
-        fontFamily: fontFamily != null ? fontFamily : "Changa",
+        color: color ?? Colors.black,
+        fontFamily:  Get.locale!.languageCode == 'en' ? 'Roboto':'Cairo',
         fontWeight: FontWeight.bold,
         fontSize: ScreenUtil().setSp(fontSize),
         height: height,

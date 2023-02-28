@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
+import '../widgets/custom_textFeild.dart';
+
 class RegisterView extends StatelessWidget {
   RegisterView({Key? key}) : super(key: key);
   @override
@@ -21,163 +23,41 @@ class RegisterView extends StatelessWidget {
             children: [
               Column(
                 children: [
-                  Container(
-                    width: FCISize.width(context) * 0.75,
-                    // decoration:controller.registerFocusNode==RegisterFocusNode.name
-                    //     ? BoxDecoration(
-                    //     color: Colors.white,
-                    //     borderRadius:
-                    //     BorderRadius.circular(50),
-                    //     boxShadow: [
-                    //       BoxShadow(
-                    //         color: FCIColors.shadow(),
-                    //         spreadRadius: 7,
-                    //         blurRadius: 10,
-                    //         offset: Offset(0, 15), //
-                    //       )
-                    //     ])
-                    //     :BoxDecoration(
-                    //     color: FCIColors.accentColor(),
-                    //     borderRadius:
-                    //     BorderRadius.circular(50),
-                    //     border: Border.all(
-                    //         color: FCIColors.borderOrange()
-                    //     )
-                    //   // boxShadow: [
-                    //   //   BoxShadow(
-                    //   //     color: FCIColors.shadow(),
-                    //   //     spreadRadius: 7,
-                    //   //     blurRadius: 10,
-                    //   //     offset: Offset(0, 15), //
-                    //   //   )
-                    //   // ]
-                    // ),
-                    child: TextFormField(
+                  AuthTextField(
                       controller: controller.nameController,
                       focusNode: controller.focusNodeName,
+                      filled:  controller.registerFocusNode ==
+                          RegisterFocusNode.name,
                       onTap: () {
                         controller.setFocus(RegisterFocusNode.name, context);
                       },
                       onEditingComplete: () {
                         controller.setNextFocus(RegisterFocusNode.name, context);
                       },
-                      validator: (v) {},
-                      onSaved: (v) {},
-                      keyboardType: TextInputType.text,
-                      decoration: InputDecoration(
-                        filled: controller.registerFocusNode ==
-                            RegisterFocusNode.name,
-                        fillColor: Colors.white,
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white, width: 2.0),
-                          borderRadius: BorderRadius.circular(25.0),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: FCIColors.borderOrange(), width: 2.0),
-                          borderRadius: BorderRadius.circular(25.0),
-                        ),
-                        border: InputBorder.none,
-                        hintText: "name",
-                        prefixIcon: const Icon(Icons.person),
-                      ),
-                    ),
+                      inputType: TextInputType.text,
+                      obsecure: false,
+                      hintText: "Name".tr,
+                      icon:Icons.person
                   ),
                   const SizedBox(height: 10),
-                  Container(
-                    width: FCISize.width(context) * 0.75,
-                    // decoration:controller.registerFocusNode==RegisterFocusNode.email
-                    //     ? BoxDecoration(
-                    //     color: Colors.white,
-                    //     borderRadius:
-                    //     BorderRadius.circular(50),
-                    //     boxShadow: [
-                    //       BoxShadow(
-                    //         color: FCIColors.shadow(),
-                    //         spreadRadius: 7,
-                    //         blurRadius: 10,
-                    //         offset: Offset(0, 15), //
-                    //       )
-                    //     ])
-                    //     :BoxDecoration(
-                    //     color: FCIColors.accentColor(),
-                    //     borderRadius:
-                    //     BorderRadius.circular(50),
-                    //     border: Border.all(
-                    //         color: FCIColors.borderOrange()
-                    //     )
-                    //   // boxShadow: [
-                    //   //   BoxShadow(
-                    //   //     color: FCIColors.shadow(),
-                    //   //     spreadRadius: 7,
-                    //   //     blurRadius: 10,
-                    //   //     offset: Offset(0, 15), //
-                    //   //   )
-                    //   // ]
-                    // ),
-                    child: TextFormField(
+                  AuthTextField(
                       controller: controller.emailController,
                       focusNode: controller.focusNodeEmail,
+                      filled:  controller.registerFocusNode ==
+                          RegisterFocusNode.email,
                       onTap: () {
                         controller.setFocus(RegisterFocusNode.email, context);
                       },
                       onEditingComplete: () {
                         controller.setNextFocus(RegisterFocusNode.email, context);
                       },
-                      validator: (v) {},
-                      onSaved: (v) {},
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
-                        filled: controller.registerFocusNode ==
-                            RegisterFocusNode.email,
-                        fillColor: Colors.white,
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white, width: 2.0),
-                          borderRadius: BorderRadius.circular(25.0),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: FCIColors.borderOrange(), width: 2.0),
-                          borderRadius: BorderRadius.circular(25.0),
-                        ),
-                        border: InputBorder.none,
-                        hintText: "email",
-                        prefixIcon: const Icon(Icons.email),
-                      ),
-                    ),
+                      inputType: TextInputType.emailAddress,
+                      obsecure: false,
+                      hintText: "Email".tr,
+                      icon:Icons.email
                   ),
                   const SizedBox(height: 10),
-                  Container(
-                    width: FCISize.width(context) * 0.75,
-                    // decoration:controller.passwordActive? BoxDecoration(
-                    //     color: Colors.white,
-                    //     borderRadius:
-                    //     BorderRadius.circular(50),
-                    //     boxShadow: [
-                    //       BoxShadow(
-                    //         color: FCIColors.shadow(),
-                    //         spreadRadius: 7,
-                    //         blurRadius: 10,
-                    //         offset: Offset(0, 15), //
-                    //       )
-                    //     ])
-                    //     :BoxDecoration(
-                    //     color: FCIColors.accentColor(),
-                    //     borderRadius:
-                    //     BorderRadius.circular(50),
-                    //     border: Border.all(
-                    //         color: FCIColors.borderOrange()
-                    //     )
-                    //   // boxShadow: [
-                    //   //   BoxShadow(
-                    //   //     color: FCIColors.shadow(),
-                    //   //     spreadRadius: 7,
-                    //   //     blurRadius: 10,
-                    //   //     offset: Offset(0, 15), //
-                    //   //   )
-                    //   // ]
-                    // ),
-                    child: TextFormField(
+                  AuthTextField(
                       controller: controller.passwordController,
                       focusNode: controller.focusNodePassword,
                       onTap: () {
@@ -187,60 +67,15 @@ class RegisterView extends StatelessWidget {
                         controller.setNextFocus(
                             RegisterFocusNode.password, context);
                       },
-                      validator: (v) {},
-                      onSaved: (v) {},
-                      keyboardType: TextInputType.text,
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        filled: controller.registerFocusNode ==
-                            RegisterFocusNode.password,
-                        fillColor: Colors.white,
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white, width: 2.0),
-                          borderRadius: BorderRadius.circular(25.0),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: FCIColors.borderOrange(), width: 2.0),
-                          borderRadius: BorderRadius.circular(25.0),
-                        ),
-                        hintText: "password",
-                        prefixIcon: const Icon(Icons.lock),
-                      ),
-                    ),
+                      filled: controller.registerFocusNode ==
+                          RegisterFocusNode.password,
+                      inputType: TextInputType.emailAddress,
+                      obsecure: true,
+                      hintText: "Password".tr,
+                      icon:Icons.lock
                   ),
                   const SizedBox(height: 10),
-                  Container(
-                    width: FCISize.width(context) * 0.75,
-                    // decoration:controller.confirmPasswordActive? BoxDecoration(
-                    //     color: Colors.white,
-                    //     borderRadius:
-                    //     BorderRadius.circular(50),
-                    //     boxShadow: [
-                    //       BoxShadow(
-                    //         color: FCIColors.shadow(),
-                    //         spreadRadius: 7,
-                    //         blurRadius: 10,
-                    //         offset: Offset(0, 15), //
-                    //       )
-                    //     ])
-                    //     :BoxDecoration(
-                    //     color: FCIColors.accentColor(),
-                    //     borderRadius:
-                    //     BorderRadius.circular(50),
-                    //     border: Border.all(
-                    //         color: FCIColors.borderOrange()
-                    //     )
-                    //   // boxShadow: [
-                    //   //   BoxShadow(
-                    //   //     color: FCIColors.shadow(),
-                    //   //     spreadRadius: 7,
-                    //   //     blurRadius: 10,
-                    //   //     offset: Offset(0, 15), //
-                    //   //   )
-                    //   // ]
-                    // ),
-                    child: TextFormField(
+                  AuthTextField(
                       controller: controller.conPasswordController,
                       focusNode: controller.focusNodeCPassword,
                       onTap: () {
@@ -250,27 +85,12 @@ class RegisterView extends StatelessWidget {
                         controller.setNextFocus(
                             RegisterFocusNode.cPassword, context);
                       },
-                      validator: (v) {},
-                      onSaved: (v) {},
-                      keyboardType: TextInputType.text,
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        filled: controller.registerFocusNode ==
-                            RegisterFocusNode.cPassword,
-                        fillColor: Colors.white,
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white, width: 2.0),
-                          borderRadius: BorderRadius.circular(25.0),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: FCIColors.borderOrange(), width: 2.0),
-                          borderRadius: BorderRadius.circular(25.0),
-                        ),
-                        hintText: "confirm password",
-                        prefixIcon: const Icon(Icons.lock),
-                      ),
-                    ),
+                      filled: controller.registerFocusNode ==
+                          RegisterFocusNode.cPassword,
+                      inputType: TextInputType.text,
+                      obsecure: false,
+                      hintText: "Confirm Password".tr,
+                      icon:Icons.lock
                   ),
                   const SizedBox(height: 10),
                 ],

@@ -3,20 +3,25 @@ import 'package:auction/logic/controllers/car_controller.dart';
 import 'package:auction/logic/controllers/car_details_Controller.dart';
 import 'package:auction/ui/auction_screens/car_details_view.dart';
 import 'package:auction/ui/auction_screens/live_auction.dart';
+import 'package:auction/ui/widgets/forhelp_widget.dart';
 import 'package:auction/ui/widgets/image_gallery.dart';
 import 'package:auction/utils/FCIStyle.dart';
+import 'package:auction/utils/utils.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-
+import 'package:intl/intl.dart';
+import '../../utils/constants.dart';
 import '../widgets/car_exterior_parts_view.dart';
 import '../widgets/custom_background.dart';
 
 class CarDetailsView extends StatefulWidget {
   final CarModel carData;
+
 
   CarDetailsView({Key? key, required this.carData}) : super(key: key);
   @override
@@ -30,23 +35,23 @@ class _AuctionsViewState extends State<CarDetailsView>
     groupsButtonList = [
       GroupsButton(
           show: false,
-          title: 'Car details',
+          title: 'Car details'.tr,
           groupsButtonType: GroupsButtonType.CarDetails),
+      // GroupsButton(
+      //     show: false,
+      //     title: 'Components Summary'.tr,
+      //     groupsButtonType: GroupsButtonType.ComponentsSummary),
       GroupsButton(
           show: false,
-          title: 'Components Summary',
-          groupsButtonType: GroupsButtonType.ComponentsSummary),
-      GroupsButton(
-          show: false,
-          title: 'Interior',
+          title: 'Interior'.tr,
           groupsButtonType: GroupsButtonType.Interior),
       GroupsButton(
           show: false,
-          title: 'Exterior',
+          title: 'Exterior'.tr,
           groupsButtonType: GroupsButtonType.Exterior),
       GroupsButton(
           show: false,
-          title: 'For Help',
+          title: 'For Help'.tr,
           groupsButtonType: GroupsButtonType.ForHelp),
     ];
     super.initState();
@@ -61,7 +66,8 @@ class _AuctionsViewState extends State<CarDetailsView>
           centerTitle: true,
           backgroundColor: FCIColors.primaryColor(),
           title: Text(
-            'Car Details',
+            'Car details'.tr,style: FCITextStyle.bold(16,color: Colors.white)
+
           ),
           elevation: 0,
           leading: MaterialButton(
@@ -230,6 +236,7 @@ class _AuctionsViewState extends State<CarDetailsView>
                                           style: FCITextStyle.normal(16),
                                         ),
                                       ),
+
                                       // Text(carController.liveDuration??'',style: FCITextStyle.normal(16),),
                                       Container(
                                         width: ScreenUtil().setWidth(200),
@@ -249,7 +256,7 @@ class _AuctionsViewState extends State<CarDetailsView>
                                     children: [
                                       Text(
                                         carController.carData.bid_price != null
-                                            ? '${carController.carData.bid_price} AED'
+                                            ? '${convertFromStringToRange( carController.carData.bid_price.toString()) } AED'
                                             : '',
                                         style: FCITextStyle.bold(25,
                                             color: FCIColors.buttonGreen()),
@@ -268,14 +275,15 @@ class _AuctionsViewState extends State<CarDetailsView>
                                   SizedBox(
                                     height: ScreenUtil().setHeight(20),
                                   ),
-                                  Row(
+                                  if(carController.carsStatus ==
+                                      CarsStatus.live)Row(
                                     mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                        MainAxisAlignment.center,
                                     children: [
                                       InkWell(
                                         onTap: () {
-                                          if (carController.carStatus ==
-                                              CarStatus.live) {
+                                          if (carController.carsStatus ==
+                                              CarsStatus.live) {
                                             Get.to(() => LiveAuctions(
                                                   carModel: widget.carData,
                                                 ))?.then((value) {
@@ -289,11 +297,10 @@ class _AuctionsViewState extends State<CarDetailsView>
                                           }
                                         },
                                         child: Container(
-                                          width: size.width / 2 -
-                                              ScreenUtil().setWidth(45),
+                                          width: size.width *0.7,
                                           decoration: BoxDecoration(
-                                              color: carController.carStatus ==
-                                                      CarStatus.live
+                                              color: carController.carsStatus ==
+                                                  CarsStatus.live
                                                   ? FCIColors.buttonGreen()
                                                   : Colors.grey,
                                               borderRadius:
@@ -304,30 +311,30 @@ class _AuctionsViewState extends State<CarDetailsView>
                                           ),
                                           alignment: Alignment.center,
                                           child: Text(
-                                            "PLACE A BID",
+                                            "PLACE A BID".tr,
                                             style: FCITextStyle.normal(16,
                                                 color: Colors.white),
                                           ),
                                         ),
                                       ),
-                                      Container(
-                                        width: size.width / 2 -
-                                            ScreenUtil().setWidth(25),
-                                        decoration: BoxDecoration(
-                                            color: Colors.grey, // Colors.orange,
-                                            borderRadius:
-                                                BorderRadius.circular(10)),
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: ScreenUtil().setWidth(10),
-                                          vertical: ScreenUtil().setHeight(10),
-                                        ),
-                                        alignment: Alignment.center,
-                                        child: Text(
-                                          "BUY NOW ${widget.carData.bid_price} AED",
-                                          style: FCITextStyle.normal(16,
-                                              color: Colors.white),
-                                        ),
-                                      ),
+                                      // Container(
+                                      //   width: size.width / 2 -
+                                      //       ScreenUtil().setWidth(25),
+                                      //   decoration: BoxDecoration(
+                                      //       color: Colors.grey, // Colors.orange,
+                                      //       borderRadius:
+                                      //           BorderRadius.circular(10)),
+                                      //   padding: EdgeInsets.symmetric(
+                                      //     horizontal: ScreenUtil().setWidth(10),
+                                      //     vertical: ScreenUtil().setHeight(10),
+                                      //   ),
+                                      //   alignment: Alignment.center,
+                                      //   child: Text(
+                                      //     "BUY NOW ${widget.carData.bid_price} AED",
+                                      //     style: FCITextStyle.normal(16,
+                                      //         color: Colors.white),
+                                      //   ),
+                                      // ),
                                     ],
                                   ),
                                   Container(
@@ -437,8 +444,8 @@ class _AuctionsViewState extends State<CarDetailsView>
     switch (groupsButtonType) {
       case GroupsButtonType.CarDetails:
         return carDetailsWidget(controller);
-      case GroupsButtonType.ComponentsSummary:
-        return componentsSummaryWidget(controller);
+      // case GroupsButtonType.ComponentsSummary:
+      //   return componentsSummaryWidget(controller);
       case GroupsButtonType.Interior:
         return interiorWidget(controller);
       case GroupsButtonType.Exterior:
@@ -453,19 +460,25 @@ class _AuctionsViewState extends State<CarDetailsView>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Text(
-              '  $title',
-              style: FCITextStyle.normal(16,
-                  color: FCIColors.textFieldBack().withOpacity(.8)),
+            Expanded(
+              flex: 1,
+              child: Text(
+                '  $title',
+                style: FCITextStyle.normal(16,
+                    color: FCIColors.textFieldBack().withOpacity(.8)),
+              ),
             ),
-            Text(
-              '$data',
-              style: FCITextStyle.normal(16,
-                  color: FCIColors.textFieldBack().withOpacity(.8)),
+            Expanded(
+              flex: 1,
+              child: Text(
+                '$data',
+                style: FCITextStyle.normal(16,
+                    color: FCIColors.textFieldBack().withOpacity(.8)),
+              ),
             ),
-            Container()
+
           ],
         ),
         Divider(
@@ -477,37 +490,41 @@ class _AuctionsViewState extends State<CarDetailsView>
     );
   }
 
-  Widget carDetailsWidget(controller) {
+  Widget carDetailsWidget(CarDetailsController  controller) {
     return Column(
       children: [
         rowDetails('Ref ID', '${widget.carData.id}'),
-        rowDetails('Make', '${controller.carDetails.make}'),
-        rowDetails('Model', '${controller.carDetails.model}'),
+        rowDetails('Make'.tr, '${controller.carDetails.make}'),
+        rowDetails('Model'.tr, '${controller.carDetails.model}'),
         if (controller.carDetails.year != null)
-          rowDetails('Year', '${controller.carDetails.year}'),
+          rowDetails('Year'.tr, '${controller.carDetails.year}'),
         if (widget.carData.miles != null)
-          rowDetails('Mileage', '${widget.carData.miles}'),
+          rowDetails('Mileage'.tr, '${widget.carData.miles}'),
         if (controller.carDetails.specification != null)
-          rowDetails('Specification', '${controller.carDetails.specification}'),
+          rowDetails('Specification'.tr, '${controller.carDetails.specification}'),
         if (controller.carDetails.body_type != null)
-          rowDetails('Body Type', '${controller.carDetails.body_type}'),
+          rowDetails('Body Type'.tr, '${controller.carDetails.body_type}'),
         if (controller.carDetails.engine_size != null)
-          rowDetails('Engine Size', '${controller.carDetails.engine_size}'),
+          rowDetails('Engine Size'.tr, '${controller.carDetails.engine_size}'),
         if (controller.carDetails.service_hstory != null)
           rowDetails(
-              'Service History', '${controller.carDetails.service_hstory}'),
+              'Service History'.tr, '${controller.carDetails.service_hstory}'),
         if (controller.carDetails.warranty != null)
-          rowDetails('Warranty', '${controller.carDetails.warranty}'),
+          rowDetails('Warranty'.tr, '${controller.carDetails.warranty}'),
+        if (controller.carDetails.engine_condition != null)
+          rowDetails('Engine Condition'.tr, '${controller.carDetails.engine_condition}'),
         if (controller.carDetails.transmission != null)
-          rowDetails('Transmission', '${controller.carDetails.transmission}'),
+          rowDetails('Transmission'.tr, '${controller.carDetails.transmission}'),
         if (controller.carDetails.mortgage != null)
-          rowDetails('Mortgage', '${controller.carDetails.mortgage}'),
+          rowDetails('Mortgage'.tr, '${controller.carDetails.mortgage}'),
         if (controller.carDetails.number_of_keys != null)
           rowDetails(
-              'Number of Keys', '${controller.carDetails.number_of_keys}'),
+              'Number of Keys'.tr, '${controller.carDetails.number_of_keys}'),
         if (controller.carDetails.central_locking != null)
           rowDetails(
-              'Central locking', '${controller.carDetails.central_locking}'),
+              'Central locking'.tr, '${controller.carDetails.central_locking}'),
+        ///  componentsSummaryWidget-------------------------
+        componentsSummaryWidget(controller)
       ],
     );
   }
@@ -516,49 +533,49 @@ class _AuctionsViewState extends State<CarDetailsView>
     return Column(
       children: [
         if (controller.carDetails.tires != null)
-          rowDetails('Tires', '${controller.carDetails.tires}'),
+          rowDetails('Tires'.tr, '${controller.carDetails.tires}'),
 
         if (controller.carDetails.steering_engine != null)
-          rowDetails('Steering', '${controller.carDetails.steering_engine}'),
+          rowDetails('Steering'.tr, '${controller.carDetails.steering_engine}'),
 
         if (controller.carDetails.engine != null)
-          rowDetails('Engine', '${controller.carDetails.engine}'),
+          rowDetails('Engine'.tr, '${controller.carDetails.engine}'),
 
         if (controller.carDetails.gearbox != null)
-          rowDetails('Gearbox', '${controller.carDetails.gearbox}'),
+          rowDetails('Gearbox'.tr, '${controller.carDetails.gearbox}'),
 
         if (controller.carDetails.dash_lights != null)
-          rowDetails('Dash Lights', '${controller.carDetails.dash_lights}'),
+          rowDetails('Dash Lights'.tr, '${controller.carDetails.dash_lights}'),
 
         if (controller.carDetails.electric != null)
-          rowDetails('Electric Component', '${controller.carDetails.electric}'),
+          rowDetails('Electric Component'.tr, '${controller.carDetails.electric}'),
 
         if (controller.carDetails.ac_and_heating != null)
-          rowDetails('Ac/Heating', '${controller.carDetails.ac_and_heating}'),
+          rowDetails('Ac/Heating'.tr, '${controller.carDetails.ac_and_heating}'),
 
         if (controller.carDetails.breaks != null)
-          rowDetails('Breaks', '${controller.carDetails.breaks}'),
+          rowDetails('Breaks'.tr, '${controller.carDetails.breaks}'),
 
         if (controller.carDetails.suspension != null)
-          rowDetails('Suspension', '${controller.carDetails.suspension}'),
+          rowDetails('Suspension'.tr, '${controller.carDetails.suspension}'),
 
         if (controller.carDetails.exhaust != null)
-          rowDetails('Exhaust', '${controller.carDetails.exhaust}'),
+          rowDetails('Exhaust'.tr, '${controller.carDetails.exhaust}'),
 
         if (controller.carDetails.clutch != null)
-          rowDetails('Clutch', '${controller.carDetails.clutch}'),
+          rowDetails('Clutch'.tr, '${controller.carDetails.clutch}'),
 
         if (controller.carDetails.windows_sunroof != null)
           rowDetails(
-              'Windows Sunroof', '${controller.carDetails.windows_sunroof}'),
+              'Windows Sunroof'.tr, '${controller.carDetails.windows_sunroof}'),
 
         if (controller.carDetails.central_locking != null)
           rowDetails(
-              'Central Locking', '${controller.carDetails.central_locking}'),
+              'Central Locking'.tr, '${controller.carDetails.central_locking}'),
 
         if (controller.carDetails.horn_light_radio != null)
           rowDetails(
-              'Horn Light Radio', '${controller.carDetails.horn_light_radio}'),
+              'Horn Light Radio'.tr, '${controller.carDetails.horn_light_radio}'),
 
         // if (controller.carDetails.suspension != null)
         //   rowDetails('Interior Buttons', '${controller.carDetails.int}'),
@@ -570,15 +587,15 @@ class _AuctionsViewState extends State<CarDetailsView>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        rowDetails('Seats', '${controller.carDetails.interior_type}'),
-        rowDetails('Navigation', '${controller.carDetails.navigation}'),
-        rowDetails('Sunroof', '${controller.carDetails.sun_roof}'),
+        rowDetails('Seats'.tr, '${controller.carDetails.interior_type}'),
+        rowDetails('Navigation'.tr, '${controller.carDetails.navigation}'),
+        rowDetails('Sunroof'.tr, '${controller.carDetails.sun_roof}'),
         if (controller.carDetails.interior_omment != null)
           rowDetails(
-              'Interior Color', '${controller.carDetails.interior_omment}'),
+              'Interior Color'.tr, '${controller.carDetails.interior_omment}'),
         if (controller.carDetails.interior_comment != null)
           Text(
-            '  Comment',
+            '  ${'Comment'.tr}',
             style: FCITextStyle.normal(14,
                 color: FCIColors.textFieldBack().withOpacity(.8)),
           ),
@@ -601,97 +618,97 @@ class _AuctionsViewState extends State<CarDetailsView>
           carExteriorParts: CarExteriorParts.frontBumper,
           carExteriorPartsDamagedType: getCarExteriorPartsDamagedType(
               controller.carDetails.front_bumper ?? ''),
-          name: 'Front Bumper'),
+          name: 'Front Bumper'.tr),
       new CarExteriorPartsData(
           carExteriorParts: CarExteriorParts.rearBumper,
           carExteriorPartsDamagedType: getCarExteriorPartsDamagedType(
               controller.carDetails.rear_bumper ?? ''),
-          name: 'Rear Bumper'),
+          name: 'Rear Bumper'.tr),
       new CarExteriorPartsData(
           carExteriorParts: CarExteriorParts.bonnet,
           carExteriorPartsDamagedType: getCarExteriorPartsDamagedType(
               controller.carDetails.bonnet ?? ''),
-          name: 'Bonnet'),
+          name: 'Bonnet'.tr),
       new CarExteriorPartsData(
           carExteriorParts: CarExteriorParts.roof,
           carExteriorPartsDamagedType:
               getCarExteriorPartsDamagedType(controller.carDetails.roof ?? ''),
-          name: 'Roof'),
+          name: 'Roof'.tr),
       new CarExteriorPartsData(
           carExteriorParts: CarExteriorParts.bootTrunk,
           carExteriorPartsDamagedType: getCarExteriorPartsDamagedType(
               controller.carDetails.boot_trunk ?? ''),
-          name: 'Boot Trunk'),
+          name: 'Boot Trunk'.tr),
       new CarExteriorPartsData(
           carExteriorParts: CarExteriorParts.driverSideFrontWing,
           carExteriorPartsDamagedType: getCarExteriorPartsDamagedType(
               controller.carDetails.wing_driver ?? ''),
 
           ///driverSideFrontWing
-          name: 'Driver Side Front Wing'),
+          name: 'Driver Side Front Wing'.tr),
       new CarExteriorPartsData(
           carExteriorParts: CarExteriorParts.driverSideFrontDoor,
           carExteriorPartsDamagedType: getCarExteriorPartsDamagedType(
               controller.carDetails.front_door ?? ''),
 
           ///driverSideFrontWing
-          name: 'Driver Side Front Door'),
+          name: 'Driver Side Front Door'.tr),
       new CarExteriorPartsData(
           carExteriorParts: CarExteriorParts.driverSideRearDoor,
           carExteriorPartsDamagedType: getCarExteriorPartsDamagedType(
               controller.carDetails.rear_door ?? ''),
 
           ///driverSideFrontWing
-          name: 'Driver Side Rear Door'),
+          name: 'Driver Side Rear Door'.tr),
       new CarExteriorPartsData(
           carExteriorParts: CarExteriorParts.driverSideRearQuarter,
           carExteriorPartsDamagedType: getCarExteriorPartsDamagedType(
               controller.carDetails.rear_quarter ?? ''),
 
           ///driverSideFrontWing
-          name: 'Driver Side Rear Quarter'),
+          name: 'Driver Side Rear Quarter'.tr),
       new CarExteriorPartsData(
           carExteriorParts: CarExteriorParts.passengerSideFrontWing,
           carExteriorPartsDamagedType: getCarExteriorPartsDamagedType(
               controller.carDetails.passenger_front_wing ?? ''),
-          name: 'Passenger Side Front Wing'),
+          name: 'Passenger Side Front Wing'.tr),
       new CarExteriorPartsData(
           carExteriorParts: CarExteriorParts.passengerSideFrontDoor,
           carExteriorPartsDamagedType: getCarExteriorPartsDamagedType(
               controller.carDetails.passenger_front_door ?? ''),
-          name: 'Passenger Side Front Door'),
+          name: 'Passenger Side Front Door'.tr),
       new CarExteriorPartsData(
           carExteriorParts: CarExteriorParts.passengerSideRearDoor,
           carExteriorPartsDamagedType: getCarExteriorPartsDamagedType(
               controller.carDetails.passenger_side_rear_door ?? ''),
-          name: 'Passenger Side Rear Door'),
+          name: 'Passenger Side Rear Door'.tr),
       new CarExteriorPartsData(
           carExteriorParts: CarExteriorParts.passengerSideRearQuarter,
           carExteriorPartsDamagedType: getCarExteriorPartsDamagedType(
               controller.carDetails.passenger_rear_quarter ?? ''),
-          name: 'Passenger Side Rear Quarter'),
+          name: 'Passenger Side Rear Quarter'.tr),
       new CarExteriorPartsData(
           carExteriorParts: CarExteriorParts.driverSideFrontTyre,
           carExteriorPartsDamagedType: getCarExteriorPartsDamagedType(
               controller.carDetails.driver_front_tyre ?? ''),
-          name: 'Driver Side Front Tyre'),
+          name: 'Driver Side Front Tyre'.tr),
       new CarExteriorPartsData(
           carExteriorParts: CarExteriorParts.driverSideRearTyre,
           carExteriorPartsDamagedType: getCarExteriorPartsDamagedType(
               controller.carDetails.driver_rear_tyre_passenger ?? ''),
-          name: 'Driver Side Rear Tyre'),
+          name: 'Driver Side Rear Tyre'.tr),
       new CarExteriorPartsData(
           carExteriorParts: CarExteriorParts.passengerSideFrontTyre,
           carExteriorPartsDamagedType: getCarExteriorPartsDamagedType(
               controller.carDetails.front_tyre_passenger ?? ''),
-          name: 'Passenger Side Front Tyre'),
+          name: 'Passenger Side Front Tyre'.tr),
       new CarExteriorPartsData(
           carExteriorParts: CarExteriorParts.passengerSideRearTyre,
           carExteriorPartsDamagedType: getCarExteriorPartsDamagedType(
               controller.carDetails.rear_tyre ?? ''),
 
           ///driverSideFrontWing
-          name: 'Passenger Side Rear Tyre'),
+          name: 'Passenger Side Rear Tyre'.tr),
     ];
     return Container(
       height: FCISize.height(context) * 0.90,
@@ -730,24 +747,24 @@ class _AuctionsViewState extends State<CarDetailsView>
                             alignment: WrapAlignment.center,
                             children: [
                               Text(
-                                'Red : Faded',
-                                style:
-                                    FCITextStyle.normal(16, color: Colors.red),
-                              ),
-                              Text(
-                                'Yellow : Painted',
-                                style: FCITextStyle.normal(16,
-                                    color: Colors.yellow),
-                              ),
-                              Text(
-                                'Blue : Partial Painted',
+                                '${'Blue'.tr} : ${'Faded'.tr}',
                                 style:
                                     FCITextStyle.normal(16, color: Colors.blue),
                               ),
                               Text(
-                                'Green : Smart Paint',
+                                '${'Red'.tr} : ${'Painted'.tr}',
                                 style: FCITextStyle.normal(16,
-                                    color: Colors.green),
+                                    color: Colors.red),
+                              ),
+                              Text(
+                                '${'White'.tr} : ${'Original'.tr}',
+                                style:
+                                    FCITextStyle.normal(16, color: Colors.grey),
+                              ),
+                              Text(
+                                '${'Yellow'.tr} : ${'Smart Paint'.tr}',
+                                style: FCITextStyle.normal(16,
+                                    color: Colors.yellow),
                               ),
                               // Text('Red : Damaged',style: FCITextStyle.normal(16,color: Colors.red),),
                               // Text('Yellow : Painted',style: FCITextStyle.normal(16,color: Colors.yellow),),
@@ -793,10 +810,9 @@ class _AuctionsViewState extends State<CarDetailsView>
   }
 
   Widget forHelpWidget() {
-    return Column(
-      children: [],
-    );
+    return ForHelpWidget();
   }
+
 }
 
 class GroupsButton {
@@ -856,16 +872,16 @@ Color getCarExteriorPartsColor(
       return Colors.transparent;
       break;
     case CarExteriorPartsDamagedType.faded:
-      return Colors.red;
-      break;
-    case CarExteriorPartsDamagedType.partialPaint:
-      return Colors.yellow;
-      break;
-    case CarExteriorPartsDamagedType.painted:
       return Colors.blue;
       break;
+    case CarExteriorPartsDamagedType.partialPaint:
+      return Colors.transparent;
+      break;
+    case CarExteriorPartsDamagedType.painted:
+      return Colors.red;
+      break;
     case CarExteriorPartsDamagedType.smartPaint:
-      return Colors.green;
+      return Colors.yellow;
       break;
   }
 }
@@ -895,7 +911,7 @@ CarExteriorPartsDamagedType getCarExteriorPartsDamagedType(
 
 enum GroupsButtonType {
   CarDetails,
-  ComponentsSummary,
+  // ComponentsSummary,
   Interior,
   Exterior,
   ForHelp

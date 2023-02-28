@@ -1,3 +1,4 @@
+import 'package:auction/logic/controllers/MainController.dart';
 import 'package:auction/route/route.dart';
 import 'package:auction/ui/setting_screens/change_password_view.dart';
 import 'package:auction/ui/setting_screens/changephone_view.dart';
@@ -44,7 +45,7 @@ class _SettingsViewState extends State<SettingsView> {
                     Get.back();
                   },
                 ),
-                Text("Settings",style: FCITextStyle.bold(22,color: Colors.white),),
+                Text("Settings".tr,style: FCITextStyle.bold(22,color: Colors.white),),
                 IconButton(
                   icon: Icon(
                     Icons.search_rounded,
@@ -89,30 +90,36 @@ class _SettingsViewState extends State<SettingsView> {
                       ),
                     ),
                     SettingButton(
-                      text: "User Profile",
+                      text: "User Profile".tr,
                       onTap: (){
                         print("User Profile");
                         Get.toNamed(AppRoutes.profile);
                       },
                     ),
                     SettingButton(
-                      text: "Notifications",
-                      onTap: (){
-                        Get.toNamed(AppRoutes.notificationsSetting);
+                      text:Get.locale!.languageCode=='en'? "العربية":"English",
+                      onTap: () async{
+                        await Get.find<MainController>().updateLanguage();
                       },
                     ),
-                    SettingButton(
-                      text: "Change Password",
-                      onTap: (){
-                        Get.toNamed(AppRoutes.changePassword);
-                      },
-                    ),
-                    SettingButton(
-                      text: "Change Phone",
-                      onTap: (){
-                        Get.toNamed(AppRoutes.changePhone);
-                      },
-                    ),
+                    // SettingButton(
+                    //   text: "Notifications".tr,
+                    //   onTap: (){
+                    //     Get.toNamed(AppRoutes.notificationsSetting);
+                    //   },
+                    // ),
+                    // SettingButton(
+                    //   text: "Change Password".tr,
+                    //   onTap: (){
+                    //     Get.toNamed(AppRoutes.changePassword);
+                    //   },
+                    // ),
+                    // SettingButton(
+                    //   text: "Change Phone".tr,
+                    //   onTap: (){
+                    //     Get.toNamed(AppRoutes.changePhone);
+                    //   },
+                    // ),
                   ],
                 ),
               ),

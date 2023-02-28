@@ -10,144 +10,100 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-class AuctionsView extends StatefulWidget {
+import '../../utils/utils.dart';
+
+class AuctionsHomeView extends StatefulWidget {
   final int totalNotify;
-  AuctionsView({Key? key,required this.totalNotify}) : super(key: key);
+  AuctionsHomeView({Key? key,required this.totalNotify}) : super(key: key);
   @override
-  _AuctionsViewState createState() => _AuctionsViewState();
+  _AuctionsHomeViewState createState() => _AuctionsHomeViewState();
 }
 
-class _AuctionsViewState extends State<AuctionsView> {
+class _AuctionsHomeViewState extends State<AuctionsHomeView> {
   final loginFormKey = GlobalKey<FormState>();
   @override
   void initState() {
     super.initState();
   }
-  int selectedTap=2;
+  int selectedTap=0;
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-        length: 3,
+        length: 2,
         initialIndex: selectedTap,
-        child:  GetBuilder<CarController>(
-            init: CarController(),
-            builder: (CarController carController) {
-            return Column(
-              children: [
-                Container(
-                  margin:
-                      EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(5)),
-
-                  child: TabBar(
-                    labelColor: FCIColors.primaryColor(),
-                    unselectedLabelColor: Colors.black54,
-                    indicatorSize: TabBarIndicatorSize.label,
-                    indicatorColor: Colors.transparent,
-
-                    onTap: (val){
-                      setState(() {
-                        selectedTap=val;
-                      });
-                      if(val==0)
-                        carController.loadAllCars(true);
-                      else if(val==1)
-                        carController.loadUpComingCars(true);
-                      else if(val==2)
-                        carController.loadRunningCars(false);
-                    },
-                    tabs: [
-                      Tab(
-
-                        child: Container(
-                          decoration: BoxDecoration(
-                              color: FCIColors.accentColor(),
-                              border: Border.all(
-                                  color:selectedTap==0?Colors.grey:FCIColors.accentColor(),
-                                  width: 1
-                              ),
-                              borderRadius: BorderRadius.circular(10)),
-                          alignment: Alignment.center,
-                          width: double.infinity,
-                          height: double.infinity,
-                          child: Badge(
-                            showBadge: widget.totalNotify>0,
-                            elevation: 5,
-                            position: BadgePosition.topEnd(
-                                top: ScreenUtil().setHeight(-15),
-                                end: ScreenUtil().setWidth(10)),
-                            badgeContent: Text(
-                              '${widget.totalNotify}',
-                              style: FCITextStyle.normal(10,
-                                  color: Colors.white),
-                            ),
+        child:  GetBuilder<CarsController>(
+            init: CarsController(),
+            builder: (CarsController carController) {
+              return Column(
+                children: [
+                  Container(
+                    margin:
+                    EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(5)),
+                    child: TabBar(
+                      labelColor: FCIColors.primaryColor(),
+                      unselectedLabelColor: Colors.black54,
+                      indicatorSize: TabBarIndicatorSize.label,
+                      indicatorColor: Colors.transparent,
+                      onTap: (val){
+                        setState(() {
+                          selectedTap=val;
+                        });
+                        // if(val==1)
+                        //   carController.loadAllCars(true);
+                        // // else if(val==1)
+                        // //   carController.loadUpComingCars(true);
+                        // else if(val==0)
+                        //   carController.loadRunningCars(false);
+                      },
+                      tabs: [
+                        // Tab(
+                        //   child: Container(
+                        //     decoration: BoxDecoration(
+                        //         color: FCIColors.accentColor(),
+                        //         border: Border.all(
+                        //             color:selectedTap==1?Colors.grey:FCIColors.accentColor(),
+                        //             width: 1
+                        //         ),
+                        //         borderRadius: BorderRadius.circular(10)),
+                        //     alignment: Alignment.center,
+                        //     width: double.infinity,
+                        //     height: double.infinity,
+                        //     child: Row(
+                        //       mainAxisAlignment: MainAxisAlignment.center,
+                        //       children: [
+                        //         Text('UpComing',style: selectedTap==1?FCITextStyle.bold(14,color: FCIColors.primaryColor())
+                        //             :FCITextStyle.normal(14,color: Colors.black54),),
+                        //         /*if(selectedTap==1)  IconButton(
+                        //             onPressed: () {
+                        //               carController.loadUpComingCars(true);
+                        //             },
+                        //             icon: Icon(
+                        //               Icons.refresh,
+                        //               size: ScreenUtil().setSp(20),
+                        //               color: FCIColors.iconGrey(),
+                        //             ))*/
+                        //       ],
+                        //     ),
+                        //   ),
+                        // ),
+                        Tab(
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: FCIColors.accentColor(),
+                                border: Border.all(
+                                    color:selectedTap==0?FCIColors.indicatorColor():FCIColors.accentColor(),
+                                    width: 1
+                                ),
+                                borderRadius: BorderRadius.circular(10)),
+                            alignment: Alignment.center,
+                            width: double.infinity,
+                            height: double.infinity,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text('All Cars',style: selectedTap==0?FCITextStyle.bold(14,color: FCIColors.primaryColor())
+                                Text('Live'.tr,style: selectedTap==0?FCITextStyle.bold(14,color: FCIColors.primaryColor())
                                     :FCITextStyle.normal(14,color: Colors.black54),),
-                             /*  if(selectedTap==0) IconButton(
-                                    onPressed: () {
-                                      carController.loadAllCars(true);
-                                    },
-                                    icon: Icon(
-                                      Icons.refresh,
-                                      size: ScreenUtil().setSp(20),
-                                      color: FCIColors.iconGrey(),
-                                    ))*/
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      Tab(
-                        child: Container(
-                          decoration: BoxDecoration(
-                              color: FCIColors.accentColor(),
-                              border: Border.all(
-                                  color:selectedTap==1?Colors.grey:FCIColors.accentColor(),
-                                  width: 1
-                              ),
-                              borderRadius: BorderRadius.circular(10)),
-                          alignment: Alignment.center,
-                          width: double.infinity,
-                          height: double.infinity,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text('UpComing',style: selectedTap==1?FCITextStyle.bold(14,color: FCIColors.primaryColor())
-                                  :FCITextStyle.normal(14,color: Colors.black54),),
-                              /*if(selectedTap==1)  IconButton(
-                                  onPressed: () {
-                                    carController.loadUpComingCars(true);
-                                  },
-                                  icon: Icon(
-                                    Icons.refresh,
-                                    size: ScreenUtil().setSp(20),
-                                    color: FCIColors.iconGrey(),
-                                  ))*/
-                            ],
-                          ),
-                        ),
-                      ),
-                      Tab(
-                        child: Container(
-                          decoration: BoxDecoration(
-                              color: FCIColors.accentColor(),
-                              border: Border.all(
-                                  color:selectedTap==2?FCIColors.indicatorColor():FCIColors.accentColor(),
-                                  width: 1
-                              ),
-                              borderRadius: BorderRadius.circular(10)),
-                          alignment: Alignment.center,
-                          width: double.infinity,
-                          height: double.infinity,
-
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text('Live',style: selectedTap==2?FCITextStyle.bold(14,color: FCIColors.primaryColor())
-                                :FCITextStyle.normal(14,color: Colors.black54),),
-                              /*if(selectedTap==2)  IconButton(
+                                /*if(selectedTap==2)  IconButton(
                                   onPressed: () {
                                     carController.loadRunningCars(true);
                                   },
@@ -156,88 +112,120 @@ class _AuctionsViewState extends State<AuctionsView> {
                                     size: ScreenUtil().setSp(20),
                                     color: FCIColors.iconGrey(),
                                   ))*/
-                            ],
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                        Tab(
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: FCIColors.accentColor(),
+                                border: Border.all(
+                                    color:selectedTap==1?Colors.grey:FCIColors.accentColor(),
+                                    width: 1
+                                ),
+                                borderRadius: BorderRadius.circular(10)),
+                            alignment: Alignment.center,
+                            width: double.infinity,
+                            height: double.infinity,
+                            child: Badge(
+                              showBadge: widget.totalNotify>0,
+                              elevation: 5,
+                              position: BadgePosition.topEnd(
+                                  top: ScreenUtil().setHeight(-15),
+                                  end: ScreenUtil().setWidth(10)),
+                              badgeContent: Text(
+                                '${widget.totalNotify}',
+                                style: FCITextStyle.normal(10,
+                                    color: Colors.white),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text('All Cars'.tr,style: selectedTap==1?FCITextStyle.bold(14,color: FCIColors.primaryColor())
+                                      :FCITextStyle.normal(14,color: Colors.black54),),
+                                  /*  if(selectedTap==0) IconButton(
+                                    onPressed: () {
+                                      carController.loadAllCars(true);
+                                    },
+                                    icon: Icon(
+                                      Icons.refresh,
+                                      size: ScreenUtil().setSp(20),
+                                      color: FCIColors.iconGrey(),
+                                    ))*/
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: TabBarView(children: [
-                    Container(
-                        margin: EdgeInsets.all(10),
-                        child: carController.allCarsLoading?
-                        Center(
-                          child: CircularProgressIndicator(),
-                        ): carController.getData(CarStatus.all).isNotEmpty
-                            ? ListView.builder(
-                            itemCount: carController
-                                .getData(CarStatus.all).length,
-                            itemBuilder: (context, index) => CarCard(
-                              carData: carController
-                                  .getData(CarStatus.all)[index],
-                            ))
-                            : EmptyCarsData(
-                            message: "there is no Cars yet",
-                            reloadData: (){
-                              carController.loadAllCars(true);
-                            })
-                    ),
-                    Container(
-                        margin: EdgeInsets.all(10),
-                        child: carController.upComingLoading?
-                        Center(
-                          child: CircularProgressIndicator(),
-                        ):carController.getData(CarStatus.upComing).isNotEmpty
-                            ?  ListView.builder(
-                            itemCount: carController
-                                .getData(CarStatus.upComing)
-                                .length,
-                            itemBuilder: (context, index) => CarCard(
-                              carData: carController
-                                  .getData(CarStatus.upComing)[index],
-                            ))
-                            : EmptyCarsData(
-                            message: "there is no UpComing Cars yet",
-                            reloadData: (){
-                              carController.loadUpComingCars(true);
-                            })
-                    ),
-                    Container(
-                        margin: EdgeInsets.all(10),
-                        child: carController.runningLoading?
-                        Center(
-                          child: CircularProgressIndicator(color: FCIColors.primaryColor()),
-                        ):carController.getData(CarStatus.live).isNotEmpty
-                            ?  Card(
-                          elevation: 4,
-                          margin: EdgeInsets.all(0),
-                              child: ListView.builder(
-                              itemCount: carController
-                                  .getData(CarStatus.live)
-                                  .length,
+                  Expanded(
+                    child: TabBarView(children: [
+                      // Container(
+                      //     margin: EdgeInsets.all(10),
+                      //     child: carController.upComingLoading?
+                      //     Center(
+                      //       child: CircularProgressIndicator(),
+                      //     ):carController.getData(CarStatus.upComing).isNotEmpty
+                      //         ?  ListView.builder(
+                      //         itemCount: carController
+                      //             .getData(CarStatus.upComing)
+                      //             .length,
+                      //         itemBuilder: (context, index) => CarCard(
+                      //           carData: carController
+                      //               .getData(CarStatus.upComing)[index],
+                      //         ))
+                      //         : EmptyCarsData(
+                      //         message: "there is no UpComing Cars yet",
+                      //         reloadData: (){
+                      //           carController.loadUpComingCars(true);
+                      //         })
+                      // ),
+                      Container(
+                          margin: EdgeInsets.all(10),
+                          child:!carController.allCarsLoading?
+                          carController.getData(CarsStatus.live).isNotEmpty? Card(
+                            elevation: 4,
+                            margin: EdgeInsets.all(0),
+                            child: ListView.builder(
+                                itemCount: carController.getData(CarsStatus.live).length,
+                                itemBuilder: (context, index) => LiveCard(
+                                  carData:  carController.getData(CarsStatus.live)[index],
+                                  showDivider: index< carController.getData(CarsStatus.live)
+                                      .length-1,
 
-                              itemBuilder: (context, index) => BuyCard(
-                                carData: carController
-                                    .getData(CarStatus.live)[index],
-                                showDivider: index<carController
-                                    .getData(CarStatus.live)
-                                    .length-1,
-
-                              )),
-                            )
-                            : EmptyCarsData(
-                            message: "there is no Running Cars yet",
-                            reloadData: (){
-                              carController.loadRunningCars(true);
-                            })
-                    ),
-                  ]),
-                ),
-              ],
-            );
-          }
+                                )),
+                          ) : EmptyCarsData(
+                              message: "there is no Running Cars yet",
+                              load: false,
+                              reloadData: (){
+                                // carController.loadRunningCars(true);
+                              }):Utils.loading()
+                      ),
+                      Container(
+                          margin: EdgeInsets.all(10),
+                          child: !carController.allCarsLoading? carController.allCars.isNotEmpty
+                              ? ListView.builder(
+                              itemCount: carController.allCars.length,
+                              itemBuilder: (context, index) => CarCardView(
+                                carData: carController.allCars[index],
+                                carStatus: Utils().getTypeOfAuction(start_date: carController.allCars[index].start_date,
+                                    end_date:  carController.allCars[index].end_date),
+                              ))
+                              : EmptyCarsData(
+                              message: "there is no Cars yet",
+                              load: false,
+                              reloadData: (){
+                                // carController.loadAllCars(true);
+                              }):Utils.loading()
+                      ),
+                    ]),
+                  ),
+                ],
+              );
+            }
         ));
   }
 }

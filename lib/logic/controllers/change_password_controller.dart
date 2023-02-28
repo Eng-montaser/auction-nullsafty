@@ -108,8 +108,7 @@ class ChangePasswordController extends GetxController {
             isLoading.value = false;
             update();
           } else {
-            print(response.body.toString());
-            isLoading.value = false;
+             isLoading.value = false;
             update();
             GetMessage('Change Password', "Connection Error");
           }

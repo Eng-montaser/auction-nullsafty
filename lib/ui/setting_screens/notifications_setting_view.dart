@@ -40,7 +40,7 @@ class _NotificationsSettingsViewState extends State<NotificationsSettingsView> {
                     Get.back();
                   },
                 ),
-                Text("Change Phone",style: FCITextStyle.bold(22,color: Colors.white),),
+                Text("Notifications".tr,style: FCITextStyle.bold(22,color: Colors.white),),
                 IconButton(
                   icon: Icon(
                     Icons.search_rounded,
@@ -73,7 +73,7 @@ class _NotificationsSettingsViewState extends State<NotificationsSettingsView> {
                     child: Column(
                       children: [
                         NotificationsSettingButton(
-                          text: "Sms Notification",
+                          text: "Sms Notification".tr,
                           value: values[0],
                           onChange: (){
                             setState(() {
@@ -82,7 +82,7 @@ class _NotificationsSettingsViewState extends State<NotificationsSettingsView> {
                           },
                         ),
                         NotificationsSettingButton(
-                          text: "Normal Auctions",
+                          text: "Normal Auctions".tr,
                           value: values[1],
                           onChange: (){
                             setState(() {
@@ -91,7 +91,7 @@ class _NotificationsSettingsViewState extends State<NotificationsSettingsView> {
                           },
                         ),
                         NotificationsSettingButton(
-                          text: "No Reserve Auctions",
+                          text: "No Reserve Auctions".tr,
                           value: values[2],
                           onChange: (){
                             setState(() {
@@ -100,7 +100,7 @@ class _NotificationsSettingsViewState extends State<NotificationsSettingsView> {
                           },
                         ),
                         NotificationsSettingButton(
-                          text: "Buy Now Auctions",
+                          text: "Buy Now Auctions".tr,
                           value: values[3],
                           onChange: (){
                             setState(() {
@@ -109,7 +109,7 @@ class _NotificationsSettingsViewState extends State<NotificationsSettingsView> {
                           },
                         ),
                         NotificationsSettingButton(
-                          text: "Out Bidding",
+                          text: "Out Bidding".tr,
                           value: values[4],
                           onChange: (){
                             setState(() {
@@ -118,7 +118,7 @@ class _NotificationsSettingsViewState extends State<NotificationsSettingsView> {
                           },
                         ),
                         GreenButton(
-                          title: "Save",loading: false,
+                          title: "Save".tr,loading: false,
                           onTap: (){},
                         )
                       ],

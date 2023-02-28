@@ -18,6 +18,6 @@ String removeAllHtmlTags(String htmlText) {
 String convertFromStringToRange(String rangeString) {
   final value = new NumberFormat("#,###,##0", "en_US");
 
-  return '${value.format(double.parse(rangeString))}';
+  return rangeString.isNotEmpty? '${value.format(double.parse(rangeString))}':'0';
 }
 

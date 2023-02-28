@@ -39,7 +39,7 @@ class _ChangePhoneViewState extends State<ChangePhoneView> {
                     Get.back();
                   },
                 ),
-                Text("Change Phone",style: FCITextStyle.bold(22,color: Colors.white),),
+                Text("Change Phone".tr,style: FCITextStyle.bold(22,color: Colors.white),),
                 IconButton(
                   icon: Icon(
                     Icons.search_rounded,
@@ -84,14 +84,14 @@ class _ChangePhoneViewState extends State<ChangePhoneView> {
                           ),
                         ),
                         ProfileTextField(
-                          hintText: "Enter Your Phone",
+                          hintText: "Enter Your Phone".tr,
                           onTap: (){
 
                           }, onEditingComplete: (){
                         },
                         ),
                         GreenButton(
-                          title: "Next",loading: false,
+                          title: "Next".tr,loading: false,
                           onTap: (){},
                         )
                       ],

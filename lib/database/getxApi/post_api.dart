@@ -8,8 +8,7 @@ class FCIPostDataXApi {
     //   http.Response res
     try {
       await PostService().addBid(id, amount).then((response) {
-        print('body is ${response.statusCode}');
-        if (response.statusCode == 200 || response.statusCode == 201) {
+         if (response.statusCode == 200 || response.statusCode == 201) {
           return (response);
         }
       });

@@ -48,9 +48,14 @@ class SettingButton extends StatelessWidget {
 }
 class NotificationButton extends StatelessWidget {
   final String title;
+  final String dec;
   final Function onTap;
   final DateTime dateTime;
-  const NotificationButton({Key? key,required this.onTap,required this.title,required this.dateTime}) : super(key: key);
+  const NotificationButton({Key? key,
+    required this.onTap,
+    required this.title,
+    required this.dec,
+    required this.dateTime}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -66,36 +71,34 @@ class NotificationButton extends StatelessWidget {
           ),
           margin: EdgeInsets.symmetric(horizontal:FCIPadding.textFieldPaddingHorizontal,
               vertical:FCIPadding.textFieldPaddingVertical ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child:  Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Column(
+              // Text(title,style: FCITextStyle.bold(18,color: Colors.black),),
+              // SizedBox(height: ScreenUtil().setHeight(15),),
+              Text(title,style: FCITextStyle.normal(14,color: Colors.black),),
+              SizedBox(height: ScreenUtil().setHeight(10),),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Text(title,style: FCITextStyle.normal(18,color: Colors.black),),
-                  SizedBox(height: ScreenUtil().setHeight(15),),
                   Row(
                     children: [
-                      Row(
-                        children: [
-                          Icon(Icons.date_range,color: FCIColors.textFieldHintGrey(),size: ScreenUtil().setSp(20),),
-                          Text(DateFormat('dd-MM-yyyy').format(dateTime),style: FCITextStyle.normal(12,color:  FCIColors.textFieldHintGrey()))
-                        ],
-                      ),
-                      SizedBox(width: ScreenUtil().setWidth(25),),
-                      Row(
-                        children: [
-                          Icon(Icons.access_time,color: FCIColors.textFieldHintGrey(),size: ScreenUtil().setSp(20),),
-                          Text(DateFormat('kk:mm').format(dateTime),style: FCITextStyle.normal(12,color: FCIColors.textFieldHintGrey()),)
-                        ],
-                      )
+                      Icon(Icons.date_range,color: FCIColors.textFieldHintGrey(),size: ScreenUtil().setSp(20),),
+                      Text(DateFormat('dd-MM-yyyy').format(dateTime),style: FCITextStyle.normal(12,color:  FCIColors.textFieldHintGrey()))
+                    ],
+                  ),
+                  SizedBox(width: ScreenUtil().setWidth(25),),
+                  Row(
+                    children: [
+                      Icon(Icons.access_time,color: FCIColors.textFieldHintGrey(),size: ScreenUtil().setSp(20),),
+                      Text(DateFormat('kk:mm').format(dateTime),style: FCITextStyle.normal(12,color: FCIColors.textFieldHintGrey()),)
                     ],
                   )
                 ],
               ),
-              Icon(Icons.arrow_forward_ios,color: FCIColors.iconGrey(),size: ScreenUtil().setSp(20),)
             ],
-          )
+          ),
       ),
     );
   }

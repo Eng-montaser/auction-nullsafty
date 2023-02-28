@@ -64,7 +64,6 @@ class AddCarController extends GetxController {
     update();
     try {
       FCIGetDataXApi().getMake().then((value) {
-        // print('cval $value');
 
         if (value.length > 0) {
           makesItems.value.clear();

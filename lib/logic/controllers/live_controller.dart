@@ -4,6 +4,8 @@ import 'dart:convert';
 import 'package:auction/database/models/car_model.dart';
 import 'package:auction/database/services/get_service.dart';
 import 'package:auction/logic/controllers/auth_controller.dart';
+import 'package:auction/logic/controllers/car_details_Controller.dart';
+import 'package:auction/ui/home_screens/congrats.dart';
 import 'package:auction/utils/FCIStyle.dart';
 import 'package:auction/utils/utils.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
@@ -12,7 +14,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+
 import '../../database/services/post_service.dart';
 import 'package:timezone/standalone.dart' as tz;
 
@@ -26,7 +28,6 @@ class LiveController extends GetxController {
   final int carId;
   String myLastBid = '';
   bool _showAddBid = false;
-  final BuildContext context;
   late Timer timer;
 
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
@@ -34,7 +35,7 @@ class LiveController extends GetxController {
   StreamController<CarDetails> streamController =
       StreamController<CarDetails>.broadcast();
   AuthenticationController authenticationController=Get.put(AuthenticationController());
-  LiveController(this.carId,this.context);
+  LiveController(this.carId);
   bool get showAddBid => _showAddBid;
 
   set showAddBid(bool value) {
@@ -51,7 +52,7 @@ class LiveController extends GetxController {
 
   void calculateDur() {
     if (carDetails.end_date != null) {
-      actual = Utils().calculateDur(carDetails.end_date!);
+      _actual = Utils().getLiveDuration(carDetails.end_date!);
       update();
     }
   }
@@ -72,8 +73,7 @@ class LiveController extends GetxController {
     // 3. On iOS, this helps to take the user permissions
 
     //if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-    print('User granted permission');
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       print('notif2 ${message.data}');
       // Parse the message received
       // PushNotification notification = PushNotification(
@@ -88,26 +88,13 @@ class LiveController extends GetxController {
   }
 
   handleNotification(data, RemoteMessage message) async {
-    /*if (data['type'] == 'bid_closed') {
-      Utils().showMessageInfo(context, '${message.notification?.title}',
-          '${message.notification?.body}');
+    if (data['type'] == 'bid_closed') {
+      /*Utils().showMessage(
+          context, 'Winner', 'Congratulations!\n You are the winner', false);*/
 
-    } else */if (data['type'] == 'bid' || data['type'] == 'outbid'
-    || data['type'] == 'bid_time_increment') {
-      print('${message.notification?.title}');
-      Fluttertoast.showToast(
-          msg:  '${message.notification?.title}',
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.TOP,
-          timeInSecForIosWeb: 1,
-          backgroundColor: FCIColors.finishMark(),
-          textColor: Colors.white,
-          fontSize: 16.0
-      );
-      /*Utils().showMessageInfo(context, '${message.notification?.title}',
-          '${message.notification?.body}');*/
+    } else if (data['type'] == 'bid' || data['type'] == 'outbid') {
       var messageJson = json.decode(data['message']);
-      //print('m: ${messageJson['product_id']}');
+      print('m: ${messageJson['product_id']}');
       if(messageJson['product_id']==carId)
       await getCarDetails(carId);
 
@@ -129,10 +116,12 @@ class LiveController extends GetxController {
   @override
   void dispose() {
     if (bidController != null) bidController.dispose();
+    reset();
+    super.dispose();
+  }
+  reset(){
     streamController.close();
     timer.cancel();
-
-    super.dispose();
   }
 
   @override
@@ -141,45 +130,84 @@ class LiveController extends GetxController {
 
     super.onClose();
   }
-Color bidColor=Colors.orangeAccent;
-  int getMaxBid() {
 
-    bool userFound=false;
-    for (var bidUser in carDetails.bidUsers!) {
-      if(bidUser.user_id == authenticationController.userData!.user.id) {
-        userFound = true;
-      }
-      }
-      int max = 0;
-      if (carDetails.min_bid_price != null) {
-        max = int.parse('${carDetails.min_bid_price?.toInt() ?? 0}');
-        if (carDetails.bidUsers!.length > 0)
-          for (var m in carDetails.bidUsers!) {
-            if (max < m.bid_amount) {
-              max = m.bid_amount.toInt();
-              if(userFound){
-                if (m.user_id == authenticationController.userData!.user.id) {
-                  bidColor = FCIColors
-                      .buttonGreen();
-                }else {
-                  bidColor=Colors.red;
-                }
-              }
-            }
-          }
-      }
-    return max;
+
+  // int getMaxBid() {
+  //
+  //   bool userFound=false;
+  //   for (var bidUser in carDetails.bidUsers!) {
+  //     if(bidUser.user_id == authenticationController.userData!.user.id) {
+  //       userFound = true;
+  //     }
+  //     }
+  //   print('userFound------------ ${userFound}');
+  //     int max = 0;
+  //     if (carDetails.min_bid_price != null) {
+  //       max = int.parse('${carDetails.min_bid_price?.toInt() ?? 0}');
+  //       if (carDetails.bidUsers!.length > 0)
+  //         for (var m in carDetails.bidUsers!) {
+  //           if (max < m.bid_amount) {
+  //             max = m.bid_amount.toInt();
+  //             if(userFound){
+  //               if (m.user_id == authenticationController.userData!.user.id) {
+  //
+  //                 myBidStatus=MyBidStatus.lastBid;
+  //               }else {
+  //
+  //                 myBidStatus=MyBidStatus.outBid;
+  //               }
+  //             }
+  //           }
+  //         }
+  //     }
+  //     print('*-*-**-----------------${max}');
+  //   return max;
+  // }
+  getMyBidStatusColor(){
+    switch(carDetails.myBidStatus){
+      case MyBidStatus.noBid:
+        return Colors.orangeAccent;
+        break;
+      case MyBidStatus.lastBid:
+       return FCIColors
+           .buttonGreen();
+        break;
+      case MyBidStatus.outBid:
+        return Colors.red;
+        break;
+        default:
+          return Colors.orangeAccent;
+    }
+  }
+  getMyBidStatusTitle(){
+    switch(carDetails.myBidStatus){
+      case MyBidStatus.noBid:
+        return 'You have not Bid yet';
+        break;
+      case MyBidStatus.lastBid:
+        return 'You\'re the highest Bidder';
+        break;
+      case MyBidStatus.outBid:
+        return 'You have been Outbid!';
+        break;
+      default:
+        return 'You have not Bid yet';
+    }
   }
 
   getCarDetails(int _id) async {
 
     GetService _getService = new GetService();
-    try {
+    // try {
       await _getService.getcarDetails(_id).then((response) async {
         if (response.statusCode == 200) {
-          print('in getdeatails');
+          // print('in getdeatails');
           var data = jsonDecode(response.body);
-
+          // data['data'].keys.forEach((element) {
+          //   print( element);
+          // });
+          // print('VAT ${data['data']['vat']}');
+          // print('VAT ${data['data']['customer_price']}');
           if (data['success']) {
             carDetails = CarDetails.fromJosn(data['data']);
           }
@@ -191,18 +219,18 @@ Color bidColor=Colors.orangeAccent;
           update();
         }
       });
-    } catch (e) {
-      print(e);
-      update();
-    }
+    // } catch (e) {
+    //   print(e);
+    //   update();
+    // }
     update();
 
   }
 
-  addConfirm(BuildContext context, int id, double static_val) {
+  addConfirm(BuildContext context, int id, double static_val,bool staticValue) {
     double bid = 0, charge = 0, total = 0;
-    //if (static_val > 0) {
-    bid = static_val + getMaxBid();
+    double maxBid=carDetails.max_bid_price??0.0;
+    bid = static_val +(staticValue?maxBid:0.0);
     //  } else {
     //    bid = double.parse('${bidController.text}');
     //  }
@@ -280,8 +308,7 @@ Color bidColor=Colors.orangeAccent;
           PostService _postService = new PostService();
           try {
             await _postService.addBid(id, '$bid').then((response) async {
-              print('bid : ${response.statusCode}: ${response.body}');
-              if (response.statusCode == 200) {
+               if (response.statusCode == 200) {
                 var data = jsonDecode(response.body);
 
                 if (data[0][1] != null)
@@ -417,9 +444,14 @@ Color bidColor=Colors.orangeAccent;
       // }
       // late FCIAuthUserModel fciAuthUserModel;
       //else {
-      addConfirm(context, id, double.tryParse(bidController.text) ?? 0.00);
+      addConfirm(context, id, double.tryParse(bidController.text) ?? 0.00,false);
       //}
       update();
     }
   }
+}
+enum MyBidStatus{
+  noBid,
+  lastBid,
+  outBid
 }

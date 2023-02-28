@@ -15,7 +15,8 @@ var dubai = tz.getLocation('Asia/Dubai');
 class CarDetailsController extends GetxController
     with GetSingleTickerProviderStateMixin {
   late CarModel carData;
-  CarDetailsController({required this.carData});
+
+  CarDetailsController({required this.carData });
   @override
   void onInit() {
     controller = AnimationController(
@@ -33,7 +34,7 @@ class CarDetailsController extends GetxController
   late AnimationController controller;
   int selectedImageIndex = 0;
   RxString liveDuration = ''.obs;
-  CarStatus carStatus = CarStatus.all;
+  CarsStatus carsStatus = CarsStatus.all;
   DateTime time = tz.TZDateTime.now(dubai);
   CarDetails carDetails = CarDetails();
   decrementImageIndex() {
@@ -58,36 +59,23 @@ class CarDetailsController extends GetxController
   }
 
   getTimeOfAuction() {
-    var dateNow=tz.TZDateTime.now(dubai);
-
-    //var dateNow=DateTime.now().add(Duration(days: 1));
     if (carData.start_date.isNotEmpty && carData.end_date.isNotEmpty) {
-      if (intl.DateFormat('yyyy-mm-dd hh:mm:ss')
-          .parse(dateNow.toString())
-          .isBefore(intl.DateFormat('yyyy-mm-dd hh:mm:ss')
-          .parse(carData.start_date))) {
-        carStatus = CarStatus.upComing;
-        Duration runningDuration =
-        DateTime.parse(carData.start_date).difference(
-            intl.DateFormat('yyyy-mm-dd hh:mm:ss').parse(dateNow.toString()));
-        liveDuration.value = "Start after  ${Utils().printDuration(runningDuration)} ";
-        update();
-      } else if (intl.DateFormat('yyyy-mm-dd hh:mm:ss')
-          .parse(dateNow.toString())
-          .isBefore(intl.DateFormat('yyyy-mm-dd hh:mm:ss')
-          .parse(carData.end_date))) {
-        carStatus = CarStatus.live;
-        Duration runningDuration =
-        DateTime.parse(carData.end_date).difference(
-            intl.DateFormat('yyyy-mm-dd hh:mm:ss').parse(dateNow.toString()));
-        liveDuration.value = "End after  ${Utils().printDuration(runningDuration)} ";
-        update();
-      } else {
-        carStatus = CarStatus.expired;
-        liveDuration.value = "Expired";
-        update();
+      carsStatus=Utils().getTypeOfAuction(
+        start_date: carData.start_date,
+        end_date: carData.end_date
+      );
+      if(carsStatus==CarsStatus.upComing){
+        liveDuration.value = "Start after  ${Utils().printDuration(Utils().getUpcomingDuration(carData.start_date))} ";
+      }else if(carsStatus==CarsStatus.live){
+        liveDuration.value = "End after  ${Utils().printDuration(Utils().getLiveDuration(carData.end_date))} ";
+      }else{
+        liveDuration.value="";
       }
-    }}
+    }else{
+      liveDuration.value="";
+    }
+    update();
+  }
 
   getCarDetails(int _id) async {
     GetService _getService = new GetService();

@@ -74,29 +74,11 @@ class _SplashScreenState extends State<SplashScreen> {
       ///---2   if  video End ---------------
           timer = Timer.periodic(Duration(seconds: 1), (timer) async {
             if (!_videoPlayerController!.value.isPlaying) {
-              print('splashLoading = true');
+
               setState(() {
                 splashLoading = true;
               });
-                AuthenticationController authenticationController =
-                Get.put(AuthenticationController(),permanent: true);
-                await authenticationController.getUserData();
-                if (authenticationController.userData?.token != null) {
-                  Get.offAll(() => MainScreen(), arguments: {'title': 'Home Screen'});
-                }
-                else {
-                  SharedPreferences shared_User = await SharedPreferences.getInstance();
-                  bool? result = await shared_User.getBool('first');
-                  if(result!=null) {
-                      Get.offAllNamed(AppRoutes.auth);
-                  }else{
-                    await shared_User.setBool('first', true);
-                    setState(() {
-                      splashLoading = false;
-                      _visible = false;
-                    });
-                  }
-                }
+              _endVideo();
                 timer.cancel();
             }
           });
@@ -104,6 +86,27 @@ class _SplashScreenState extends State<SplashScreen> {
 
       // });
     });
+  }
+  _endVideo()async{
+    AuthenticationController authenticationController =
+    Get.put(AuthenticationController(),permanent: true);
+    await authenticationController.getUserData();
+    if (authenticationController.userData?.token != null) {
+      Get.offAll(() => MainScreen(), arguments: {'title': 'Home Screen'});
+    }
+    else {
+      SharedPreferences shared_User = await SharedPreferences.getInstance();
+      bool? result = await shared_User.getBool('first');
+      if(result!=null) {
+        Get.offAllNamed(AppRoutes.auth);
+      }else{
+        await shared_User.setBool('first', true);
+        setState(() {
+          splashLoading = false;
+          _visible = false;
+        });
+      }
+    }
   }
 
   final GlobalKey<ScaffoldState>_scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -154,8 +157,12 @@ class _SplashScreenState extends State<SplashScreen> {
     Scaffold(
       body: InkWell(
         onTap: () {
-          print(_videoPlayerController!.value.isPlaying);
-          //
+          setState(() {
+            splashLoading = true;
+            _visible = false;
+          });
+         _endVideo();
+         timer.cancel();
         },
         child: Center(
           child: Stack(
@@ -185,7 +192,7 @@ class _MyAppState extends State<TestSlide> {
   final List<BoardModel> onBoardData = [
     const BoardModel(
       id:1,
-      title: "SELL YOUR \n CAR",
+      title:  "SELL YOUR \n CAR" ,
       description:
       "Take before and after photos to visualize progress and get the shape that you dream about"
           "Take before and after photos to visualize progress and get the shape that you dream about"
@@ -283,8 +290,18 @@ class _MyAppState extends State<TestSlide> {
                 ),
                 SizedBox(height: ScreenUtil().setHeight(25),),
                 IconButton(
-                  onPressed: (){
-
+                  onPressed: ()async{
+                    if (Get.locale?.languageCode == "en") {
+                      SharedPreferences shared_User = await SharedPreferences.getInstance();
+                      shared_User.setString( 'locale',  'ar');
+                      // Get.locale = null;
+                      await Get.updateLocale(Locale('ar', 'EG'));
+                    } else {
+                      SharedPreferences shared_User = await SharedPreferences.getInstance();
+                      shared_User.setString( 'locale',  'en');
+//
+                      await Get.updateLocale(Locale('en', 'US'));
+                    }
                   },
                   icon: Icon(Icons.language,color:page%2!=0?
                   FCIColors.accentColor():FCIColors.primaryColor(),size: ScreenUtil().setSp(30),),

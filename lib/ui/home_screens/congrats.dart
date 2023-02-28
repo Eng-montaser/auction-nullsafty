@@ -114,7 +114,6 @@ class _CongratulationViewState extends State<CongratulationView> {
                         )
                       ],
                     ),
-
                   ],
 
                 )

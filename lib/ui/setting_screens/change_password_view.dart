@@ -40,7 +40,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                     Get.back();
                   },
                 ),
-                Text("Change Password",style: FCITextStyle.bold(22,color: Colors.white),),
+                Text("Change Password".tr,style: FCITextStyle.bold(22,color: Colors.white),),
                 IconButton(
                   icon: Icon(
                     Icons.search_rounded,
@@ -83,7 +83,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                               ),
                             ),
                             ProfileTextField(
-                              hintText: "Current Password",
+                              hintText: "Current Password".tr,
                               obsecure: true,
                               controller: controller.currentPasswordController,
                               focusNode: controller.focusNodeCurrentPassword,
@@ -97,7 +97,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                               },
                             ),
                             ProfileTextField(
-                              hintText: "New Password",
+                              hintText: "New Password".tr,
                               obsecure: true,
                               controller: controller.passwordController,
                               focusNode: controller.focusNodePassword,
@@ -109,7 +109,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                               },
                             ),
                             ProfileTextField(
-                              hintText: "Confirm New Password",
+                              hintText: "Confirm New Password".tr,
                               obsecure: true,
                               controller: controller.passwordConfirmationController,
                               focusNode: controller.focusNodePasswordConfirmation,
@@ -121,7 +121,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                               },
                             ),
                             GreenButton(
-                              title: "Save",
+                              title: "Save".tr,
                               loading: controller.isLoading.value,
                               onTap: (){
                                 controller.changePassword(context);

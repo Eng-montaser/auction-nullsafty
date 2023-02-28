@@ -53,7 +53,7 @@ class AuthenticationView extends GetView<AuthenticationController> {
                         authenticationController.loginActiveChange(true);
                       },
                       child: Text(
-                        "Sing in",
+                        "Sing in".tr,
                         style: FCITextStyle.bold(21,
                             color: FCIColors.iconGrey()),
                       ),
@@ -81,7 +81,7 @@ class AuthenticationView extends GetView<AuthenticationController> {
                         authenticationController.loginActiveChange(false);
                       },
                       child: Text(
-                        "Sing Up",
+                        "Sing Up".tr,
                         style: FCITextStyle.bold(21,
                             color: FCIColors.iconGrey()),
                       ),
