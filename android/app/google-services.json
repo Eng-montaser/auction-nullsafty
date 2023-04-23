@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1050075583912-jk2p0b4ki8a906qp2b6sbciambltpbk5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.auction",
+            "certificate_hash": "c0b03df4211ab2dfe22f41ce559471d00ff593dd"
+          }
+        },
+        {
           "client_id": "1050075583912-lviup3igfl39cd5889l34pb098dgk923.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -21,6 +29,35 @@
             "certificate_hash": "27187744a267a572b64e5375bd094d3cc6a86e45"
           }
         },
+        {
+          "client_id": "1050075583912-0ls79otfd5es8u1tj9dm407dbbbjatnb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB85lyRWFLN2BIhNRtXCemO2wLSZ-Ux6SI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1050075583912-0ls79otfd5es8u1tj9dm407dbbbjatnb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1050075583912:android:1311ec8f44f6a7aab5799d",
+        "android_client_info": {
+          "package_name": "com.tradeinsolutions.cars"
+        }
+      },
+      "oauth_client": [
         {
           "client_id": "1050075583912-0ls79otfd5es8u1tj9dm407dbbbjatnb.apps.googleusercontent.com",
           "client_type": 3

@@ -1,4 +1,4 @@
-package com.example.auction
+package com.tradeinsolutions.cars
 
 import io.flutter.embedding.android.FlutterActivity
 
